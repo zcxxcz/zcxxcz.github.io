@@ -1,0 +1,52 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { mkdtemp, writeFile, rm } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { text, validate, checkLinks, uniqueText } from "../scripts/lib.mjs";
+const valid = {
+  id: "example",
+  title: "示例",
+  type: "文章",
+  summary: "简介",
+  url: "https://zcxxcz.github.io/content/example/",
+  updated: "2026-10-07",
+  tags: ["信奥"],
+};
+test("rejects collisions and non-public URLs", () => {
+  validate([valid]);
+  assert.throws(() => validate([valid, valid]), /Duplicate/);
+  assert.throws(
+    () => validate([{ ...valid, url: "http://localhost/private" }]),
+    /Unexpected/,
+  );
+  assert.throws(() => validate([{ ...valid, tags: null }]), /tags/);
+});
+test("indexes article text without navigation or executable text", () => {
+  assert.equal(
+    text(
+      "<nav>目录</nav><main><article>比赛<strong>检查</strong></article></main><script>秘密</script>",
+    ),
+    "比赛检查",
+  );
+  assert.equal(uniqueText(["检查。检查。", "总结。"]), "检查。\n总结。");
+});
+test("missing images and anchors block publication", async () => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), "hub-links-"));
+  try {
+    await writeFile(path.join(dir, "index.html"), '<img src="missing.png">');
+    await assert.rejects(checkLinks(dir), /Broken link/);
+    await writeFile(
+      path.join(dir, "index.html"),
+      '<a href="#missing">link</a>',
+    );
+    await assert.rejects(checkLinks(dir), /Broken anchor/);
+    await writeFile(
+      path.join(dir, "index.html"),
+      '<a href="#ok">link</a><h1 id="ok">ok</h1>',
+    );
+    await checkLinks(dir);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});

@@ -1,0 +1,38 @@
+import { mkdir, writeFile } from "node:fs/promises";
+const [id, title, format = "markdown"] = process.argv.slice(2);
+if (
+  !id ||
+  !title ||
+  !/^[a-z0-9][a-z0-9-]*$/.test(id) ||
+  !["markdown", "html", "pdf"].includes(format)
+)
+  throw Error('Usage: npm run new -- unique-slug "标题" [markdown|html|pdf]');
+await mkdir(`content/${id}`);
+const meta = {
+  id,
+  title,
+  type: format === "markdown" ? "文章" : "资料",
+  format,
+  status: "draft",
+  summary: "请填写一句话简介",
+  tags: ["文章与资料"],
+  updated: new Date().toISOString().slice(0, 10),
+  featured: false,
+};
+if (format === "pdf") meta.file = "document.pdf";
+await writeFile(
+  `content/${id}/meta.json`,
+  JSON.stringify(meta, null, 2) + "\n",
+);
+await writeFile(
+  `content/${id}/` +
+    (format === "markdown"
+      ? "body.md"
+      : format === "html"
+        ? "index.html"
+        : "search.txt"),
+  format === "html"
+    ? `<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title.replace(/[<>]/g, "")}</title><body><h1>${title.replace(/[<>]/g, "")}</h1></body></html>`
+    : "",
+);
+console.log(`Created draft content/${id}. Set status to published when ready.`);
