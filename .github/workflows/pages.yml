@@ -1,0 +1,67 @@
+name: Publish Pages
+run-name: ${{ inputs.request_id || github.event.head_commit.message || 'Validate and publish content index' }}
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      request_id:
+        description: Publication tracking ID
+        type: string
+        default: Manual index refresh
+  schedule:
+    - cron: '23 22 * * *'
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.16.0'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+        env:
+          ALLOW_STALE: ${{ github.event_name == 'pull_request' && '0' || '1' }}
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request'
+        with:
+          path: dist
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.16.0'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+        env:
+          ALLOW_STALE: ${{ github.event_name == 'pull_request' && '0' || '1' }}
+      - run: npx playwright install chromium
+      - run: npm run test:browser
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: [build, windows]
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pages-deploy
+      cancel-in-progress: false
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment
