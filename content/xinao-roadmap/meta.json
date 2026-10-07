@@ -1,0 +1,11 @@
+{
+  "id": "xinao-roadmap",
+  "title": "信奥知识点 · 学习路线图",
+  "type": "资料",
+  "format": "html",
+  "status": "published",
+  "summary": "把 221 个信奥知识点从「按分类罗列」重排成「四级台阶 × 五大模块」，给出推荐推进顺序、跨模块依赖链与全量清单。",
+  "tags": ["信息学竞赛", "学习路线", "知识点"],
+  "updated": "2026-10-07",
+  "featured": false
+}

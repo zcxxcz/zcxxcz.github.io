@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>信奥知识点 · 学习路线图</title>
+<style>
+  :root{
+    --bg:#FBFAF7; --card:#FFFFFF; --line:rgba(0,0,0,.09); --line2:rgba(0,0,0,.16);
+    --t1:#1F1E1C; --t2:#5F5E5A; --t3:#8A8880;
+    --j-bg:#EAF3DE; --j-bd:#97C459; --j-tx:#3B6D11;
+    --s-bg:#E6F1FB; --s-bd:#85B7EB; --s-tx:#185FA5;
+    --n-bg:#FAEEDA; --n-bd:#EF9F27; --n-tx:#854F0B;
+    --p-bg:#EEEDFE; --p-bd:#AFA9EC; --p-tx:#534AB7;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--t1);
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",system-ui,sans-serif;
+    font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:48px 28px 80px}
+
+  header{border-bottom:1px solid var(--line2);padding-bottom:24px;margin-bottom:32px}
+  h1{margin:0 0 8px;font-size:26px;font-weight:600;letter-spacing:-.3px}
+  header p{margin:0;color:var(--t2);font-size:14px}
+
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:24px}
+  .metric{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+  .metric b{display:block;font-size:24px;font-weight:600;line-height:1.2}
+  .metric span{font-size:12px;color:var(--t3)}
+
+  h2{font-size:17px;font-weight:600;margin:44px 0 6px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+  h2 .sub{font-weight:400;color:var(--t3);font-size:13px;margin-left:8px}
+  .note{color:var(--t2);font-size:13px;margin:10px 0 20px}
+
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:20px 0 8px}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+  .step .n{font-size:12px;color:var(--t3)}
+  .step .ttl{font-size:14px;font-weight:600;margin:4px 0 6px}
+  .step .d{font-size:13px;color:var(--t2)}
+  .step .cnt{font-size:12px;color:var(--t3);margin-top:8px}
+
+  .mod{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin:20px 0}
+  .mod-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+  .mod-head h3{margin:0;font-size:17px;font-weight:600}
+  .mod-head .c{font-size:12px;color:var(--t3)}
+  .mod-use{color:var(--t2);font-size:13px;margin:6px 0 18px}
+
+  .tier{margin-bottom:16px}
+  .tier:last-child{margin-bottom:0}
+  .tier-h{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;
+          padding:3px 10px;border-radius:6px;border:1px solid;margin-bottom:10px}
+  .tier-h em{font-style:normal;font-weight:400;opacity:.75}
+  .tier.j .tier-h{background:var(--j-bg);border-color:var(--j-bd);color:var(--j-tx)}
+  .tier.s .tier-h{background:var(--s-bg);border-color:var(--s-bd);color:var(--s-tx)}
+  .tier.n .tier-h{background:var(--n-bg);border-color:var(--n-bd);color:var(--n-tx)}
+  .tier.p .tier-h{background:var(--p-bg);border-color:var(--p-bd);color:var(--p-tx)}
+
+  ul.items{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+  ul.items li{font-size:13px;padding:3px 10px;border-radius:6px;border:1px solid;line-height:1.5}
+  .tier.j ul.items li{background:var(--j-bg);border-color:var(--j-bd);color:var(--j-tx)}
+  .tier.s ul.items li{background:var(--s-bg);border-color:var(--s-bd);color:var(--s-tx)}
+  .tier.n ul.items li{background:var(--n-bg);border-color:var(--n-bd);color:var(--n-tx)}
+  .tier.p ul.items li{background:var(--p-bg);border-color:var(--p-bd);color:var(--p-tx)}
+
+  .chain{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin:20px 0}
+  .chain div{font-size:13px;padding:7px 0;border-bottom:1px dashed var(--line);color:var(--t2)}
+  .chain div:last-child{border-bottom:0}
+  .chain b{color:var(--t1);font-weight:600}
+  footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--t3);font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>信奥知识点 · 学习路线图</h1>
+  <p>把原表「按分类罗列」的 221 个知识点，重排成「四级台阶 &times; 五大模块」——先看爬到哪一级，再看这一级该学哪一个模块。</p>
+  <div class="metrics">
+    <div class="metric"><b>221</b><span>知识点总数</span></div>
+    <div class="metric"><b>4</b><span>难度台阶</span></div>
+    <div class="metric"><b>5</b><span>题型模块</span></div>
+    <div class="metric"><b>51</b><span>打底必修项</span></div>
+  </div>
+</header>
+
+<h2>一、推荐推进顺序 <span class="sub">为什么是这个顺序</span></h2>
+<p class="note">纵向四级台阶是「难度」，横向五模块是「题型」。正确走法是：先把第 1 级的基础模块走完，再让后面四个模块交替推进，避免一个模块卡死。</p>
+<div class="steps">
+  <div class="step">
+    <div class="n">第 1 步</div>
+    <div class="ttl">吃透基础模块</div>
+    <div class="d">语法、数组、排序、栈队列、前缀和差分、二分、递归与 BFS。后面所有模块都建立在这里。</div>
+    <div class="cnt">基础模块 J组 19 项 + S组 4 项</div>
+  </div>
+  <div class="step">
+    <div class="n">第 2 步</div>
+    <div class="ttl">图论 + 树论 打底</div>
+    <div class="d">邻接表、并查集、最短路、LCA、树状数组、线段树。这两个模块互相喂养，交替推进效率最高。</div>
+    <div class="cnt">合计 S组 39 项</div>
+  </div>
+  <div class="step">
+    <div class="n">第 3 步</div>
+    <div class="ttl">DP + 数学 跟上</div>
+    <div class="d">线性 DP、背包、树形 DP，配合同余、逆元、快速幂。DP 优化和数论定理天然绑定。</div>
+    <div class="cnt">合计 S组 26 项</div>
+  </div>
+  <div class="step">
+    <div class="n">第 4 步</div>
+    <div class="ttl">冲 NOIP 提高级</div>
+    <div class="d">网络流、Tarjan 全家桶、扫描线、数位 DP、矩阵加速。这一级开始拼综合建模能力。</div>
+    <div class="cnt">NOIP 全模块 27 项</div>
+  </div>
+  <div class="step">
+    <div class="n">第 5 步</div>
+    <div class="ttl">省选 / NOI 竞赛级</div>
+    <div class="d">持久化、树套树、LCT、莫队、FFT、莫比乌斯反演。按模块挑，不建议全铺。</div>
+    <div class="cnt">省选/NOI 全模块 88 项</div>
+  </div>
+</div>
+
+<h2>二、跨模块的依赖链 <span class="sub">最容易踩坑的地方</span></h2>
+<div class="chain">
+  <div><b>数组 / 循环</b> → 前缀和 / 差分 → <b>树上差分</b>（图论模块）</div>
+  <div><b>排序 / 二分</b> → 二分答案 → 线段树二分（树论）→ CDQ 分治（树论）</div>
+  <div><b>递归 / DFS / BFS</b> → 最短路 → 分层图最短路、次短路、K 短路（图论）</div>
+  <div><b>并查集</b> → 可持久化并查集 / 可撤销并查集（树论）；Kruskal → 最小生成树 → 次小生成树 → Kruskal 重构树</div>
+  <div><b>二叉树 / 遍历</b> → 树状数组 → 线段树（树论）→ 树链剖分 → 动态树 LCT</div>
+  <div><b>树形 DP 与树论高度重叠</b>：树的直径、树的重心、树形背包建议与树论合并学，不要分成两条线</div>
+  <div><b>快速幂</b> → 矩阵快速幂（数学）→ 矩阵加速 DP（DP 模块）</div>
+  <div><b>同余 / 逆元</b> → 费马小定理 → 扩展欧几里得 → 中国剩余定理 → BSGS / 莫比乌斯反演（数学）</div>
+  <div><b>线段树</b> 是全局枢纽：既是树论主干，又是 DP 优化（线段树优化 DP）、图论（线段树优化建图）的脚手架</div>
+</div>
+
+<h2>三、五大模块逐条清单 <span class="sub">221 项全量，按台阶分色</span></h2>
+<p class="note">颜色说明：<b>绿 = J 组入门</b>、<b>蓝 = S 组进阶</b>、<b>黄 = NOIP 提高</b>、<b>紫 = 省选/NOI 竞赛</b>。同一台阶内按原表顺序，即推荐学习顺序。</p>
+
+<div class="mod">
+  <div class="mod-head"><h3>模块 1 · 基础 / 算法 / 数据结构</h3><span class="c">51 项 · 必修打底</span></div>
+  <p class="mod-use">这是唯一「必须最先学完」的模块，其余四个模块的前置知识基本都在这里。</p>
+  <div class="tier j">
+    <div class="tier-h">J组 入门 <em>19 项</em></div>
+    <ul class="items">
+      <li>分支结构</li><li>循环结构</li><li>数组 / 数组下标</li><li>冒泡 / 选择 / 插入排序</li><li>Sort 排序</li>
+      <li>计数排序</li><li>结构体 / 自定义排序</li><li>字符 / 字符串操作</li><li>Map / Vector</li>
+      <li>单向 / 双向 / 单调队列</li><li>栈 / 单调栈 符号匹配</li><li>前中后缀表达式转换 / 求值</li>
+      <li>单双向链表的插入 / 删除</li><li>一维 / 二维前缀和</li><li>一维 / 二维差分</li><li>二分查找</li>
+      <li>二分答案</li><li>BFS 最短路</li><li>递归 / DFS 排列组合 / 方案数</li>
+    </ul>
+  </div>
+  <div class="tier s">
+    <div class="tier-h">S组 进阶 <em>4 项</em></div>
+    <ul class="items"><li>记忆化搜索</li><li>ST 表</li><li>离散化</li><li>位运算技巧</li></ul>
+  </div>
+  <div class="tier n">
+    <div class="tier-h">NOIP 提高 <em>5 项</em></div>
+    <ul class="items"><li>数值 / 字符串 哈希</li><li>KMP</li><li>Manacher</li><li>扩展 KMP</li><li>归并排序 / 归并分治</li></ul>
+  </div>
+  <div class="tier p">
+    <div class="tier-h">省选 / NOI 竞赛 <em>23 项</em></div>
+    <ul class="items">
+      <li>迭代加深搜索</li><li>双向 BFS / 折半搜索</li><li>模拟退火</li><li>01 分数规划</li><li>AC 自动机</li>
+      <li>后缀自动机 SAM</li><li>后缀数组 SA</li><li>回文自动机 PAM</li><li>博弈论</li><li>SG 函数</li>
+      <li>Nim 游戏</li><li>分块</li><li>块状链表</li><li>树上分块</li><li>双层分块</li>
+      <li>分块 + 并查集</li><li>根号分治</li><li>三分</li><li>莫队</li><li>带修莫队</li>
+      <li>回滚莫队</li><li>树上莫队</li><li>二次离线莫队</li>
+    </ul>
+  </div>
+</div>
+
+<div class="mod">
+  <div class="mod-head"><h3>模块 2 · 图论</h3><span class="c">51 项</span></div>
+  <p class="mod-use">主线非常清晰：存图 → 并查集 / 最小生成树 → 最短路 → 连通性（Tarjan）→ 树上问题（LCA）→ 网络流。</p>
+  <div class="tier j">
+    <div class="tier-h">J组 入门 <em>1 项</em></div>
+    <ul class="items"><li>邻接表 / 邻接矩阵</li></ul>
+  </div>
+  <div class="tier s">
+    <div class="tier-h">S组 进阶 <em>22 项</em></div>
+    <ul class="items">
+      <li>链式前向星</li><li>堆 / 优先队列</li><li>对顶堆</li><li>反悔贪心-推</li><li>拓扑排序 / 字典序拓扑序</li>
+      <li>并查集 / 路径压缩 / 合并</li><li>带权 / 多倍并查集</li><li>最小 / 大生成树</li><li>Prim / Kruskal</li>
+      <li>最短路 / 最长路</li><li>Floyd</li><li>最小环</li><li>Dijkstra + 堆优化</li><li>分层图最短路</li>
+      <li>严格 / 非严格 次短路</li><li>强 / 弱连通分量</li><li>Tarjan</li><li>割点 / 割边 / 桥 / 缩点</li>
+      <li>LCA</li><li>LCA 离线 Tarjan / 在线 ST</li><li>树上差分 / 前缀和</li><li>二分图的判定 / 染色法</li>
+    </ul>
+  </div>
+  <div class="tier n">
+    <div class="tier-h">NOIP 提高 <em>11 项</em></div>
+    <ul class="items">
+      <li>欧拉路径 / 回路</li><li>LCA 树链剖分</li><li>严格 / 非严格 次小生成树</li><li>Bellman-Ford</li>
+      <li>SPFA</li><li>SPFA 双端队列优化</li><li>差分约束</li><li>连通 / 限制超级源点</li>
+      <li>点 / 边双连通分量</li><li>启发式搜索 A*</li><li>K 短路</li>
+    </ul>
+  </div>
+  <div class="tier p">
+    <div class="tier-h">省选 / NOI 竞赛 <em>17 项</em></div>
+    <ul class="items">
+      <li>同余最短路</li><li>Kruskal 重构树</li><li>网络流 最大流 EK</li><li>网络流 最大流 Dinic</li>
+      <li>网络流 最小割 Dinic</li><li>费用流 EK 算法</li><li>二分图最大匹配 匈牙利算法</li><li>二分图最大匹配 Dinic</li>
+      <li>二分图 KM 算法</li><li>2-SAT</li><li>虚树</li><li>圆方树</li><li>平面图转对偶图</li>
+      <li>对偶图最短路</li><li>一般图的最大匹配</li><li>一般图的最大权匹配</li><li>最优比率生成树</li>
+    </ul>
+  </div>
+</div>
+
+<div class="mod">
+  <div class="mod-head"><h3>模块 3 · 动态规划 DP</h3><span class="c">25 项</span></div>
+  <p class="mod-use">最精简的一条线：从「线性 / 背包」入门，到「树上 DP」，再到「状压 / 数位 / 优化」，最后是竞赛级的「斜率 / 动态 DP」。</p>
+  <div class="tier j">
+    <div class="tier-h">J组 入门 <em>5 项</em></div>
+    <ul class="items"><li>线性 DP</li><li>01 / 完全 / 多重 / 混合背包</li><li>二维费用背包</li><li>负数背包</li><li>区间 DP</li></ul>
+  </div>
+  <div class="tier s">
+    <div class="tier-h">S组 进阶 <em>10 项</em></div>
+    <ul class="items">
+      <li>DAG 上 DP</li><li>树形 DP</li><li>树的直径</li><li>树的直径 2 次 DFS / 树形 DP</li><li>直径路径记录 公共直径</li>
+      <li>树的重心</li><li>点权树求重心</li><li>树形背包</li><li>换根 DP</li><li>状压 DP</li>
+    </ul>
+  </div>
+  <div class="tier n">
+    <div class="tier-h">NOIP 提高 <em>5 项</em></div>
+    <ul class="items"><li>数位 DP</li><li>矩阵加速 DP</li><li>单调队列优化 DP</li><li>树状数组优化 DP</li><li>线段树优化 DP</li></ul>
+  </div>
+  <div class="tier p">
+    <div class="tier-h">省选 / NOI 竞赛 <em>5 项</em></div>
+    <ul class="items"><li>基环树</li><li>斜率优化 DP</li><li>四边形不等式优化 DP</li><li>期望 DP / 概率 DP</li><li>动态 DP</li></ul>
+  </div>
+</div>
+
+<div class="mod">
+  <div class="mod-head"><h3>模块 4 · 树论</h3><span class="c">59 项 · 占比最大</span></div>
+  <p class="mod-use">这是内容最多、也最容易被低估的一个模块。核心只有两件事：<b>线段树的各种变形</b>，和<b>树链剖分 —— 动态树</b>这条主线。</p>
+  <div class="tier j">
+    <div class="tier-h">J组 入门 <em>6 项</em></div>
+    <ul class="items"><li>树形数据结构</li><li>二叉树 / 多叉树</li><li>前 / 中 / 后序遍历</li><li>深度 / 节点数累计</li><li>对称二叉树</li><li>后缀表达式构造二叉树</li></ul>
+  </div>
+  <div class="tier s">
+    <div class="tier-h">S组 进阶 <em>17 项</em></div>
+    <ul class="items">
+      <li>树状数组维护</li><li>字典树 Trie</li><li>01Trie 异或对</li><li>线段树 构造 / 点 / 区修 / 区查</li>
+      <li>线段树 区重置 / 更新 / 反转</li><li>线段树 区间乘法</li><li>线段树 区间开根号 / 取模</li>
+      <li>线段树 区间最值 / 合并</li><li>线段树 区间 GCD</li><li>线段树 区间最大子段和</li>
+      <li>线段树 区间最长子序列</li><li>线段树 区间平方和 / 方差</li><li>线段树 区间种类个数</li>
+      <li>线段树二分</li><li>线段树差分</li><li>离散化线段树</li><li>权值线段树</li>
+    </ul>
+  </div>
+  <div class="tier n">
+    <div class="tier-h">NOIP 提高 <em>4 项</em></div>
+    <ul class="items"><li>扫描线</li><li>扫描线 + 线段树</li><li>点分治</li><li>边分治</li></ul>
+  </div>
+  <div class="tier p">
+    <div class="tier-h">省选 / NOI 竞赛 <em>32 项</em></div>
+    <ul class="items">
+      <li>动态开点线段树</li><li>吉如一线段树</li><li>线段树合并</li><li>线段树分裂</li><li>可持久化线段树</li>
+      <li>标记永久化</li><li>二维线段树</li><li>树套树</li><li>李超线段树</li><li>CDQ 分治</li>
+      <li>线段树优化建图</li><li>树链剖分</li><li>轻重链剖分</li><li>长链剖分</li><li>树剖 线段树</li>
+      <li>实链剖分</li><li>动态树 LCT</li><li>启发式合并</li><li>有序表 平衡树 AVL</li><li>跳表</li>
+      <li>替罪羊树</li><li>笛卡尔树</li><li>Treap 树</li><li>FHQ Treap 树</li><li>Splay 树</li>
+      <li>左偏树</li><li>可持久化 左偏树</li><li>可持久化字典树</li><li>KD-Tree</li>
+      <li>可持久化并查集</li><li>可撤销并查集</li><li>线段树分治</li>
+    </ul>
+  </div>
+</div>
+
+<div class="mod">
+  <div class="mod-head"><h3>模块 5 · 数学</h3><span class="c">35 项</span></div>
+  <p class="mod-use">一条主线：<b>质数 &rarr; 同余 &rarr; 逆元 &rarr; 组合计数 &rarr; 多项式</b>。J 组只要求会用，S 组开始要求推得动。</p>
+  <div class="tier j">
+    <div class="tier-h">J组 入门 <em>6 项</em></div>
+    <ul class="items"><li>埃氏筛</li><li>欧拉筛</li><li>最大最小质因子</li><li>分解质因数</li><li>GCD / LCM</li><li>常见数学功能函数</li></ul>
+  </div>
+  <div class="tier s">
+    <div class="tier-h">S组 进阶 <em>16 项</em></div>
+    <ul class="items">
+      <li>快速幂</li><li>唯一分解定理</li><li>约数和 / 约数个数定理</li><li>Log 对数</li><li>排列组合</li>
+      <li>加减乘除 同余原理</li><li>同余式</li><li>费马小定理</li><li>乘法逆元</li><li>线性递推 乘法逆元</li>
+      <li>裴蜀定理</li><li>扩展欧几里得</li><li>容斥原理</li><li>中国剩余定理 + 扩展</li><li>欧拉函数</li><li>鸽巢 / 抽屉原理</li>
+    </ul>
+  </div>
+  <div class="tier n">
+    <div class="tier-h">NOIP 提高 <em>2 项</em></div>
+    <ul class="items"><li>矩阵 加 / 乘 / 求逆 / 解方程</li><li>矩阵快速幂</li></ul>
+  </div>
+  <div class="tier p">
+    <div class="tier-h">省选 / NOI 竞赛 <em>11 项</em></div>
+    <ul class="items">
+      <li>卡特兰数</li><li>欧拉定理 + 扩展</li><li>BSGS + 扩展</li><li>高斯消元法 / 约旦消元</li>
+      <li>杨辉三角 / 快速幂 / Lukas</li><li>莫比乌斯反演</li><li>凸包 Andrew</li><li>斯特林数</li>
+      <li>线性基</li><li>快速傅里叶变换 FFT</li><li>杜教筛</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  数据来源：信奥知识点_分类与难度.xlsx（共 221 项，原表按 5 大类排列）。本文档为重新编排版，未改动原始数据。
+  原表中「原表位置」列存在跳号（D41 / D49 / D57 / D61 等），系原题单本身删减，非本次遗漏。
+</footer>
+
+</div>
+</body>
+</html>
