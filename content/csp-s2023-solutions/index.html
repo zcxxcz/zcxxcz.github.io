@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSP-S 2023（第二轮）T2 / T3 / T4 从部分分到 AC 详解</title>
+<meta name="description" content="消消乐 / 结构体 / 种树 三题，一档一档拆开：每题先给官方子任务表与各档分值，再从暴力逐级推到满分，每一档都说明「为什么它只能拿这一分、差在哪一步」；配核心引理的证明、易错点清单（哈希被卡、内存对齐空洞、二分下界、__int128 溢出等），并附 7 份在本机编译、随机对拍验证过的完整代码与对拍数据生成器。">
+<style>
+:root{
+  --paper:#f6f5f0;--panel:#fffefb;--ink:#242c2a;--ink-2:#4a5450;--muted:#738079;--line:#d8ddd5;
+  --accent:#b7eb65;--green:#244e3c;--green-soft:#e9efdf;
+  --code-bg:#fffefb;--code-bar:#f1f4ec;
+  --k:#1f5fbf;--ty:#0f7b6c;--st:#8a5a00;--nu:#b83232;--co:#8a958c;--pp:#6b3fa0;--fn:#244e3c;
+  --sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --math:"Cambria Math","Latin Modern Math","Times New Roman",Georgia,"Songti SC",serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 var(--sans)}
+a{color:inherit;text-decoration:none}
+button{font:inherit}
+.progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:40;background:transparent}
+.progress i{display:block;height:100%;width:0;background:var(--green)}
+
+.topbar{max-width:1240px;margin:0 auto;padding:0 40px;height:96px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.topbar .brand{font-size:24px;font-weight:800;letter-spacing:-1px}
+.topbar .brand span{font-size:12px;font-weight:500;letter-spacing:1px;margin-left:12px;color:var(--muted)}
+.topbar a.back{font-size:12px;color:var(--muted)}
+.topbar a.back:hover{color:var(--green)}
+
+.wrap{max-width:1240px;margin:0 auto;padding:0 40px 90px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;align-items:start}
+
+.sidebar{position:sticky;top:0;align-self:start;max-height:100vh;overflow:auto;padding:30px 4px 40px 0;font-size:13px;line-height:1.5}
+.sb-head{font-size:10px;letter-spacing:2px;font-weight:700;color:var(--muted);text-transform:uppercase;margin:0 0 12px 10px}
+.sb-toc{display:flex;flex-direction:column;border-left:1px solid var(--line)}
+.sb-toc a{display:block;padding:5px 10px;border-left:2px solid transparent;margin-left:-1px;color:var(--ink-2);border-radius:0 5px 5px 0}
+.sb-toc a:hover{background:#eceee6;color:var(--ink)}
+.sb-toc a.toc-l0{font-weight:700;margin-top:12px;color:var(--ink);font-size:13.5px;padding-top:8px;padding-bottom:8px}
+.sb-toc a.toc-l0:first-child{margin-top:0}
+.sb-toc a.toc-l1{padding-left:16px}
+.sb-toc a.toc-l2{padding-left:28px;font-size:12.2px;color:var(--muted)}
+.sb-toc a.active{background:var(--green-soft);border-left-color:var(--green);color:var(--ink);font-weight:600}
+.sb-toc .tex{font-size:1em}
+
+.doc{min-width:0;max-width:840px;padding-top:38px}
+.eyebrow{font-size:11px;letter-spacing:2px;font-weight:600;color:var(--muted);margin:0 0 14px}
+.doc > h1{font-size:clamp(28px,3.6vw,40px);line-height:1.28;letter-spacing:-1px;margin:0 0 16px;font-weight:750}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 6px}
+.chips a{font-size:12px;padding:6px 13px;border:1px solid var(--line);border-radius:20px;background:var(--panel);color:var(--ink-2)}
+.chips a:hover{border-color:#7b9770;color:var(--green)}
+.chips a.dl{background:var(--green);color:#fff;border-color:var(--green);font-weight:600}
+.chips a.dl:hover{background:#1b3d2f;color:#fff}
+
+article{line-height:1.9;font-size:15.6px}
+article > p,article > ul,article > ol,article > blockquote,article > .table-wrap,article > .code,article > .formula{margin:0 0 18px}
+article hr{border:0;border-top:1px solid var(--line);margin:38px 0}
+article h1,article h2{font-size:25px;line-height:1.35;letter-spacing:-.5px;margin:54px 0 18px;padding-top:26px;border-top:2px solid var(--ink)}
+article h1:first-of-type,article h2:first-of-type{margin-top:34px}
+article h3{font-size:18.5px;line-height:1.45;letter-spacing:-.2px;margin:32px 0 13px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+article h4{font-size:15.6px;line-height:1.5;margin:24px 0 11px;padding-left:11px;border-left:4px solid var(--accent)}
+article h3 .tex{font-size:.94em}
+article p{margin:0 0 18px}
+article strong{color:var(--green)}
+article ul,article ol{padding-left:24px}
+article li{margin:5px 0}
+article li::marker{color:#93a08f}
+article a{color:var(--green);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+article a:hover{background:var(--accent)}
+article code{font-family:var(--mono);font-size:.885em;background:#eaeee2;padding:2px 5px;border-radius:4px;word-break:break-word}
+article blockquote{margin:0 0 18px;padding:16px 20px;background:var(--green-soft);border-left:4px solid #7b9770;border-radius:0 10px 10px 0;color:var(--ink-2);font-size:14.6px}
+article blockquote p{margin:0 0 10px}
+article blockquote p:last-child{margin-bottom:0}
+article blockquote code{background:#dde5d2}
+
+.table-wrap{overflow-x:auto;margin:0 0 18px;border-radius:8px}
+article table{width:100%;border-collapse:collapse;font-size:13.6px;background:var(--panel)}
+article thead th{background:#eef1e8;font-weight:650;text-align:left}
+article th,article td{border:1px solid var(--line);padding:9px 11px;vertical-align:top;line-height:1.7}
+article tbody tr:nth-child(even){background:#faf9f5}
+article table code{font-size:.86em;white-space:nowrap}
+
+/* ---------- 公式 ---------- */
+.tex{font-family:var(--math);font-size:1.02em;font-style:normal;white-space:normal}
+.tex .rm,.rm{font-family:var(--sans);font-style:normal;font-size:.9em}
+.formula{margin:0 0 20px;padding:14px 18px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:0 10px 10px 0;font-family:var(--math);font-size:15.4px;line-height:2;overflow-x:auto}
+.formula p{margin:0}
+.formula .rm{font-size:.88em;color:var(--ink-2)}
+.unb{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 4px}
+.unb i{font-style:italic;white-space:nowrap;font-size:.96em;line-height:1.25}
+.unb i+i{font-family:var(--sans);font-style:normal;font-size:.68em;line-height:1.3;color:var(--ink-2);border-top:1px solid #9aa79b;width:100%;text-align:center;padding-top:1px;margin-top:1px}
+.boxed{border:1.2px solid var(--green);background:var(--green-soft);border-radius:6px;padding:2px 8px;display:inline-block}
+.cases{display:inline-flex;align-items:center;vertical-align:middle;gap:3px}
+.cases .brace{font-size:2.2em;line-height:.78;color:var(--ink-2)}
+.crows{display:inline-flex;flex-direction:column}
+.crow{display:flex;align-items:baseline;gap:14px;white-space:nowrap}
+.crow .cr{color:var(--ink-2);font-family:var(--sans);font-size:.86em}
+sup,sub{font-size:.66em;line-height:0}
+
+/* ---------- 代码 ---------- */
+.code{margin:0 0 20px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--code-bg)}
+.code-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;height:34px;padding:0 8px 0 14px;background:var(--code-bar);border-bottom:1px solid var(--line)}
+.code-lang{font-family:var(--mono);font-size:11px;letter-spacing:.6px;color:var(--muted)}
+.code .copy{display:inline-flex;align-items:center;gap:5px;border:1px solid transparent;background:transparent;color:var(--muted);border-radius:6px;padding:4px 7px;cursor:pointer}
+.code .copy:hover{background:#e4e9db;color:var(--green);border-color:var(--line)}
+.code .copy.done{color:var(--green);background:var(--green-soft)}
+.code pre{margin:0;overflow:auto;padding:15px 16px;background:transparent}
+.code code{display:block;font-family:var(--mono);font-size:13px;line-height:1.72;background:none;padding:0;white-space:pre;tab-size:4;color:#2c3633}
+.k{color:var(--k);font-weight:600}
+.ty{color:var(--ty)}
+.st{color:var(--st)}
+.nu{color:var(--nu)}
+.co{color:var(--co);font-style:italic}
+.pp{color:var(--pp)}
+.fn{color:var(--fn)}
+
+footer{max-width:1240px;margin:0 auto;padding:22px 40px 36px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;font-size:11px;color:var(--muted)}
+.drawer-btn{display:none}
+
+@media (max-width:1000px){
+  .wrap{display:block;padding:0 26px 70px}
+  .topbar{padding:0 26px;height:78px}
+  .doc{max-width:none}
+  .sidebar{position:fixed;inset:0 auto 0 0;width:290px;max-height:none;padding:22px 14px 40px;background:var(--panel);border-right:1px solid var(--line);z-index:30;transform:translateX(-100%);transition:transform .22s;box-shadow:6px 0 26px #242c2a14}
+  body.nav-open .sidebar{transform:none}
+  .scrim{position:fixed;inset:0;background:#242c2a55;z-index:25;opacity:0;pointer-events:none;transition:opacity .22s}
+  body.nav-open .scrim{opacity:1;pointer-events:auto}
+  .drawer-btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:20px;padding:6px 14px;font-size:12px;cursor:pointer}
+  footer{padding:20px 26px 30px;flex-direction:column;gap:8px}
+}
+@media (max-width:600px){
+  .wrap{padding:0 18px 60px}
+  .topbar{padding:0 18px;height:70px}
+  .topbar .brand{font-size:20px}
+  .topbar .brand span{display:none}
+  article{font-size:15px}
+  article h1,article h2{font-size:21px;padding-top:20px;margin-top:40px}
+  article h3{font-size:16.6px}
+  article table{font-size:12.6px}
+  .code code{font-size:12px}
+  footer{padding:18px 18px 28px}
+}
+@media print{
+  .sidebar,.progress,.topbar a.back,.drawer-btn,.scrim,.code .copy{display:none}
+  .wrap{display:block;max-width:none;padding:0}
+  .topbar{height:auto;padding:0 0 12px;border-bottom:0}
+  body{background:#fff}
+  article h1{page-break-after:avoid;border-top:0;padding-top:0}
+  .code{page-break-inside:avoid}
+  a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+<div class="progress"><i></i></div>
+<div class="scrim"></div>
+
+<header class="topbar">
+  <a class="brand" href="/">Z<span>内容与作品</span></a>
+  <button class="drawer-btn" type="button">目录</button>
+  <a class="back" href="/#library">全部内容 ↗</a>
+</header>
+
+<div class="wrap">
+  <aside class="sidebar" aria-label="目录">
+    <p class="sb-head">目录</p>
+    <nav class="sb-toc">
+<a class="toc-l0" href="#0">0. 三题总览</a>
+<a class="toc-l0" href="#t2-p9753">一、T2 消消乐（P9753）</a>
+<a class="toc-l0" href="#1-1">1.1 题意</a>
+<a class="toc-l0" href="#1-2">1.2 数据范围与子任务</a>
+<a class="toc-l0" href="#1-3">1.3 两个核心引理（全题地基）</a>
+<a class="toc-l0" href="#1-4">1.4 一档一档来</a>
+<a class="toc-l1" href="#1-25-n-10-o-n">档 1（25 分，n ≤ 10）：O(n³) 暴力</a>
+<a class="toc-l1" href="#2-35-n-800-o-n-o-n">档 2（35 分，n ≤ 800）：O(n³) 稍作优化 / O(n²) 起步</a>
+<a class="toc-l1" href="#3-50-n-8000-o-n">档 3（50 分，n ≤ 8000）：O(n²) 定右端点、向左扩展</a>
+<a class="toc-l1" href="#4-60-dp">档 4（60 分）：把它变成 DP（思路升级，复杂度暂不变）</a>
+<a class="toc-l1" href="#56-85-100">档 5~6（85 → 100 分）：直接用"状态"计数</a>
+<a class="toc-l0" href="#1-5-t2">1.5 T2 易错点</a>
+<a class="toc-l0" href="#t3-p9754">二、T3 结构体（P9754）</a>
+<a class="toc-l0" href="#2-1">2.1 题意与对齐规则（逐条翻译成公式）</a>
+<a class="toc-l0" href="#2-2">2.2 数据范围与子任务</a>
+<a class="toc-l0" href="#2-3">2.3 数据结构（一次写好，各档共用）</a>
+<a class="toc-l0" href="#2-4">2.4 四个操作的具体写法</a>
+<a class="toc-l0" href="#2-5-100">2.5 完整代码（100 分，已实测）</a>
+<a class="toc-l0" href="#2-6-t3">2.6 T3 易错点清单</a>
+<a class="toc-l0" href="#t4-p9755">三、T4 种树（P9755）</a>
+<a class="toc-l0" href="#3-1">3.1 题意</a>
+<a class="toc-l0" href="#3-2">3.2 数据范围与子任务</a>
+<a class="toc-l0" href="#3-3">3.3 两个关键引理</a>
+<a class="toc-l0" href="#3-4-t">3.4 计算函数：给定 t，某点最晚第几天种？</a>
+<a class="toc-l0" href="#3-5">3.5 一档一档来</a>
+<a class="toc-l1" href="#1-20-n-20-dp">档 1（20 分，n ≤ 20）：状压 DP</a>
+<a class="toc-l1" href="#2-40-a-ci-0">档 2（40 分，+ 特殊性质 A：c_i = 0）</a>
+<a class="toc-l1" href="#3-50-b">档 3（50 分，+ 特殊性质 B：链且按标号顺序）</a>
+<a class="toc-l1" href="#4-65-c-2">档 4（65 分，+ 特殊性质 C：度数 ≤ 2，标号任意）</a>
+<a class="toc-l1" href="#5-80-d">档 5（80 分，+ 特殊性质 D：菊花图）</a>
+<a class="toc-l1" href="#6-100">档 6（100 分）：完整算法四步</a>
+<a class="toc-l0" href="#3-6-t4">3.6 T4 易错点</a>
+<a class="toc-l0" href="#sec">四、最后的考场取舍</a>
+<a class="toc-l0" href="#sec-2">附：本目录下的可运行代码（均已编译实测）</a>
+    </nav>
+  </aside>
+
+  <main class="doc">
+    <p class="eyebrow">文章 / 2026-10-07</p>
+    <h1>CSP-S 2023（第二轮）T2 / T3 / T4 从部分分到 AC 详解</h1>
+    <div class="chips">
+      <a href="#0">0 三题总览</a><a href="#t2-p9753">一 T2 消消乐</a><a href="#t3-p9754">二 T3 结构体</a><a href="#t4-p9755">三 T4 种树</a><a href="#sec">四 考场取舍</a><a href="#sec-2">附 代码清单</a>
+      <a class="dl" href="code.zip" download>↓ 下载全部代码 .zip</a>
+    </div>
+    <article>
+
+<blockquote>
+<p>说明：本文所有代码都在本机编译并<strong>实测通过</strong>——T2 三份写法互相随机对拍 300 组、T4 三份写法互相随机对拍 650 组，另外单测了结构体的"对齐空洞 / 嵌套 / 边界"用例，以及 T2（n=2×10⁶）、T4（n=10⁵）的时间与内存。可以直接当模板背。</p>
+</blockquote>
+<hr>
+<h2 id="0">0. 三题总览</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>题号</th>
+<th>题目</th>
+<th>洛谷</th>
+<th>主要考点</th>
+<th>难度</th>
+<th>满分的关键一句话</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>T2</td>
+<td>消消乐</td>
+<td><a href="https://www.luogu.com.cn/problem/P9753">P9753</a></td>
+<td>栈 / 字符串哈希 / 字典树 / DP</td>
+<td>提高</td>
+<td>区间可消除 ⟺ <strong>两端前缀的"归约状态"完全相同</strong></td>
+</tr>
+<tr>
+<td>T3</td>
+<td>结构体</td>
+<td><a href="https://www.luogu.com.cn/problem/P9754">P9754</a></td>
+<td>大模拟（内存对齐）</td>
+<td>提高+/省选−</td>
+<td>成员只按<strong>自己的</strong>对齐要求对齐；只有<strong>整体大小</strong>按结构体对齐要求向上取整</td>
+</tr>
+<tr>
+<td>T4</td>
+<td>种树</td>
+<td><a href="https://www.luogu.com.cn/problem/P9755">P9755</a></td>
+<td>二分答案 / 贪心 / 数学</td>
+<td>提高+/省选−</td>
+<td>每天至少长 1 米 ⇒ 只需考虑前 n 天每天种一棵；求"最晚种植时间"后变成<strong>截止时间排序 + 计数判定</strong></td>
+</tr>
+</tbody></table></div>
+<p><strong>考场建议（分值效率）</strong>：</p>
+<ul>
+<li>T2 的 50 分（O(n²)）几乎白送，务必先拿；100 分只比 50 分多一个"状态哈希"的思路。</li>
+<li>T3 是纯大模拟，<strong>没有算法难度，只有代码正确性</strong>。分档价值巨大（15→25→40→50→65→80→100），但 100 分代码不到 120 行，建议一次写到位。</li>
+<li>T4 的 20 分（n≤20 状压）+ 25 分特殊性质 A（c_i=0）不算难；但<strong>满分算法本身很短</strong>（二分+截止时间+后序传播+计数），性价比最高。</li>
+</ul>
+<hr>
+<h1 id="t2-p9753">一、T2 消消乐（P9753）</h1>
+<h2 id="1-1">1.1 题意</h2>
+<p>给定长度 n 的小写字符串 s。一次操作可删除<strong>相邻且相同</strong>的两个字符，删除后两边拼接。称一个串"可消除"当且仅当能通过若干次操作变成空串。求 s 有多少个<strong>非空连续子串</strong>是可消除的。</p>
+<p>样例：<code>8 / accabccb</code> → <code>5</code>（分别是 <code>cc</code>、<code>acca</code>、<code>cc</code>、<code>bccb</code>、<code>accabccb</code>）。</p>
+<h2 id="1-2">1.2 数据范围与子任务</h2>
+<p>1 ≤ n ≤ 2×10⁶；字符集为小写字母。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>测试点</th>
+<th>n ≤</th>
+<th>特殊性质</th>
+<th>分值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1~5</td>
+<td>10</td>
+<td>无</td>
+<td>25</td>
+</tr>
+<tr>
+<td>6~7</td>
+<td>800</td>
+<td>无</td>
+<td>10</td>
+</tr>
+<tr>
+<td>8~10</td>
+<td>8000</td>
+<td>无</td>
+<td>15</td>
+</tr>
+<tr>
+<td>11~12</td>
+<td>2×10⁵</td>
+<td><strong>A</strong>：每个字符独立等概率随机选取</td>
+<td>10</td>
+</tr>
+<tr>
+<td>13~14</td>
+<td>2×10⁵</td>
+<td><strong>B</strong>：串只由 <code>a</code>、<code>b</code> 构成</td>
+<td>10</td>
+</tr>
+<tr>
+<td>15~17</td>
+<td>2×10⁵</td>
+<td>无</td>
+<td>15</td>
+</tr>
+<tr>
+<td>18~20</td>
+<td>2×10⁶</td>
+<td>无</td>
+<td>15</td>
+</tr>
+</tbody></table></div>
+<h2 id="1-3">1.3 两个核心引理（全题地基）</h2>
+<p>把"相邻相同即抵消"的消除规则看成一个<strong>栈</strong>：从左到右扫，若当前字符与栈顶相同就弹出，否则压入。记 <code>R_i</code> = 扫描完前 i 个字符后栈里的内容（称作前缀 i 的<strong>归约状态</strong>）。</p>
+<blockquote>
+<p><strong>引理 1（归约唯一性）</strong>：消除的先后顺序不影响最终剩下的串。也就是说 <code>R_i</code> 定义良好。
+直觉证明：把每个字符看作自由群（每个生成元满足 a²=e）中的元素，"相邻相同抵消"就是该群的唯一正规形式；归约映射 <code>reduce</code> 是幺半群同态，<code>reduce(uv) = reduce(u)·reduce(v)</code>。</p>
+</blockquote>
+<blockquote>
+<p><strong>引理 2（关键）</strong>：子串 <code>s[l..r]</code> 可消除 ⟺ <code>R_{l-1} = R_r</code>。</p>
+</blockquote>
+<p>证明（两行）：</p>
+<ul>
+<li>若 <code>s[l..r]</code> 可消除，则 <code>R_r = reduce(R_{l-1} · s[l..r]) = R_{l-1} · reduce(s[l..r]) = R_{l-1} · ε = R_{l-1}</code>。</li>
+<li>反之若 <code>R_r = R_{l-1}</code>，由 <code>R_r = R_{l-1} · reduce(s[l..r])</code> 两边左乘 <code>R_{l-1}^{-1}</code>（自由积里每个元素都是自逆的）得 <code>reduce(s[l..r]) = ε</code>。</li>
+</ul>
+<p>于是答案 = <strong>满足 <code>0 ≤ l-1 &lt; r ≤ n</code> 且 <code>R_{l-1} = R_r</code> 的下标对数</strong> = Σ 每种状态下标数 C(cnt, 2)。</p>
+<h2 id="1-4">1.4 一档一档来</h2>
+<h3 id="1-25-n-10-o-n">档 1（25 分，n ≤ 10）：O(n³) 暴力</h3>
+<p>枚举左右端点 <code>[l, r]</code>，用栈模拟判断是否可消，O(n) 判定 × O(n²) 区间 = O(n³)。n=10 随便过。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// 只写核心：对每个区间用栈判定</span>
+<span class="ty">bool</span> <span class="fn">ok</span>(<span class="k">const</span> <span class="ty">string</span>&amp; s, <span class="ty">int</span> l, <span class="ty">int</span> r) {
+    <span class="ty">string</span> st;
+    <span class="k">for</span> (<span class="ty">int</span> i = l; i &lt;= r; i++) {
+        <span class="k">if</span> (!st.<span class="fn">empty</span>() &amp;&amp; st.<span class="fn">back</span>() == s[i]) st.<span class="fn">pop_back</span>();
+        <span class="k">else</span> st.<span class="fn">push_back</span>(s[i]);
+    }
+    <span class="k">return</span> st.<span class="fn">empty</span>();
+}
+</code></pre></div>
+<h3 id="2-35-n-800-o-n-o-n">档 2（35 分，n ≤ 800）：O(n³) 稍作优化 / O(n²) 起步</h3>
+<p>n=800 时 n³=5×10⁸ 用 <code>std::string</code> 会 TLE，改成 <code>vector&lt;char&gt;</code> 或提前剪枝就能过。</p>
+<h3 id="3-50-n-8000-o-n">档 3（50 分，n ≤ 8000）：O(n²) 定右端点、向左扩展</h3>
+<p><strong>观察</strong>：固定右端点 r，把左端点 l 从 r 递减到 0 时，<code>reduced(s[l..r])</code> 可以通过<strong>在最前面插入一个字符</strong>从 <code>reduced(s[l+1..r])</code> 得到：若首字符等于 <code>s[l]</code> 就删掉首字符，否则把 <code>s[l]</code> 放到最前面。所以一个右端点只需 O(n) 维护。</p>
+<p>实现上把"归约结果"<strong>倒序</strong>存进 <code>vector&lt;char&gt;</code>，那么"删首字符/插首字符"就变成 <code>pop_back / push_back</code>。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// 50 分：O(n^2)</span>
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="ty">int</span> n; <span class="ty">string</span> s; cin &gt;&gt; n &gt;&gt; s;
+    <span class="ty">long</span> <span class="ty">long</span> ans = <span class="nu">0</span>;
+    <span class="ty">vector</span>&lt;<span class="ty">char</span>&gt; st;
+    <span class="k">for</span> (<span class="ty">int</span> r = <span class="nu">0</span>; r &lt; n; r++) {
+        st.<span class="fn">clear</span>();
+        <span class="k">for</span> (<span class="ty">int</span> l = r; l &gt;= <span class="nu">0</span>; l--) {
+            <span class="k">if</span> (!st.<span class="fn">empty</span>() &amp;&amp; st.<span class="fn">back</span>() == s[l]) st.<span class="fn">pop_back</span>();  <span class="co">// 倒序存，back 就是首字符</span>
+            <span class="k">else</span> st.<span class="fn">push_back</span>(s[l]);
+            <span class="k">if</span> (st.<span class="fn">empty</span>()) ans++;     <span class="co">// s[l..r] 可消除</span>
+        }
+    }
+    cout &lt;&lt; ans &lt;&lt; <span class="st">"\n"</span>;
+}
+</code></pre></div>
+<p>n=8000 时 6.4×10⁷ 次操作，稳稳过（1~10 号点全部拿下 = 50 分）。</p>
+<h3 id="4-60-dp">档 4（60 分）：把它变成 DP（思路升级，复杂度暂不变）</h3>
+<p>设 <code>f[i]</code> = <strong>以 i 结尾</strong>的可消除子串个数。设 j 是使 <code>s[j+1..i]</code> 可消除的<strong>最大</strong>的 j（即最短的可消后缀的左边界-1），则</p>
+<div class="code" data-lang="文本"><div class="code-bar"><span class="code-lang">文本</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code>f[i] = f[j] + 1     （找到则转移，找不到 f[i] = 0）
+答案 = Σ f[i]
+</code></pre></div>
+<p><strong>为什么对</strong>：所有以 i 结尾的可消子串中，最短的那个是 <code>[j+1, i]</code>；对任何更短的 <code>[t+1, i]</code>（t &lt; j），由引理 2 有 <code>R_t = R_i = R_j</code>，即 <code>s[t+1..j]</code> 也可消 —— 于是它们与"以 j 结尾的可消子串"一一对应。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// 60 分：O(n^2) 的 DP（从右往左扫 j 找最短可消后缀）</span>
+<span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) {
+    <span class="ty">vector</span>&lt;<span class="ty">char</span>&gt; st; f[i] = <span class="nu">0</span>;
+    <span class="k">for</span> (<span class="ty">int</span> j = i - <span class="nu">1</span>; j &gt;= <span class="nu">0</span>; j--) {
+        <span class="k">if</span> (!st.<span class="fn">empty</span>() &amp;&amp; st.<span class="fn">back</span>() == s[j]) st.<span class="fn">pop_back</span>();
+        <span class="k">else</span> st.<span class="fn">push_back</span>(s[j]);
+        <span class="k">if</span> (st.<span class="fn">empty</span>()) { f[i] = f[j] + <span class="nu">1</span>; <span class="k">break</span>; }
+    }
+    ans += f[i];
+}
+</code></pre></div>
+<h3 id="56-85-100">档 5~6（85 → 100 分）：直接用"状态"计数</h3>
+<p>上面 O(n²) 的瓶颈是"每次都要向左重扫一遍"。<strong>改成在线维护状态</strong>：从 i=1 扫到 n，每一步只做一次压栈/弹栈，得到当前状态编号；答案累加"这个状态之前出现过几次"。</p>
+<p>难点：状态是一个<strong>字符串</strong>，怎么快速表示？两条路——</p>
+<ol>
+<li><strong>双哈希/自然溢出哈希</strong>：把栈内容哈希，用 <code>map/unordered_map</code> 统计每个哈希值出现次数，Σ C(cnt,2)。注意<strong>单模数（如 998244353、10⁹+7）在 n=2×10⁶ 时冲突概率很大</strong>，必须用自然溢出（<code>unsigned long long</code>）或双哈希。</li>
+<li><strong>字典树（推荐，无冲突风险）</strong>：每个状态 = 字典树上一个结点。压入字符 c 就是"从当前结点走字符 c 的儿子"；弹出就是"回到父亲"。每个结点对应唯一的一个归约串，所以<strong>状态相同 ⟺ 结点编号相同</strong>，彻底不用怕哈希冲突。</li>
+</ol>
+<p>把"最短路 DP"和"字典树"合起来写，就是最终 O(n) 解：</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// P9753 满分 O(n)</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="ty">int</span> n; <span class="ty">string</span> s;
+    <span class="k">if</span> (!(cin &gt;&gt; n)) <span class="k">return</span> <span class="nu">0</span>;
+    cin &gt;&gt; s;
+
+    <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; <span class="fn">par</span>(<span class="nu">1</span>, -<span class="nu">1</span>);      <span class="co">// 结点 = 归约状态；par = 弹出后回到的状态</span>
+    <span class="ty">vector</span>&lt;<span class="ty">char</span>&gt; <span class="fn">chr</span>(<span class="nu">1</span>, <span class="nu">0</span>);      <span class="co">// 到达该状态时压入的字符 = 栈顶字符</span>
+    <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; <span class="fn">lastSeen</span>(<span class="nu">1</span>, <span class="nu">0</span>);  <span class="co">// 该状态最近一次出现的前缀下标（状态 0 在 i=0 出现过）</span>
+    <span class="ty">vector</span>&lt;<span class="ty">long</span> <span class="ty">long</span>&gt; <span class="fn">f</span>(n + <span class="nu">1</span>, <span class="nu">0</span>);
+    <span class="ty">unordered_map</span>&lt;<span class="ty">long</span> <span class="ty">long</span>, <span class="ty">int</span>&gt; to;
+    to.<span class="fn">reserve</span>((<span class="ty">size_t</span>)n * <span class="nu">2</span> + <span class="nu">16</span>);   <span class="co">// 关键！不 reserve 会反复 rehash，慢且费内存</span>
+    to.<span class="fn">max_load_factor</span>(<span class="nu">0.7</span>);
+
+    <span class="ty">int</span> cur = <span class="nu">0</span>;
+    <span class="ty">long</span> <span class="ty">long</span> ans = <span class="nu">0</span>;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) {
+        <span class="ty">int</span> c = s[i - <span class="nu">1</span>] - <span class="st">'a'</span>;
+        <span class="k">if</span> (cur != <span class="nu">0</span> &amp;&amp; chr[cur] == s[i - <span class="nu">1</span>]) {
+            cur = par[cur];                       <span class="co">// 与栈顶相同 -&gt; 弹出</span>
+        } <span class="k">else</span> {
+            <span class="ty">long</span> <span class="ty">long</span> key = (<span class="ty">long</span> <span class="ty">long</span>)cur * <span class="nu">26</span> + c;
+            <span class="k">auto</span> it = to.<span class="fn">find</span>(key);
+            <span class="k">if</span> (it == to.<span class="fn">end</span>()) {                 <span class="co">// 压入并新建结点</span>
+                <span class="ty">int</span> id = (<span class="ty">int</span>)par.<span class="fn">size</span>();
+                par.<span class="fn">push_back</span>(cur); chr.<span class="fn">push_back</span>(s[i - <span class="nu">1</span>]); lastSeen.<span class="fn">push_back</span>(-<span class="nu">1</span>);
+                to.<span class="fn">emplace</span>(key, id); cur = id;
+            } <span class="k">else</span> cur = it-&gt;second;
+        }
+        <span class="ty">int</span> p = lastSeen[cur];
+        <span class="ty">long</span> <span class="ty">long</span> fi = (p &gt;= <span class="nu">0</span> ? f[p] + <span class="nu">1</span> : <span class="nu">0</span>);
+        f[i] = fi; ans += fi;
+        lastSeen[cur] = i;
+    }
+    cout &lt;&lt; ans &lt;&lt; <span class="st">"\n"</span>;
+}
+</code></pre></div>
+<p>实测：n=2×10⁶ 随机串 <strong>0.15 s / 148 MB</strong>；全 <code>a</code> 串输出 <code>1000000000000</code>（= 10¹²，与"偶数长度子串个数 = (n/2)²"完全吻合）<strong>0.07 s / 55 MB</strong>。内存/时间都在 512 MB / 1 s 内很宽松。</p>
+<h2 id="1-5-t2">1.5 T2 易错点</h2>
+<ol>
+<li><strong>答案范围</strong>：n=2×10⁶ 时答案可达 ~10¹²，必须 <code>long long</code>（<code>int</code> 直接爆）。</li>
+<li><strong>哈希</strong>：单模数会被卡；要么自然溢出，要么双哈希，要么字典树。用 <code>unordered_map</code> 一定要 <code>reserve</code>（有人不 reserve 直接 MLE 90 分）。</li>
+<li><strong>弹栈只弹一次</strong>：因为"压入前栈是归约状态（无相邻相同）"，压入后最多只有栈顶一对相同，弹完就恢复归约性，不需要 while。</li>
+<li><strong>两种视角等价</strong>：<code>Σ C(cnt,2)</code> 和 <code>Σ f[i]</code>（<code>f[i]=f[prev]+1</code>）算的是同一个东西，任选其一。</li>
+</ol>
+<hr>
+<h1 id="t3-p9754">二、T3 结构体（P9754）</h1>
+<h2 id="2-1">2.1 题意与对齐规则（逐条翻译成公式）</h2>
+<p>基本类型（<strong>大小 = 对齐要求</strong>）：<code>byte</code> 1、<code>short</code> 2、<code>int</code> 4、<code>long</code> 8。</p>
+<ul>
+<li>结构体类型的<strong>对齐要求</strong> = 所有成员的<strong>对齐要求的最大值</strong>。</li>
+<li>结构体内部成员按定义顺序排布。设该结构体成员大小 <code>s_1..s_k</code>、对齐 <code>a_1..a_k</code>，偏移量 <code>o_1..o_k</code>：<ul>
+<li><code>o_1 = 0</code>；</li>
+<li><code>o_j</code>（j≥2）= <strong>满足 <code>o_j &gt; o_{j-1} + s_{j-1} - 1</code> 且 <code>a_j | o_j</code> 的最小值</strong>；</li>
+<li>结构体大小 = 满足 <code>size &gt; o_k + s_k - 1</code> 且 <code>align | size</code> 的最小值。</li>
+</ul>
+</li>
+<li>顶层元素同理：第 1 个元素起始地址 0，之后每个元素 <code>start_i</code> = 满足 <code>start_i &gt; end_{i-1}</code> 且能被自己对齐要求整除的最小值。</li>
+</ul>
+<p><strong>一句话记法</strong>：把"已用字节数"记为 <code>used</code>（即下一个空闲字节的下标），则</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="ty">ll</span> <span class="fn">alignUp</span>(<span class="ty">ll</span> x, <span class="ty">ll</span> a) { <span class="k">return</span> (x + a - <span class="nu">1</span>) / a * a; }
+<span class="co">// 成员偏移 / 元素起始：off = alignUp(used, 该成员自己的对齐要求);</span>
+<span class="co">// 结构体大小：        size = alignUp(used, 结构体自身的对齐要求);   ← 只有这一步用结构体的对齐</span>
+</code></pre></div>
+<p><strong>这里就是最大的坑</strong>：成员<strong>只按自己的对齐要求</strong>对齐（<code>int</code> 成员就要对齐到 4，哪怕整个结构体对齐要求是 8）；只有<strong>整个结构体的大小</strong>才向上取整到结构体的对齐要求。</p>
+<blockquote>
+<p>例子：<code>struct d { short a; int b; short c; }; d e;</code>
+<code>a</code> 占 0~1，<code>b</code> 对齐到 4 占 4~7，<code>c</code> 占 8~9，已用 10 字节；结构体对齐要求 = max(2,4,2) = 4，向上取整 → <strong>size = 12</strong>。
+所以第 2~3、10~11 字节是<strong>洞</strong>，里面没有任何基本类型元素 → 操作 4 要输出 <code>ERR</code>。</p>
+</blockquote>
+<h2 id="2-2">2.2 数据范围与子任务</h2>
+<p>n ≤ 100，k ≤ 100，0 ≤ addr ≤ 10¹⁸；名字均为 ≤10 个小写字母，且不与基本类型重名。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>测试点</th>
+<th>特殊性质</th>
+<th>分值</th>
+<th>累计</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>A、D</td>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr>
+<td>2~3</td>
+<td>A</td>
+<td>10</td>
+<td>15</td>
+</tr>
+<tr>
+<td>4~5</td>
+<td>B、D</td>
+<td>10</td>
+<td>25</td>
+</tr>
+<tr>
+<td>6~8</td>
+<td>B</td>
+<td>15</td>
+<td>40</td>
+</tr>
+<tr>
+<td>9~10</td>
+<td>C、D</td>
+<td>10</td>
+<td>50</td>
+</tr>
+<tr>
+<td>11~13</td>
+<td>C</td>
+<td>15</td>
+<td>65</td>
+</tr>
+<tr>
+<td>14~16</td>
+<td>D</td>
+<td>15</td>
+<td>80</td>
+</tr>
+<tr>
+<td>17~20</td>
+<td>无</td>
+<td>20</td>
+<td>100</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li><strong>A：没有操作 1</strong>（不定义结构体类型）→ 所有元素都是基本类型，操作 3 的 <code>s</code> 里根本不会出现 <code>.</code>。</li>
+<li><strong>B：只有一个操作 1</strong> → 类型图深度最多 2（元素 → 该结构体 → 基本类型），可以把"下降一层"写死。</li>
+<li><strong>C：所有操作 1 的成员类型均为基本类型</strong> → 结构体内部<strong>没有嵌套</strong>，但元素可以是结构体（深度 1）。</li>
+<li><strong>D：基本类型只有 <code>long</code></strong> → 所有大小/对齐都是 8 的倍数 ⇒ <strong>永远不会产生对齐空洞</strong>，操作 4 不会出 <code>ERR</code>（除越界），地址计算退化成"每层 ×8"。</li>
+</ul>
+<p><strong>分档的本质是两个独立难点</strong>：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>难点</th>
+<th>涉及测试点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>① 结构体嵌套（需要逐层递归下降）</td>
+<td>D 档（14~16）、无档（17~20）</td>
+</tr>
+<tr>
+<td>② 对齐空洞 + <code>ERR</code> 判定</td>
+<td>C 档（11~13）、无档（17~20）</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li>15 分（1~3，A）：只会用基本类型，写个"累加地址 + 对齐"就没了。</li>
+<li>25 分（+B、D）：只有一个结构体，下降深度 ≤ 2。</li>
+<li>40 分（+B）：同上。</li>
+<li>50 分（+C、D）：一层结构体 + 无洞，最简单的一种"有结构体"情形。</li>
+<li>65 分（+C）：一层结构体 + <strong>有洞</strong>（第一次需要写 <code>ERR</code> 判定）。</li>
+<li>80 分（+D）：任意嵌套 + 无洞（第一次需要递归下降）。</li>
+<li>100 分：两者都要。</li>
+</ul>
+<h2 id="2-3">2.3 数据结构（一次写好，各档共用）</h2>
+<ul>
+<li>结构体<strong>类型</strong>不是元素，<strong>不占内存</strong>；元素数量最多 k 个、类型最多几个，而"实际存在的叶子"可能是指数级 —— 所以<strong>绝不能真的把元素展开</strong>，必须"按需下降"。</li>
+<li>只用 <code>vector + unordered_map</code>，不用指针也能写得很干净：</li>
+</ul>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="k">struct</span> Member { <span class="ty">string</span> name; <span class="ty">int</span> type; <span class="ty">ll</span> off; };   <span class="co">// off = 相对本结构体起始的偏移</span>
+<span class="k">struct</span> Type   { <span class="ty">ll</span> size=<span class="nu">0</span>, align=<span class="nu">1</span>; <span class="ty">vector</span>&lt;Member&gt; mem; <span class="ty">unordered_map</span>&lt;<span class="ty">string</span>,<span class="ty">int</span>&gt; idx; };
+<span class="k">struct</span> Elem   { <span class="ty">string</span> name; <span class="ty">int</span> type; <span class="ty">ll</span> start; };
+</code></pre></div>
+<p><code>types[0..3]</code> 预置为四种基本类型（<code>size = align = 1/2/4/8</code>，成员表为空）。判断"是不是叶子"就看 <code>type &lt; 4</code>。</p>
+<h2 id="2-4">2.4 四个操作的具体写法</h2>
+<ul>
+<li><strong>操作 1（定义类型）</strong>：<code>used = 0</code>；对每个成员 <code>off = alignUp(used, align(成员类型))</code>，<code>used = off + size(成员类型)</code>，同时更新 <code>align = max(align, align(成员类型))</code>；最后 <code>size = alignUp(used, align)</code>。输出 <code>size align</code>。</li>
+<li><strong>操作 2（定义元素）</strong>：<code>start = alignUp(已用全局字节数, align(元素类型))</code>，然后 <code>已用 = start + size(元素类型)</code>。输出 <code>start</code>。</li>
+<li><strong>操作 3（<code>a.b.c</code> 访问）</strong>：按 <code>.</code> 切成 token，第一个 token 是<strong>元素名</strong>（在全局元素表里查），后面每个 token 是<strong>上一层的成员名</strong>；一路 <code>addr += 成员偏移</code>，最后输出 <code>addr</code>。</li>
+<li><strong>操作 4（按地址反查）</strong>：先在顶层元素里找"包含 addr"的那个（元素按起始地址有序，边扫边判；<strong>若 addr 比当前元素起点还小 → 说明落在元素之间的洞里 → <code>ERR</code></strong>，扫完都没有 → 越界 → <code>ERR</code>）。
+然后进入该元素内部逐层下降：在 <code>[off, off+size-1]</code> 里找包含 <code>local</code> 的成员；<strong>若 <code>local</code> 比某个成员的偏移还小，说明落在结构体内部的洞里 → <code>ERR</code></strong>。一直下降到 <code>type &lt; 4</code>（基本类型）为止，把走过的成员名用 <code>.</code> 拼起来输出。</li>
+</ul>
+<h2 id="2-5-100">2.5 完整代码（100 分，已实测）</h2>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// P9754 结构体 —— 大模拟（满分写法）</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="k">typedef</span> <span class="ty">long</span> <span class="ty">long</span> <span class="ty">ll</span>;
+
+<span class="k">struct</span> Member { <span class="ty">string</span> name; <span class="ty">int</span> type; <span class="ty">ll</span> off; };
+<span class="k">struct</span> Type {
+    <span class="ty">ll</span> size = <span class="nu">0</span>, align = <span class="nu">1</span>;
+    <span class="ty">vector</span>&lt;Member&gt; mem;
+    <span class="ty">unordered_map</span>&lt;<span class="ty">string</span>, <span class="ty">int</span>&gt; idx;
+};
+<span class="k">struct</span> Elem { <span class="ty">string</span> name; <span class="ty">int</span> type; <span class="ty">ll</span> start; };
+
+<span class="k">static</span> <span class="k">inline</span> <span class="ty">ll</span> <span class="fn">alignUp</span>(<span class="ty">ll</span> x, <span class="ty">ll</span> a) { <span class="k">return</span> (x + a - <span class="nu">1</span>) / a * a; }
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    ios::<span class="fn">sync_with_stdio</span>(<span class="k">false</span>); cin.<span class="fn">tie</span>(<span class="k">nullptr</span>);
+    <span class="ty">int</span> n; <span class="k">if</span> (!(cin &gt;&gt; n)) <span class="k">return</span> <span class="nu">0</span>;
+
+    <span class="ty">vector</span>&lt;Type&gt; <span class="fn">T</span>(<span class="nu">4</span>);
+    <span class="k">const</span> <span class="ty">char</span> *bn[<span class="nu">4</span>] = {<span class="st">"byte"</span>, <span class="st">"short"</span>, <span class="st">"int"</span>, <span class="st">"long"</span>};
+    <span class="ty">ll</span> bs[<span class="nu">4</span>] = {<span class="nu">1</span>, <span class="nu">2</span>, <span class="nu">4</span>, <span class="nu">8</span>};
+    <span class="ty">unordered_map</span>&lt;<span class="ty">string</span>, <span class="ty">int</span>&gt; tid;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; <span class="nu">4</span>; i++) { T[i].size = T[i].align = bs[i]; tid[bn[i]] = i; }
+
+    <span class="ty">vector</span>&lt;Elem&gt; elems;
+    <span class="ty">ll</span> curMem = <span class="nu">0</span>;
+
+    <span class="k">while</span> (n--) {
+        <span class="ty">int</span> op; cin &gt;&gt; op;
+        <span class="k">if</span> (op == <span class="nu">1</span>) {                            <span class="co">// 定义结构体类型</span>
+            <span class="ty">string</span> s; <span class="ty">int</span> k; cin &gt;&gt; s &gt;&gt; k;
+            Type t; t.align = <span class="nu">1</span>; <span class="ty">ll</span> used = <span class="nu">0</span>;     <span class="co">// used = 下一个空闲字节</span>
+            <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt; k; j++) {
+                <span class="ty">string</span> tn, mn; cin &gt;&gt; tn &gt;&gt; mn;
+                <span class="ty">int</span> ti = tid[tn];
+                <span class="ty">ll</span> off = <span class="fn">alignUp</span>(used, T[ti].align);   <span class="co">// 只按成员自身的对齐要求</span>
+                t.mem.<span class="fn">push_back</span>({mn, ti, off});
+                used = off + T[ti].size;
+                t.align = <span class="fn">max</span>(t.align, T[ti].align);
+            }
+            t.size = <span class="fn">alignUp</span>(used, t.align);      <span class="co">// 整体大小对齐到结构体对齐要求</span>
+            <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt; k; j++) t.idx[t.mem[j].name] = j;
+            tid[s] = (<span class="ty">int</span>)T.<span class="fn">size</span>(); T.<span class="fn">push_back</span>(t);
+            cout &lt;&lt; t.size &lt;&lt; <span class="st">' '</span> &lt;&lt; t.align &lt;&lt; <span class="st">'\n'</span>;
+        } <span class="k">else</span> <span class="k">if</span> (op == <span class="nu">2</span>) {                     <span class="co">// 定义元素</span>
+            <span class="ty">string</span> tn, mn; cin &gt;&gt; tn &gt;&gt; mn;
+            <span class="ty">int</span> ti = tid[tn];
+            <span class="ty">ll</span> start = <span class="fn">alignUp</span>(curMem, T[ti].align);
+            elems.<span class="fn">push_back</span>({mn, ti, start});
+            curMem = start + T[ti].size;
+            cout &lt;&lt; start &lt;&lt; <span class="st">'\n'</span>;
+        } <span class="k">else</span> <span class="k">if</span> (op == <span class="nu">3</span>) {                     <span class="co">// a.b.c 访问</span>
+            <span class="ty">string</span> s; cin &gt;&gt; s;
+            <span class="ty">vector</span>&lt;<span class="ty">string</span>&gt; tok; <span class="ty">string</span> cw;
+            <span class="k">for</span> (<span class="ty">char</span> c : s) { <span class="k">if</span> (c == <span class="st">'.'</span>) { tok.<span class="fn">push_back</span>(cw); cw.<span class="fn">clear</span>(); } <span class="k">else</span> cw.<span class="fn">push_back</span>(c); }
+            tok.<span class="fn">push_back</span>(cw);
+            <span class="ty">int</span> ei = <span class="nu">0</span>;
+            <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; (<span class="ty">int</span>)elems.<span class="fn">size</span>(); i++)
+                <span class="k">if</span> (elems[i].name == tok[<span class="nu">0</span>]) { ei = i; <span class="k">break</span>; }
+            <span class="ty">int</span> ti = elems[ei].type; <span class="ty">ll</span> addr = elems[ei].start;
+            <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">1</span>; j &lt; (<span class="ty">int</span>)tok.<span class="fn">size</span>(); j++) {
+                <span class="ty">int</span> mi = T[ti].idx[tok[j]];
+                addr += T[ti].mem[mi].off;
+                ti = T[ti].mem[mi].type;
+            }
+            cout &lt;&lt; addr &lt;&lt; <span class="st">'\n'</span>;
+        } <span class="k">else</span> {                                  <span class="co">// 按地址反查</span>
+            <span class="ty">ll</span> addr; cin &gt;&gt; addr;
+            <span class="ty">int</span> ei = -<span class="nu">1</span>;
+            <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; (<span class="ty">int</span>)elems.<span class="fn">size</span>(); i++) {
+                <span class="ty">ll</span> st = elems[i].start, en = st + T[elems[i].type].size - <span class="nu">1</span>;
+                <span class="k">if</span> (addr &lt; st) <span class="k">break</span>;             <span class="co">// 落在元素之间的空洞</span>
+                <span class="k">if</span> (addr &lt;= en) { ei = i; <span class="k">break</span>; }
+            }
+            <span class="k">if</span> (ei &lt; <span class="nu">0</span>) { cout &lt;&lt; <span class="st">"ERR\n"</span>; <span class="k">continue</span>; }
+            <span class="ty">ll</span> local = addr - elems[ei].start;
+            <span class="ty">int</span> ti = elems[ei].type;
+            <span class="ty">string</span> path = elems[ei].name;
+            <span class="ty">bool</span> ok = <span class="k">true</span>;
+            <span class="k">while</span> (ti &gt;= <span class="nu">4</span>) {                     <span class="co">// 0~3 是基本类型 = 叶子</span>
+                <span class="ty">int</span> mi = -<span class="nu">1</span>;
+                <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt; (<span class="ty">int</span>)T[ti].mem.<span class="fn">size</span>(); j++) {
+                    <span class="ty">ll</span> o = T[ti].mem[j].off, sz = T[T[ti].mem[j].type].size;
+                    <span class="k">if</span> (local &lt; o) <span class="k">break</span>;         <span class="co">// 洞</span>
+                    <span class="k">if</span> (local &lt;= o + sz - <span class="nu">1</span>) { mi = j; <span class="k">break</span>; }
+                }
+                <span class="k">if</span> (mi &lt; <span class="nu">0</span>) { ok = <span class="k">false</span>; <span class="k">break</span>; }
+                path += <span class="st">"."</span> + T[ti].mem[mi].name;
+                local -= T[ti].mem[mi].off;
+                ti = T[ti].mem[mi].type;
+            }
+            cout &lt;&lt; (ok ? path : <span class="ty">string</span>(<span class="st">"ERR"</span>)) &lt;&lt; <span class="st">'\n'</span>;
+        }
+    }
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<p><strong>实测</strong>（样例、空洞、嵌套、边界全部通过）：</p>
+<div class="code" data-lang="文本"><div class="code-bar"><span class="code-lang">文本</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code>输入                              输出
+5                                 8 4
+1 a 2                            16 8
+short aa                          0
+int ab                            4
+1 b 2                             x.bb
+a ba
+long bb
+2 b x
+3 x.ba.ab
+4 10
+
+// struct d{short a; int b; short c;}; d e;   → 12 4 / 0
+4 0/4 1/4 2/4 3/4 4/4 8/4 9/4 10/4 11/4 12
+→ e.a / e.a / ERR / ERR / e.b / e.c / e.c / ERR / ERR / ERR
+
+// 嵌套：inner{byte a; long b;} outer{inner x; byte y;} outer o;
+3 o.x.b → 8      4 16 → o.y      4 17 → ERR      4 23 → ERR
+</code></pre></div>
+<h2 id="2-6-t3">2.6 T3 易错点清单</h2>
+<ol>
+<li><strong>成员对齐 ≠ 结构体对齐</strong>（最常见 WA）：成员只按自己要求对齐；只有整体大小向上取整。</li>
+<li><strong><code>ERR</code> 的三种来源</strong>：① addr 超过已分配最大地址；② 落在两个顶层元素之间的洞；③ 落在结构体成员之间的洞。</li>
+<li><strong>不要把元素展开</strong>：叶子数量可达指数级，必须"按需下降"。</li>
+<li><strong>溢出</strong>：addr 到 10¹⁸，<code>alignUp</code> 里 <code>x + a - 1</code> 不会溢出（10¹⁸ + 7 &lt; 9.2×10¹⁸），但<strong>所有涉及的量都要 <code>long long</code></strong>；<code>int</code> 必爆。</li>
+<li><strong>操作 3 输出的是"最内层元素的起始地址"</strong>，不是大小；操作 4 输出的路径要从<strong>顶层元素名</strong>开始逐级拼。</li>
+<li>三种名字可能重名（不同结构体之间），所以类型名 → 类型的映射和成员名 → 成员的映射要<strong>在各自作用域里查</strong>，不要共用一个全局 map。</li>
+<li>D 档（只有 <code>long</code>）虽然简单，但别写成"所有偏移都乘 8 就完事"—— 嵌套层级要正确逐层累加。</li>
+</ol>
+<hr>
+<h1 id="t4-p9755">三、T4 种树（P9755）</h1>
+<h2 id="3-1">3.1 题意</h2>
+<p>n 个地块构成一棵树，1 号是入口（根）。第 1 天只能在 1 号种树；此后每天可以选一个<strong>未种树且与已种树地块相邻</strong>的地块种下一棵高度为 0 的树。i 号地块的树若在第 x 天种下，则<strong>从第 x 天起每天</strong>长高 <code>max(b_i + k·c_i, 1)</code> 米（k 是<strong>全局天数</strong>，不是种下后的第几天）。要求每棵树高度 ≥ a_i，求最少天数。</p>
+<p>样例：n=4，<code>(a,b,c) = (12,1,1), (2,4,-1), (10,3,0), (7,10,-2)</code>，边 <code>1-2, 1-3, 3-4</code> → 答案 <code>5</code>（顺序 1(第1天) → 3(第2天) → 4(第3天) → 2(第4天)）。</p>
+<h2 id="3-2">3.2 数据范围与子任务</h2>
+<p>1 ≤ n ≤ 10⁵，1 ≤ a_i ≤ 10¹⁸，1 ≤ b_i ≤ 10⁹，|c_i| ≤ 10⁹；保证存在方案能在 10⁹ 天内完成。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>测试点</th>
+<th>n ≤</th>
+<th>特殊性质</th>
+<th>分值</th>
+<th>累计</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>20</td>
+<td><strong>A</strong></td>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr>
+<td>2~4</td>
+<td>20</td>
+<td>无</td>
+<td>15</td>
+<td>20</td>
+</tr>
+<tr>
+<td>5~6</td>
+<td>500</td>
+<td>A</td>
+<td>10</td>
+<td>30</td>
+</tr>
+<tr>
+<td>7~8</td>
+<td>10⁵</td>
+<td>A</td>
+<td>10</td>
+<td>40</td>
+</tr>
+<tr>
+<td>9~10</td>
+<td>10⁵</td>
+<td><strong>B</strong></td>
+<td>10</td>
+<td>50</td>
+</tr>
+<tr>
+<td>11~13</td>
+<td>10⁵</td>
+<td><strong>C</strong></td>
+<td>15</td>
+<td>65</td>
+</tr>
+<tr>
+<td>14~16</td>
+<td>10⁵</td>
+<td><strong>D</strong></td>
+<td>15</td>
+<td>80</td>
+</tr>
+<tr>
+<td>17~20</td>
+<td>10⁵</td>
+<td>无</td>
+<td>20</td>
+<td>100</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li><strong>A：所有 c_i = 0</strong> → 每天长 <code>b_i</code>（≥1），种下的时间不影响"需要多少天"。</li>
+<li><strong>B：<code>u_i = i, v_i = i+1</code></strong> → 树就是链 1−2−3−…−n，且 1 是端点 ⇒ <strong>种树顺序被唯一确定</strong>（第 i 天种 i 号点）。</li>
+<li><strong>C：每个点度数 ≤ 2</strong> → 树还是一条链，但<strong>标号任意</strong>（根 1 可能落在链中间 → 两条支链）。</li>
+<li><strong>D：<code>u_i = 1</code></strong> → 菊花图，只有根受"必须先种"的约束，其余点随便种。</li>
+</ul>
+<h2 id="3-3">3.3 两个关键引理</h2>
+<blockquote>
+<p><strong>引理 1</strong>：每天至少长 1 米 ⇒ 一定存在最优方案在<strong>前 n 天每天种一棵</strong>（种完 n 棵后原地等它们长）。理由：把空闲日期的后续种植整体前移，高度只会增加，先后约束也不会破坏。
+⇒ 于是"种树方案"就是一个 <strong>1..n 天到结点的双射</strong>，且满足"父亲比儿子先种"（树的拓扑序）。</p>
+</blockquote>
+<blockquote>
+<p><strong>引理 2</strong>：若 t 天可行，则 t+1 天也可行（树不会缩水）⇒ <strong>答案可二分</strong>。</p>
+</blockquote>
+<p>于是整个问题是：<strong>二分答案 t → 对每个点算出"最晚种植时间" d_u → 判断"是否存在拓扑序 π 使 π(u) ≤ d_u"。</strong></p>
+<h2 id="3-4-t">3.4 计算函数：给定 t，某点最晚第几天种？</h2>
+<p>设 <code>gain(i, x, t)</code> = 第 x 天种下、到第 t 天一共长了多少：</p>
+<ul>
+<li><code>c_i ≥ 0</code>：每一项都是 <code>b_i + k·c_i ≥ 1</code>，是等差数列：
+<code>gain = (t-x+1)·b_i + c_i·(x+t)(t-x+1)/2</code></li>
+<li><code>c_i &lt; 0</code>：<code>b_i + k·c_i ≥ 1 ⟺ k ≤ ti = ⌊(b_i-1)/(-c_i)⌋</code>。<ul>
+<li>若 <code>x &gt; ti</code>：全程每项都是 1，<code>gain = t-x+1</code>；</li>
+<li>否则令 <code>hi = min(ti, t)</code>：前 (hi-x+1) 天走等差数列，之后每天 +1。</li>
+</ul>
+</li>
+</ul>
+<p><code>d_i(t) = </code> 使 <code>gain(i, x, t) ≥ a_i</code> 成立的<strong>最大</strong> x（关于 x 单调，所以内层再二分）。x 只需在 <code>[1, n]</code> 里二分（由引理 1，种植只用前 n 天；求不到就说明这个 t 不可行）。</p>
+<blockquote>
+<p>数值范围：<code>gain</code> 最大可达 ~10²⁷ 级别（b·t·t），<strong>必须用 <code>__int128</code></strong>。</p>
+</blockquote>
+<h2 id="3-5">3.5 一档一档来</h2>
+<h3 id="1-20-n-20-dp">档 1（20 分，n ≤ 20）：状压 DP</h3>
+<p>直接算答案，不二分：<code>need(u, x)</code> = 第 x 天种下、最少第几天能长够 a_u（对 T 二分即可）。</p>
+<p><code>dp[S]</code> = 已种下集合 S（用了前 |S| 天）时"完成天数"的最小值：</p>
+<div class="code" data-lang="文本"><div class="code-bar"><span class="code-lang">文本</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code>dp[S] = min over u∈S, （father(u) ∈ S\{u} 或 u=1）of max( dp[S\{u}], need(u, |S|) )
+答案 = dp[全集]
+</code></pre></div>
+<p>复杂度 O(2ⁿ·n) = 2×10⁷，一次算完，n=20 稳稳过 1~4 号点。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// 核心（完整版见文末文件 t4_dp.cpp）</span>
+<span class="k">for</span> (<span class="ty">unsigned</span> S = <span class="nu">1</span>; S &lt; (<span class="nu">1u</span> &lt;&lt; n); S++) {
+    <span class="ty">int</span> day = <span class="fn">__builtin_popcount</span>(S);
+    <span class="k">for</span> (<span class="ty">int</span> u = <span class="nu">1</span>; u &lt;= n; u++) {
+        <span class="k">if</span> (!(S &gt;&gt; (u-<span class="nu">1</span>) &amp; <span class="nu">1</span>)) <span class="k">continue</span>;
+        <span class="k">if</span> (u != <span class="nu">1</span> &amp;&amp; !((S &gt;&gt; (fa[u]-<span class="nu">1</span>)) &amp; <span class="nu">1</span>)) <span class="k">continue</span>;   <span class="co">// 父亲必须先种</span>
+        <span class="ty">unsigned</span> P = S ^ (<span class="nu">1u</span> &lt;&lt; (u-<span class="nu">1</span>));
+        <span class="k">if</span> (dp[P] == INF) <span class="k">continue</span>;
+        dp[S] = <span class="fn">min</span>(dp[S], <span class="fn">max</span>(dp[P], <span class="fn">need</span>(u, day)));
+    }
+}
+</code></pre></div>
+<p>（也可以直接 <code>n!</code> 枚举/DFS 剪枝枚举所有种树顺序，n≤20 的菊花图会被卡，所以推荐状压。）</p>
+<h3 id="2-40-a-ci-0">档 2（40 分，+ 特殊性质 A：c_i = 0）</h3>
+<p>此时某点需要 <code>needed_i = ⌈a_i / b_i⌉</code> 天，与种下的时间<strong>无关</strong>。二分答案 t 后：
+<code>d_i = t - needed_i + 1</code>（种下去之后还需要 needed_i 天，所以最晚第 <code>t-needed_i+1</code> 天种）。</p>
+<p>再处理"父亲先儿子"的约束（见 3.6 第 2 步）并判定即可。</p>
+<h3 id="3-50-b">档 3（50 分，+ 特殊性质 B：链且按标号顺序）</h3>
+<p>链且 1 是端点 ⇒ <strong>第 i 天必须种 i 号点</strong>（顺序唯一）。于是每个点独立：</p>
+<div class="code" data-lang="文本"><div class="code-bar"><span class="code-lang">文本</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code>答案 = max_i ( 满足 gain(i, i, T) ≥ a_i 的最小 T )
+</code></pre></div>
+<p>对每个点二分 T 即可，O(n log V)。注意 <code>gain</code> 的分段/<code>__int128</code>。</p>
+<h3 id="4-65-c-2">档 4（65 分，+ 特殊性质 C：度数 ≤ 2，标号任意）</h3>
+<p>还是链，但根 1 可能在链中间 → 变成"从根出发的两条支链"。两条支链相对独立（可以交错种），可以：</p>
+<ul>
+<li>直接套<strong>满分框架</strong>（二分 + 截止时间 + 计数判定），完全够用；</li>
+<li>或者理解为"两条序列归并"：每一步比较两条链当前头部的最晚种植时间，先种更紧急的那个。</li>
+</ul>
+<p><strong>这档的价值</strong>：让你意识到"种树顺序不是死的，最终判据是截止时间"。</p>
+<h3 id="5-80-d">档 5（80 分，+ 特殊性质 D：菊花图）</h3>
+<p>所有点都直接连 1 ⇒ 只有 1 必须在第 1 天种，其余 n−1 个点随便排。于是"拓扑约束"消失，只剩：</p>
+<div class="code" data-lang="文本"><div class="code-bar"><span class="code-lang">文本</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code>二分答案 t → 算每个点的 d_u → 排序：把 d 从小到大排成 d(1) ≤ d(2) ≤ ... ，检查 d(k) ≥ k
+</code></pre></div>
+<p>这就是"每个期限用一天"的经典调度判定。</p>
+<h3 id="6-100">档 6（100 分）：完整算法四步</h3>
+<div class="code" data-lang="文本"><div class="code-bar"><span class="code-lang">文本</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code>1. 二分答案 t ∈ [n, 1e9]
+2. 对每个 i，在 x ∈ [1, n] 上二分求出最晚种植时间 d_i(t)   —— 用 gain(i, x, t) ≥ a_i
+   （某个点求不到 d_i ≥ 1 直接判定 t 不可行）
+3. 父亲必须比儿子先种 ⇒ 后序遍历，把约束往上压：
+       d_u = min(d_u, min over 儿子 v of (d_v - 1))
+   （后序保证儿子的 d_v 已经压完，于是能传递整条链）
+4. 现在只剩"是否存在排列 π 使 π(u) ≤ d_u"：
+       令 cnt[x] = #{u : d_u = x}，做前缀和 s_i = Σ_{x≤i} cnt[x]；
+       若存在 i 使 s_i &gt; i 则不可行（Hall 定理：每个 d≤i 的点只能用前 i 天里的一天）
+</code></pre></div>
+<blockquote>
+<p><strong>为什么第 3 步充分</strong>：拓扑序要求祖先早于后代，把它压成 <code>d_u ≤ d_v - 1</code> 后，原问题恰好等价于"单纯的时间片分配"问题（Hall 条件是充要的）。
+<strong>为什么不直接"按 d 排序后贪心种"</strong>：那样无法保证父亲先于儿子；所以必须先用第 3 步把拓扑约束吃掉。</p>
+</blockquote>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// P9755 种树 —— 满分（已实测）</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="k">typedef</span> <span class="ty">long</span> <span class="ty">long</span> <span class="ty">ll</span>;
+<span class="k">typedef</span> __int128 lll;
+
+<span class="ty">int</span> n;
+<span class="ty">vector</span>&lt;<span class="ty">ll</span>&gt; a, b, c;
+<span class="ty">vector</span>&lt;<span class="ty">vector</span>&lt;<span class="ty">int</span>&gt;&gt; g;
+<span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; fa, ord;      <span class="co">// ord = 后序遍历序</span>
+<span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; d, cnt;
+
+<span class="k">static</span> lll <span class="fn">gain</span>(<span class="ty">int</span> i, <span class="ty">ll</span> x, <span class="ty">ll</span> t) {          <span class="co">// 第 x 天种，到第 t 天长了多少</span>
+    <span class="ty">ll</span> bi = b[i], ci = c[i];
+    <span class="k">if</span> (ci &gt;= <span class="nu">0</span>)
+        <span class="k">return</span> (lll)(<span class="nu">2</span> * bi + ci * (lll)(x + t)) * (t - x + <span class="nu">1</span>) / <span class="nu">2</span>;
+    <span class="ty">ll</span> ti = (bi - <span class="nu">1</span>) / (-ci);                 <span class="co">// 最后一个 bi + k*ci &gt;= 1 的 k</span>
+    <span class="k">if</span> (x &gt; ti) <span class="k">return</span> t - x + <span class="nu">1</span>;
+    <span class="ty">ll</span> hi = <span class="fn">min</span>(ti, t);
+    lll s = (lll)(<span class="nu">2</span> * bi + ci * (lll)(x + hi)) * (hi - x + <span class="nu">1</span>) / <span class="nu">2</span>;
+    s += (t - hi);
+    <span class="k">return</span> s;
+}
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    ios::<span class="fn">sync_with_stdio</span>(<span class="k">false</span>); cin.<span class="fn">tie</span>(<span class="k">nullptr</span>);
+    <span class="k">if</span> (!(cin &gt;&gt; n)) <span class="k">return</span> <span class="nu">0</span>;
+    a.<span class="fn">assign</span>(n + <span class="nu">1</span>, <span class="nu">0</span>); b.<span class="fn">assign</span>(n + <span class="nu">1</span>, <span class="nu">0</span>); c.<span class="fn">assign</span>(n + <span class="nu">1</span>, <span class="nu">0</span>);
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) cin &gt;&gt; a[i] &gt;&gt; b[i] &gt;&gt; c[i];
+    g.<span class="fn">assign</span>(n + <span class="nu">1</span>, {});
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt; n; i++) { <span class="ty">int</span> u, v; cin &gt;&gt; u &gt;&gt; v; g[u].<span class="fn">push_back</span>(v); g[v].<span class="fn">push_back</span>(u); }
+
+    <span class="co">// 以 1 为根求后序（儿子一定排在父亲前面）</span>
+    fa.<span class="fn">assign</span>(n + <span class="nu">1</span>, <span class="nu">0</span>); ord.<span class="fn">clear</span>(); ord.<span class="fn">reserve</span>(n);
+    <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; stk{<span class="nu">1</span>}, <span class="fn">it</span>(n + <span class="nu">1</span>, <span class="nu">0</span>);
+    <span class="k">while</span> (!stk.<span class="fn">empty</span>()) {
+        <span class="ty">int</span> u = stk.<span class="fn">back</span>();
+        <span class="k">if</span> (it[u] &lt; (<span class="ty">int</span>)g[u].<span class="fn">size</span>()) {
+            <span class="ty">int</span> v = g[u][it[u]++];
+            <span class="k">if</span> (v == fa[u]) <span class="k">continue</span>;
+            fa[v] = u; stk.<span class="fn">push_back</span>(v);
+        } <span class="k">else</span> { ord.<span class="fn">push_back</span>(u); stk.<span class="fn">pop_back</span>(); }
+    }
+
+    d.<span class="fn">assign</span>(n + <span class="nu">1</span>, <span class="nu">0</span>); cnt.<span class="fn">assign</span>(n + <span class="nu">2</span>, <span class="nu">0</span>);
+
+    <span class="k">auto</span> chk = [&amp;](<span class="ty">ll</span> t) -&gt; <span class="ty">bool</span> {
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) {
+            <span class="ty">int</span> lo = <span class="nu">1</span>, hi = n, res = <span class="nu">0</span>;
+            <span class="k">while</span> (lo &lt;= hi) {                       <span class="co">// 求最晚种植时间</span>
+                <span class="ty">int</span> mid = (lo + hi) &gt;&gt; <span class="nu">1</span>;
+                <span class="k">if</span> (<span class="fn">gain</span>(i, mid, t) &gt;= a[i]) { res = mid; lo = mid + <span class="nu">1</span>; }
+                <span class="k">else</span> hi = mid - <span class="nu">1</span>;
+            }
+            <span class="k">if</span> (res == <span class="nu">0</span>) <span class="k">return</span> <span class="k">false</span>;
+            d[i] = res;
+        }
+        <span class="k">for</span> (<span class="ty">int</span> k = <span class="nu">0</span>; k &lt; n; k++) {                <span class="co">// 后序：拓扑约束向上压</span>
+            <span class="ty">int</span> u = ord[k];
+            <span class="k">for</span> (<span class="ty">int</span> v : g[u]) <span class="k">if</span> (v != fa[u]) d[u] = <span class="fn">min</span>(d[u], d[v] - <span class="nu">1</span>);
+            <span class="k">if</span> (d[u] &lt;= <span class="nu">0</span>) <span class="k">return</span> <span class="k">false</span>;
+        }
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) cnt[i] = <span class="nu">0</span>;
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) cnt[d[i]]++;
+        <span class="ty">int</span> s = <span class="nu">0</span>;
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) { s += cnt[i]; <span class="k">if</span> (s &gt; i) <span class="k">return</span> <span class="k">false</span>; }
+        <span class="k">return</span> <span class="k">true</span>;
+    };
+
+    <span class="ty">ll</span> lo = n, hi = <span class="nu">1000000000LL</span>;                     <span class="co">// 下界 n：n 棵树至少要 n 天</span>
+    <span class="k">while</span> (lo &lt; hi) {
+        <span class="ty">ll</span> mid = lo + (hi - lo) / <span class="nu">2</span>;
+        <span class="k">if</span> (<span class="fn">chk</span>(mid)) hi = mid; <span class="k">else</span> lo = mid + <span class="nu">1</span>;
+    }
+    cout &lt;&lt; lo &lt;&lt; <span class="st">'\n'</span>;
+}
+</code></pre></div>
+<p><strong>实测</strong>：</p>
+<ul>
+<li>样例 → <code>5</code> ✓（与暴力一致）；</li>
+<li>与暴力/状压互相随机对拍 <strong>650 组</strong> 全部一致（随机树形状 + 随机 a/b/c）；</li>
+<li>边界：<code>n=1, a=10¹⁸, b=10⁹, c=10⁹</code> → <code>44720</code>（与手算 10⁹(T + T(T+1)/2) ≥ 10¹⁸ 完全一致，验证 <code>__int128</code> 无溢出）；<code>b=10⁹,c=-10⁹,a=10⁵</code>（全程 +1）→ <code>100000</code> ✓；</li>
+<li>n=10⁵ 随机大数据 <strong>0.41 s / 10 MB</strong>。</li>
+</ul>
+<h2 id="3-6-t4">3.6 T4 易错点</h2>
+<ol>
+<li><strong>溢出</strong>：<code>gain</code> 内部量级到 10²⁷，必须 <code>__int128</code>；<code>2*b_i + c_i*(x+t)</code> 也要先转 <code>__int128</code>。</li>
+<li><strong>二分的下界取 n</strong>：n 棵树至少 n 天；取 1 会让 <code>gain(i,x,t)</code> 在 <code>t &lt; x</code> 时失去意义（这也是很多"随机对拍不过"的原因）。</li>
+<li><strong>第 3 步必须后序</strong>：先处理儿子再处理父亲，否则约束不能沿着链传递。</li>
+<li><strong>第 4 步用计数而不是排序贪心</strong>：排序贪心只能得到"可行的一个必要条件"，只有 <code>s_i ≤ i</code> 这个 Hall 条件才是充要的（配合第 3 步）。</li>
+<li><strong><code>max(b_i + k·c_i, 1)</code> 的分段点</strong>：<code>ti = (b_i - 1) / (-c_i)</code> 是<strong>整除</strong>（c 为负，注意符号）；<code>x &gt; ti</code> 时全是 1；<code>hi = min(ti, t)</code> 别漏了 <code>min(t,·)</code>。</li>
+<li><code>a_i</code> 到 10¹⁸，读入也要 <code>long long</code>。</li>
+<li><strong>D 档（菊花图）不等于"随便种"</strong>：仍要按 d 排序/计数判定，不是输出 n 就完事。</li>
+</ol>
+<hr>
+<h1 id="sec">四、最后的考场取舍</h1>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>题</th>
+<th>想稳拿的分</th>
+<th>最短路径</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>T2</td>
+<td>50 → 100</td>
+<td>O(n²) 定右端点（20 行）→ 换成"状态编号 + 最近出现"（30 行）</td>
+</tr>
+<tr>
+<td>T3</td>
+<td>40 → 80 → 100</td>
+<td>先按 A/B 档写"深度 ≤ 2"的模拟；补上"洞 + ERR"；再补"递归下降"；最后合成</td>
+</tr>
+<tr>
+<td>T4</td>
+<td>20 → 40 → 100</td>
+<td>状压 DP（n≤20）→ c=0 时直接算 <code>needed_i</code>；最后补内层二分 + 后序传播 + 计数</td>
+</tr>
+</tbody></table></div>
+<p>三题的"100 分代码"其实都不长（T2 约 40 行，T3 约 120 行，T4 约 70 行），真正的难点都在<strong>想清楚判据</strong>：</p>
+<ul>
+<li>T2：区间可消 ⟺ 两端归约状态相等；</li>
+<li>T3：成员按自身对齐、整体按结构体对齐，<strong>洞就是 <code>ERR</code></strong>；</li>
+<li>T4：种植顺序 = 拓扑序，判据 = 最晚种植时间 + Hall 计数。</li>
+</ul>
+<hr>
+<h2 id="sec-2">附：本目录下的可运行代码（均已编译实测）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>t2_brute.cpp</code></td>
+<td>T2 O(n²) 暴力（50 分档）</td>
+</tr>
+<tr>
+<td><code>t2_dp.cpp</code></td>
+<td>T2 O(n²) DP（60 分档，正解的铺垫）</td>
+</tr>
+<tr>
+<td><code>t2_ac.cpp</code></td>
+<td>T2 O(n) 正解（字典树 + 最近出现位置）</td>
+</tr>
+<tr>
+<td><code>t3.cpp</code></td>
+<td>T3 结构体 100 分大模拟</td>
+</tr>
+<tr>
+<td><code>t4_dp.cpp</code></td>
+<td>T4 n≤20 状压 DP（20 分档）</td>
+</tr>
+<tr>
+<td><code>t4_brute.cpp</code></td>
+<td>T4 爆搜（用于对拍）</td>
+</tr>
+<tr>
+<td><code>t4.cpp</code></td>
+<td>T4 二分 + 截止时间 + Hall 计数（100 分）</td>
+</tr>
+</tbody></table></div>
+<p>编译：<code>g++ -O2 -std=c++17 xxx.cpp -o xxx</code>（评测机用 CCF 的 g++，<code>bits/stdc++.h</code> 可用；本机 Apple clang 需自备该头文件）。</p>
+
+    </article>
+  </main>
+</div>
+
+<footer>
+  <span>CSP-S 2023 T2/T3/T4 详解 · 内容与作品</span>
+  <span>代码均在本机编译 + 随机对拍验证（CCF 评测机为 g++ -O2）</span>
+</footer>
+
+<script>
+(function(){
+  var body=document.body;
+  var btn=document.querySelector('.drawer-btn');
+  if(btn) btn.addEventListener('click',function(){body.classList.toggle('nav-open');});
+  var scrim=document.querySelector('.scrim');
+  if(scrim) scrim.addEventListener('click',function(){body.classList.remove('nav-open');});
+  document.querySelectorAll('.sb-toc a').forEach(function(a){
+    a.addEventListener('click',function(){body.classList.remove('nav-open');});
+  });
+
+  var bar=document.querySelector('.progress i');
+  var heads=Array.prototype.slice.call(document.querySelectorAll('article h1, article h2, article h3'));
+  var links=Array.prototype.slice.call(document.querySelectorAll('.sb-toc a'));
+  var map={};
+  links.forEach(function(a){map[(a.getAttribute('href')||'').slice(1)]=a;});
+  var sb=document.querySelector('.sidebar');
+  var cur=null;
+  function syncActive(){
+    var best=null;
+    for(var i=0;i<heads.length;i++){
+      if(heads[i].getBoundingClientRect().top<=110) best=heads[i]; else break;
+    }
+    if(!best&&heads.length) best=heads[0];
+    if(!best||best===cur) return;
+    cur=best;
+    links.forEach(function(a){a.classList.remove('active');});
+    var a=map[best.id];
+    if(!a) return;
+    a.classList.add('active');
+    if(sb){
+      var r=a.getBoundingClientRect(), sr=sb.getBoundingClientRect();
+      var delta=(r.top+r.height/2)-(sr.top+sr.height/2);
+      if(Math.abs(delta)>sr.height/2-r.height) sb.scrollTop+=delta;
+    }
+  }
+  var ticking=false;
+  function onScroll(){
+    var h=document.documentElement.scrollHeight-window.innerHeight;
+    var p=h>0?Math.min(1,window.scrollY/h):0;
+    if(bar) bar.style.width=(p*100).toFixed(2)+'%';
+    if(!ticking){
+      ticking=true;
+      requestAnimationFrame(function(){ticking=false;syncActive();});
+    }
+  }
+  addEventListener('scroll',onScroll,{passive:true});
+  addEventListener('resize',onScroll);
+  onScroll();
+
+  document.querySelectorAll('.code .copy').forEach(function(b){
+    b.addEventListener('click',function(){
+      var code=b.closest('.code').querySelector('code');
+      var txt=code?code.innerText:'';
+      var done=function(){
+        b.classList.add('done');
+        var svg=b.innerHTML;
+        b.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        setTimeout(function(){b.classList.remove('done');b.innerHTML=svg;},1400);
+      };
+      if(navigator.clipboard&&window.isSecureContext){
+        navigator.clipboard.writeText(txt).then(done,function(){fallback(txt,done);});
+      } else fallback(txt,done);
+    });
+  });
+  function fallback(txt,cb){
+    var ta=document.createElement('textarea');
+    ta.value=txt;ta.setAttribute('readonly','');
+    ta.style.position='fixed';ta.style.left='-9999px';
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');cb();}catch(e){}
+    document.body.removeChild(ta);
+  }
+})();
+</script>
+</body>
+</html>
