@@ -1,0 +1,2383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSP-S 2025 提高级 四题详解：从部分分到 AC</title>
+<meta name="description" content="club 社团招新 / road 道路修复 / replace 谐音替换 / employ 员工招聘 四题，一档一档拆开：每题先给官方子任务表与「档位地图」，再从暴力逐级推到满分，每一档都说明「为什么它只能拿这一分、差在哪一步」，并附 23 份在本机 g++-15 编译、逐档对拍验证过的完整代码（含 employ 的容斥 + 贡献延后 DP 正解）。">
+<style>
+:root{
+  --paper:#f6f5f0;--panel:#fffefb;--ink:#242c2a;--ink-2:#4a5450;--muted:#738079;--line:#d8ddd5;
+  --accent:#b7eb65;--green:#244e3c;--green-soft:#e9efdf;
+  --code-bg:#fffefb;--code-bar:#f1f4ec;
+  --k:#1f5fbf;--ty:#0f7b6c;--st:#8a5a00;--nu:#b83232;--co:#8a958c;--pp:#6b3fa0;--fn:#244e3c;
+  --sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --math:"Cambria Math","Latin Modern Math","Times New Roman",Georgia,"Songti SC",serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 var(--sans)}
+a{color:inherit;text-decoration:none}
+button{font:inherit}
+.progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:40;background:transparent}
+.progress i{display:block;height:100%;width:0;background:var(--green)}
+
+.topbar{max-width:1240px;margin:0 auto;padding:0 40px;height:96px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.topbar .brand{font-size:24px;font-weight:800;letter-spacing:-1px}
+.topbar .brand span{font-size:12px;font-weight:500;letter-spacing:1px;margin-left:12px;color:var(--muted)}
+.topbar a.back{font-size:12px;color:var(--muted)}
+.topbar a.back:hover{color:var(--green)}
+
+.wrap{max-width:1240px;margin:0 auto;padding:0 40px 90px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;align-items:start}
+
+.sidebar{position:sticky;top:0;align-self:start;max-height:100vh;overflow:auto;padding:30px 4px 40px 0;font-size:13px;line-height:1.5}
+.sb-head{font-size:10px;letter-spacing:2px;font-weight:700;color:var(--muted);text-transform:uppercase;margin:0 0 12px 10px}
+.sb-toc{display:flex;flex-direction:column;border-left:1px solid var(--line)}
+.sb-toc a{display:block;padding:5px 10px;border-left:2px solid transparent;margin-left:-1px;color:var(--ink-2);border-radius:0 5px 5px 0}
+.sb-toc a:hover{background:#eceee6;color:var(--ink)}
+.sb-toc a.toc-l0{font-weight:700;margin-top:12px;color:var(--ink);font-size:13.5px;padding-top:8px;padding-bottom:8px}
+.sb-toc a.toc-l0:first-child{margin-top:0}
+.sb-toc a.toc-l1{padding-left:16px}
+.sb-toc a.toc-l2{padding-left:28px;font-size:12.2px;color:var(--muted)}
+.sb-toc a.active{background:var(--green-soft);border-left-color:var(--green);color:var(--ink);font-weight:600}
+.sb-toc .tex{font-size:1em}
+
+.doc{min-width:0;max-width:840px;padding-top:38px}
+.eyebrow{font-size:11px;letter-spacing:2px;font-weight:600;color:var(--muted);margin:0 0 14px}
+.doc > h1{font-size:clamp(28px,3.6vw,40px);line-height:1.28;letter-spacing:-1px;margin:0 0 16px;font-weight:750}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 6px}
+.chips a{font-size:12px;padding:6px 13px;border:1px solid var(--line);border-radius:20px;background:var(--panel);color:var(--ink-2)}
+.chips a:hover{border-color:#7b9770;color:var(--green)}
+.chips a.dl{background:var(--green);color:#fff;border-color:var(--green);font-weight:600}
+.chips a.dl:hover{background:#1b3d2f;color:#fff}
+
+article{line-height:1.9;font-size:15.6px}
+article > p,article > ul,article > ol,article > blockquote,article > .table-wrap,article > .code,article > .formula{margin:0 0 18px}
+article hr{border:0;border-top:1px solid var(--line);margin:38px 0}
+article h1,article h2{font-size:25px;line-height:1.35;letter-spacing:-.5px;margin:54px 0 18px;padding-top:26px;border-top:2px solid var(--ink)}
+article h1:first-of-type,article h2:first-of-type{margin-top:34px}
+article h3{font-size:18.5px;line-height:1.45;letter-spacing:-.2px;margin:32px 0 13px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+article h4{font-size:15.6px;line-height:1.5;margin:24px 0 11px;padding-left:11px;border-left:4px solid var(--accent)}
+article h3 .tex{font-size:.94em}
+article p{margin:0 0 18px}
+article strong{color:var(--green)}
+article ul,article ol{padding-left:24px}
+article li{margin:5px 0}
+article li::marker{color:#93a08f}
+article a{color:var(--green);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+article a:hover{background:var(--accent)}
+article code{font-family:var(--mono);font-size:.885em;background:#eaeee2;padding:2px 5px;border-radius:4px;word-break:break-word}
+article blockquote{margin:0 0 18px;padding:16px 20px;background:var(--green-soft);border-left:4px solid #7b9770;border-radius:0 10px 10px 0;color:var(--ink-2);font-size:14.6px}
+article blockquote p{margin:0 0 10px}
+article blockquote p:last-child{margin-bottom:0}
+article blockquote code{background:#dde5d2}
+
+.table-wrap{overflow-x:auto;margin:0 0 18px;border-radius:8px}
+article table{width:100%;border-collapse:collapse;font-size:13.6px;background:var(--panel)}
+article thead th{background:#eef1e8;font-weight:650;text-align:left}
+article th,article td{border:1px solid var(--line);padding:9px 11px;vertical-align:top;line-height:1.7}
+article tbody tr:nth-child(even){background:#faf9f5}
+article table code{font-size:.86em}
+
+/* ---------- 公式 ---------- */
+.tex{font-family:var(--math);font-size:1.02em;font-style:normal;white-space:normal}
+.tex .rm,.rm{font-family:var(--sans);font-style:normal;font-size:.9em}
+.formula{margin:0 0 20px;padding:14px 18px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:0 10px 10px 0;font-family:var(--math);font-size:15.4px;line-height:2;overflow-x:auto}
+.formula p{margin:0}
+.formula .rm{font-size:.88em;color:var(--ink-2)}
+.unb{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 4px}
+.unb i{font-style:italic;white-space:nowrap;font-size:.96em;line-height:1.25}
+.unb i+i{font-family:var(--sans);font-style:normal;font-size:.68em;line-height:1.3;color:var(--ink-2);border-top:1px solid #9aa79b;width:100%;text-align:center;padding-top:1px;margin-top:1px}
+.boxed{border:1.2px solid var(--green);background:var(--green-soft);border-radius:6px;padding:2px 8px;display:inline-block}
+.cases{display:inline-flex;align-items:center;vertical-align:middle;gap:3px}
+.cases .brace{font-size:2.2em;line-height:.78;color:var(--ink-2)}
+.crows{display:inline-flex;flex-direction:column}
+.crow{display:flex;align-items:baseline;gap:14px;white-space:nowrap}
+.crow .cr{color:var(--ink-2);font-family:var(--sans);font-size:.86em}
+sup,sub{font-size:.66em;line-height:0}
+
+/* ---------- 代码 ---------- */
+.code{margin:0 0 20px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--code-bg)}
+.code-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;height:34px;padding:0 8px 0 14px;background:var(--code-bar);border-bottom:1px solid var(--line)}
+.code-lang{font-family:var(--mono);font-size:11px;letter-spacing:.6px;color:var(--muted)}
+.code .copy{display:inline-flex;align-items:center;gap:5px;border:1px solid transparent;background:transparent;color:var(--muted);border-radius:6px;padding:4px 7px;cursor:pointer}
+.code .copy:hover{background:#e4e9db;color:var(--green);border-color:var(--line)}
+.code .copy.done{color:var(--green);background:var(--green-soft)}
+.code pre{margin:0;overflow:auto;padding:15px 16px;background:transparent}
+.code code{display:block;font-family:var(--mono);font-size:13px;line-height:1.72;background:none;padding:0;white-space:pre;tab-size:4;color:#2c3633}
+.k{color:var(--k);font-weight:600}
+.ty{color:var(--ty)}
+.st{color:var(--st)}
+.nu{color:var(--nu)}
+.co{color:var(--co);font-style:italic}
+.pp{color:var(--pp)}
+.fn{color:var(--fn)}
+
+footer{max-width:1240px;margin:0 auto;padding:22px 40px 36px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;font-size:11px;color:var(--muted)}
+.drawer-btn{display:none}
+
+@media (max-width:1000px){
+  .wrap{display:block;padding:0 26px 70px}
+  .topbar{padding:0 26px;height:78px}
+  .doc{max-width:none}
+  .sidebar{position:fixed;inset:0 auto 0 0;width:290px;max-height:none;padding:22px 14px 40px;background:var(--panel);border-right:1px solid var(--line);z-index:30;transform:translateX(-100%);transition:transform .22s;box-shadow:6px 0 26px #242c2a14}
+  body.nav-open .sidebar{transform:none}
+  .scrim{position:fixed;inset:0;background:#242c2a55;z-index:25;opacity:0;pointer-events:none;transition:opacity .22s}
+  body.nav-open .scrim{opacity:1;pointer-events:auto}
+  .drawer-btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:20px;padding:6px 14px;font-size:12px;cursor:pointer}
+  footer{padding:20px 26px 30px;flex-direction:column;gap:8px}
+}
+@media (max-width:600px){
+  .wrap{padding:0 18px 60px}
+  .topbar{padding:0 18px;height:70px}
+  .topbar .brand{font-size:20px}
+  .topbar .brand span{display:none}
+  article{font-size:15px}
+  article h1,article h2{font-size:21px;padding-top:20px;margin-top:40px}
+  article h3{font-size:16.6px}
+  article table{font-size:12.6px}
+  .code code{font-size:12px}
+  footer{padding:18px 18px 28px}
+}
+@media print{
+  .sidebar,.progress,.topbar a.back,.drawer-btn,.scrim,.code .copy{display:none}
+  .wrap{display:block;max-width:none;padding:0}
+  .topbar{height:auto;padding:0 0 12px;border-bottom:0}
+  body{background:#fff}
+  article h1{page-break-after:avoid;border-top:0;padding-top:0}
+  .code{page-break-inside:avoid}
+  a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+<div class="progress"><i></i></div>
+<div class="scrim"></div>
+
+<header class="topbar">
+  <a class="brand" href="/">Z<span>内容与作品</span></a>
+  <button class="drawer-btn" type="button">目录</button>
+  <a class="back" href="/#library">全部内容 ↗</a>
+</header>
+
+<div class="wrap">
+  <aside class="sidebar" aria-label="目录">
+    <p class="sb-head">目录</p>
+    <nav class="sb-toc">
+<a class="toc-l0" href="#0">0. 评测环境与全局约定</a>
+<a class="toc-l0" href="#1">1. 四题子任务总览（档位地图）</a>
+<a class="toc-l1" href="#1-1-club-20-5">1.1 club（20 点，每点 5 分）</a>
+<a class="toc-l1" href="#1-2-road-25-4">1.2 road（25 点，每点 4 分）</a>
+<a class="toc-l1" href="#1-3-replace-20-5">1.3 replace（20 点，每点 5 分）</a>
+<a class="toc-l1" href="#1-4-employ-25-4">1.4 employ（25 点，每点 4 分）</a>
+<a class="toc-l1" href="#1-5">1.5 档位累计分数（把上面的表倒过来看）</a>
+<a class="toc-l0" href="#2-club">2. club 社团招新</a>
+<a class="toc-l1" href="#2-1">2.1 题意与关键结论</a>
+<a class="toc-l1" href="#2-2-1-o-n3-dp-55-111-n-200">2.2 档位 1：<span class="tex">O(n<sup>3</sup>)</span> 暴力 DP（55 分，测试点 1~11，<span class="tex">n≤ 200</span>）</a>
+<a class="toc-l1" href="#2-3-2-a-ai-2-ai-3-0-60-12">2.3 档位 2：特殊性质 A（<span class="tex">a<sub>i,2</sub>=a<sub>i,3</sub>=0</span>）（60 分，测试点 12）</a>
+<a class="toc-l1" href="#2-4-3-b-ai-3-0-70-9-13-14">2.4 档位 3：特殊性质 B（<span class="tex">a<sub>i,3</sub>=0</span>）（70 分，测试点 9,13,14）</a>
+<a class="toc-l1" href="#2-5-4-100">2.5 档位 4：正解 —— 后悔贪心（100 分）</a>
+<a class="toc-l0" href="#3-road">3. road 道路修复</a>
+<a class="toc-l1" href="#3-1">3.1 题意</a>
+<a class="toc-l1" href="#3-2">3.2 贯穿全题的三个观察</a>
+<a class="toc-l1" href="#3-3-l1-k-0-16-14">3.3 L1：<span class="tex">k=0</span>（16 分，测试点 1~4）</a>
+<a class="toc-l1" href="#3-4-l2-2k-32-18">3.4 L2：<span class="tex">2<sup>k</sup></span> 枚举 + 每个集合重新排序（32 分，测试点 1~8）</a>
+<a class="toc-l1" href="#3-5-l3-64-k-5">3.5 L3：全边一次性预排序 + 跳过未改造乡镇（64 分，所有 <span class="tex">k≤ 5</span> 的点）</a>
+<a class="toc-l1" href="#3-6-mst-100">3.6 正解：原图只留 MST 树边 + 预排序扫描（100 分）</a>
+<a class="toc-l1" href="#3-7">3.7 实现要点与坑</a>
+<a class="toc-l0" href="#4-replace">4. replace 谐音替换</a>
+<a class="toc-l1" href="#4-1">4.1 题意</a>
+<a class="toc-l1" href="#4-2">4.2 第一步：把"替换"翻译成"窗口"</a>
+<a class="toc-l1" href="#4-3-1-10-1-2">4.3 档位 1：按定义暴力（10 分，测试点 1,2）</a>
+<a class="toc-l1" href="#4-4-2-50-18-13-14">4.4 档位 2：哈希暴力（50 分，测试点 1~8、13,14）</a>
+<a class="toc-l1" href="#4-5-a-b-c-aa-bq-cc-trie-bit-100">4.5 正解：拆 <span class="tex">(A,B,C)</span> / <span class="tex">(AA,BQ,CC)</span> + 分组 + 两棵 Trie + 差分 BIT（100 分）</a>
+<a class="toc-l2" href="#4-5-1">4.5.1 结论</a>
+<a class="toc-l2" href="#4-5-2">4.5.2 为什么</a>
+<a class="toc-l2" href="#4-5-3">4.5.3 怎么数</a>
+<a class="toc-l2" href="#4-5-4">4.5.4 复杂度与实测</a>
+<a class="toc-l1" href="#4-6">4.6 这一题的几个致命坑</a>
+<a class="toc-l0" href="#5-employ">5. employ 员工招聘</a>
+<a class="toc-l1" href="#5-1">5.1 题意</a>
+<a class="toc-l1" href="#5-2">5.2 把过程形式化（全题的地基）</a>
+<a class="toc-l1" href="#5-3-1-8-1-2">5.3 档位 1：全排列暴力（8 分，测试点 1,2）</a>
+<a class="toc-l1" href="#5-4-2-dp-20-35">5.4 档位 2：状压 DP（20 分，测试点 3~5）</a>
+<a class="toc-l1" href="#5-5-3-m-1-1214">5.5 档位 3：<span class="tex">m=1</span> 专用（测试点 12~14）</a>
+<a class="toc-l1" href="#5-6-4-m-n-15">5.6 档位 4：<span class="tex">m=n</span> 专用（测试点 15）</a>
+<a class="toc-l1" href="#5-7-5-a-si-1-68-16-17">5.7 档位 5：特殊性质 A（所有 <span class="tex">s<sub>i</sub>=1</span>）（测试点 6~8、16,17）</a>
+<a class="toc-l1" href="#5-8-6-b-i-si-18-1821">5.8 档位 6：特殊性质 B（<span class="tex">∑<sub>i</sub> s<sub>i</sub>≤18</span>）（测试点 18~21）</a>
+<a class="toc-l1" href="#5-9-dp-100">5.9 正解：容斥 + 贡献延后 DP（100 分）</a>
+<a class="toc-l2" href="#5-9-1">5.9.1 先解决"只有上限"的版本</a>
+<a class="toc-l2" href="#5-9-2">5.9.2 用容斥把"下限"变成"上限"，并延后贡献</a>
+<a class="toc-l2" href="#5-9-3-dp">5.9.3 DP 转移（本场的核心）</a>
+<a class="toc-l2" href="#5-9-4-c-bi">5.9.4 为什么这个容斥表达的是"<span class="tex">c&gt;b<sub>i</sub></span>"</a>
+<a class="toc-l2" href="#5-9-5">5.9.5 复杂度</a>
+<a class="toc-l1" href="#5-10">5.10 踩坑清单</a>
+<a class="toc-l0" href="#6">6. 四题易错点汇总（按"最容易丢分"排序）</a>
+<a class="toc-l0" href="#7">7. 考场取舍与时间分配</a>
+<a class="toc-l0" href="#8">8. 本仓库的验证记录</a>
+<a class="toc-l1" href="#8-1-club">8.1 club</a>
+<a class="toc-l1" href="#8-2-road">8.2 road</a>
+<a class="toc-l1" href="#8-3-replace">8.3 replace</a>
+<a class="toc-l1" href="#8-4-employ">8.4 employ</a>
+<a class="toc-l0" href="#9">9. 附：文件清单</a>
+    </nav>
+  </aside>
+
+  <main class="doc">
+    <p class="eyebrow">文章 / 2026-10-07</p>
+    <h1>CSP-S 2025 提高级 四题详解：从部分分到 AC</h1>
+    <div class="chips">
+      <a href="#2-club">T1 club</a><a href="#3-road">T2 road</a><a href="#4-replace">T3 replace</a><a href="#5-employ">T4 employ</a><a href="#6">易错点汇总</a><a href="#7">考场取舍</a><a href="#9">文件清单</a>
+      <a class="dl" href="code.zip" download>↓ 下载全部代码 .zip</a>
+    </div>
+    <article>
+
+<blockquote>
+<p>覆盖 <strong>club / road / replace / employ</strong> 四题。每一档给的是同一套东西：
+<strong>这一档够用的观察 → 具体做法 → 复杂度 → 完整可运行代码 → 为什么它只能拿这一档、差在哪一步</strong>。</p>
+<p>所有代码都在 <code>g++ 15 -O2 -std=c++14</code> 下编译，并做了三层验证：
+① 官方大样例逐字节比对；② 与自己写的暴力/低档程序随机对拍（含小值域、特殊性质、边界值三套生成器）；③ 最大规模计时与内存实测。</p>
+</blockquote>
+<hr>
+<h2 id="0">0. 评测环境与全局约定</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>题目</th>
+<th>源文件</th>
+<th>输入 / 输出</th>
+<th>时限</th>
+<th>内存</th>
+<th>测试点数</th>
+<th>分值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>社团招新 club</td>
+<td><code>club.cpp</code></td>
+<td><code>club.in</code> / <code>club.out</code></td>
+<td>1.0 s</td>
+<td>512 MiB</td>
+<td>20</td>
+<td>每点 5 分</td>
+</tr>
+<tr>
+<td>道路修复 road</td>
+<td><code>road.cpp</code></td>
+<td><code>road.in</code> / <code>road.out</code></td>
+<td>1.0 s</td>
+<td>512 MiB</td>
+<td>25</td>
+<td>每点 4 分</td>
+</tr>
+<tr>
+<td>谐音替换 replace</td>
+<td><code>replace.cpp</code></td>
+<td><code>replace.in</code> / <code>replace.out</code></td>
+<td>1.0 s</td>
+<td>2048 MiB</td>
+<td>20</td>
+<td>每点 5 分</td>
+</tr>
+<tr>
+<td>员工招聘 employ</td>
+<td><code>employ.cpp</code></td>
+<td><code>employ.in</code> / <code>employ.out</code></td>
+<td>1.0 s</td>
+<td>512 MiB</td>
+<td>25</td>
+<td>每点 4 分</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li>编译选项：<code>-O2 -std=c++14 -static</code>。</li>
+<li>结果比较方式为全文比较（过滤行末空格与文末换行）；源文件不得超过 100 KiB。</li>
+<li>下文所有代码均只使用 <code>stdin/stdout</code>，直接 <code>freopen</code> 改文件名即可提交。</li>
+<li>评测机参考配置：Intel Core Ultra 9 285K @3.70 GHz（关闭睿频与能效核），内存 96 GB。</li>
+</ul>
+<hr>
+<h2 id="1">1. 四题子任务总览（档位地图）</h2>
+<h3 id="1-1-club-20-5">1.1 club（20 点，每点 5 分）</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>测试点</th>
+<th>n</th>
+<th>特殊性质</th>
+<th>能过的档位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1,2</td>
+<td>2</td>
+<td>无</td>
+<td>暴力 DP</td>
+</tr>
+<tr>
+<td>3,4</td>
+<td>10</td>
+<td>无</td>
+<td>暴力 DP</td>
+</tr>
+<tr>
+<td>5~8</td>
+<td>30</td>
+<td>无</td>
+<td>暴力 DP</td>
+</tr>
+<tr>
+<td>9</td>
+<td>200</td>
+<td>B</td>
+<td>暴力 DP</td>
+</tr>
+<tr>
+<td>10,11</td>
+<td>200</td>
+<td>无</td>
+<td>暴力 DP</td>
+</tr>
+<tr>
+<td>12</td>
+<td><span class="tex">10<sup>5</sup></span></td>
+<td>A</td>
+<td>A 专解</td>
+</tr>
+<tr>
+<td>13,14</td>
+<td><span class="tex">10<sup>5</sup></span></td>
+<td>B</td>
+<td>B 专解 / 正解</td>
+</tr>
+<tr>
+<td>15,16</td>
+<td><span class="tex">10<sup>5</sup></span></td>
+<td>C（均匀随机）</td>
+<td>正解</td>
+</tr>
+<tr>
+<td>17~20</td>
+<td><span class="tex">10<sup>5</sup></span></td>
+<td>无</td>
+<td>正解</td>
+</tr>
+</tbody></table></div>
+<p>性质 A：<span class="tex">a<sub>i,2</sub>=a<sub>i,3</sub>=0</span>；性质 B：<span class="tex">a<sub>i,3</sub>=0</span>；性质 C：数据均匀随机。</p>
+<h3 id="1-2-road-25-4">1.2 road（25 点，每点 4 分）</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>测试点</th>
+<th>n</th>
+<th>m</th>
+<th>k</th>
+<th>性质</th>
+<th>能过的档位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1~4</td>
+<td><span class="tex">10<sup>4</sup></span></td>
+<td><span class="tex">10<sup>6</sup></span></td>
+<td><span class="tex">0</span></td>
+<td>无</td>
+<td>L1 / L2 / L3 / 正解</td>
+</tr>
+<tr>
+<td>5,6</td>
+<td><span class="tex">10<sup>3</sup></span></td>
+<td><span class="tex">10<sup>5</sup></span></td>
+<td><span class="tex">≤ 5</span></td>
+<td>A</td>
+<td>L2 / L3 / 正解</td>
+</tr>
+<tr>
+<td>7,8</td>
+<td><span class="tex">10<sup>3</sup></span></td>
+<td><span class="tex">10<sup>5</sup></span></td>
+<td><span class="tex">≤ 5</span></td>
+<td>无</td>
+<td>L2 / L3 / 正解</td>
+</tr>
+<tr>
+<td>9,10</td>
+<td><span class="tex">10<sup>3</sup></span></td>
+<td><span class="tex">10<sup>5</sup></span></td>
+<td><span class="tex">≤ 5</span></td>
+<td>A</td>
+<td>L3 / 正解</td>
+</tr>
+<tr>
+<td>11,12</td>
+<td><span class="tex">10<sup>3</sup></span></td>
+<td><span class="tex">10<sup>6</sup></span></td>
+<td><span class="tex">≤ 5</span></td>
+<td>无</td>
+<td>L3 / 正解</td>
+</tr>
+<tr>
+<td>13,14</td>
+<td><span class="tex">10<sup>3</sup></span></td>
+<td><span class="tex">10<sup>6</sup></span></td>
+<td><span class="tex">≤ 10</span></td>
+<td>A</td>
+<td>正解</td>
+</tr>
+<tr>
+<td>15,16</td>
+<td><span class="tex">10<sup>3</sup></span></td>
+<td><span class="tex">10<sup>6</sup></span></td>
+<td><span class="tex">≤ 10</span></td>
+<td>无</td>
+<td>正解</td>
+</tr>
+<tr>
+<td>17,18</td>
+<td><span class="tex">10<sup>4</sup></span></td>
+<td><span class="tex">10<sup>6</sup></span></td>
+<td><span class="tex">≤ 5</span></td>
+<td>A</td>
+<td>L3 / 正解</td>
+</tr>
+<tr>
+<td>19,20</td>
+<td><span class="tex">10<sup>4</sup></span></td>
+<td><span class="tex">10<sup>6</sup></span></td>
+<td><span class="tex">≤ 5</span></td>
+<td>无</td>
+<td>L3 / 正解</td>
+</tr>
+<tr>
+<td>21~25</td>
+<td><span class="tex">10<sup>4</sup></span></td>
+<td><span class="tex">10<sup>6</sup></span></td>
+<td><span class="tex">≤ 10</span></td>
+<td>无</td>
+<td>正解</td>
+</tr>
+</tbody></table></div>
+<p>性质 A：<span class="tex">c<sub>j</sub>=0</span> 且存在 <span class="tex">a<sub>j,i</sub>=0</span>。</p>
+<h3 id="1-3-replace-20-5">1.3 replace（20 点，每点 5 分）</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>测试点</th>
+<th>n, q</th>
+<th>L₁, L₂</th>
+<th>性质</th>
+<th>能过的档位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1,2</td>
+<td><span class="tex">10<sup>2</sup></span></td>
+<td><span class="tex">≤ 200</span></td>
+<td>无</td>
+<td>定义暴力</td>
+</tr>
+<tr>
+<td>3~5</td>
+<td><span class="tex">10<sup>3</sup></span></td>
+<td><span class="tex">≤ 2000</span></td>
+<td>无</td>
+<td>哈希暴力</td>
+</tr>
+<tr>
+<td>6</td>
+<td><span class="tex">10<sup>3</sup></span></td>
+<td><span class="tex">≤ 2000</span></td>
+<td>A+B</td>
+<td>哈希暴力</td>
+</tr>
+<tr>
+<td>7,8</td>
+<td><span class="tex">10<sup>4</sup></span></td>
+<td><span class="tex">10<sup>6</sup></span></td>
+<td>A</td>
+<td>哈希暴力</td>
+</tr>
+<tr>
+<td>9,10</td>
+<td><span class="tex">10<sup>4</sup></span></td>
+<td><span class="tex">10<sup>6</sup></span></td>
+<td>B</td>
+<td>正解</td>
+</tr>
+<tr>
+<td>11,12</td>
+<td><span class="tex">2×10<sup>5</sup></span></td>
+<td><span class="tex">2×10<sup>6</sup></span></td>
+<td>无</td>
+<td>正解</td>
+</tr>
+<tr>
+<td>13,14</td>
+<td><span class="tex">2×10<sup>5</sup></span></td>
+<td><span class="tex">5×10<sup>6</sup></span></td>
+<td>A</td>
+<td>哈希暴力 / 正解</td>
+</tr>
+<tr>
+<td>15,16</td>
+<td><span class="tex">2×10<sup>5</sup></span></td>
+<td><span class="tex">5×10<sup>6</sup></span></td>
+<td>B</td>
+<td>正解</td>
+</tr>
+<tr>
+<td>17~20</td>
+<td><span class="tex">2×10<sup>5</sup></span></td>
+<td><span class="tex">5×10<sup>6</sup></span></td>
+<td>无</td>
+<td>正解</td>
+</tr>
+</tbody></table></div>
+<p>性质 A：<span class="tex">q=1</span>；性质 B：字符串只含 <code>a</code>/<code>b</code> 且 <code>b</code> 恰好出现一次。</p>
+<h3 id="1-4-employ-25-4">1.4 employ（25 点，每点 4 分）</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>测试点</th>
+<th>n</th>
+<th>m</th>
+<th>性质</th>
+<th>能过的档位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1,2</td>
+<td>10</td>
+<td><span class="tex">≤ n</span></td>
+<td>无</td>
+<td>全排列暴力</td>
+</tr>
+<tr>
+<td>3~5</td>
+<td>18</td>
+<td><span class="tex">≤ n</span></td>
+<td>无</td>
+<td>状压 DP</td>
+</tr>
+<tr>
+<td>6~8</td>
+<td><span class="tex">10<sup>2</sup></span></td>
+<td><span class="tex">≤ n</span></td>
+<td>A</td>
+<td>A 专版 / 正解</td>
+</tr>
+<tr>
+<td>9~11</td>
+<td><span class="tex">10<sup>2</sup></span></td>
+<td><span class="tex">≤ n</span></td>
+<td>无</td>
+<td>正解</td>
+</tr>
+<tr>
+<td>12~14</td>
+<td>500</td>
+<td><span class="tex">=1</span></td>
+<td>无</td>
+<td>m=1 专解 / 正解</td>
+</tr>
+<tr>
+<td>15</td>
+<td>500</td>
+<td><span class="tex">=n</span></td>
+<td>无</td>
+<td>m=n 专解 / 正解</td>
+</tr>
+<tr>
+<td>16,17</td>
+<td>500</td>
+<td><span class="tex">≤ n</span></td>
+<td>A</td>
+<td>A 专版 / 正解</td>
+</tr>
+<tr>
+<td>18~21</td>
+<td>500</td>
+<td><span class="tex">≤ n</span></td>
+<td>B</td>
+<td>B 专版 / 正解</td>
+</tr>
+<tr>
+<td>22~25</td>
+<td>500</td>
+<td><span class="tex">≤ n</span></td>
+<td>无</td>
+<td>正解</td>
+</tr>
+</tbody></table></div>
+<p>性质 A：所有 <span class="tex">s<sub>i</sub>=1</span>；性质 B：<span class="tex">∑<sub>i</sub> s<sub>i</sub> ≤ 18</span>。</p>
+<h3 id="1-5">1.5 档位累计分数（把上面的表倒过来看）</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>题</th>
+<th>档位</th>
+<th>覆盖测试点</th>
+<th>累计得分</th>
+<th>复杂度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>club</td>
+<td>暴力 DP</td>
+<td>1~11</td>
+<td>55</td>
+<td><span class="tex">O(n<sup>3</sup>)</span></td>
+</tr>
+<tr>
+<td>club</td>
+<td>+A 专解</td>
+<td>+12</td>
+<td>60</td>
+<td><span class="tex">O(n<span class="rm">log</span> n)</span></td>
+</tr>
+<tr>
+<td>club</td>
+<td>+B 专解</td>
+<td>+9,13,14</td>
+<td>70</td>
+<td><span class="tex">O(n<span class="rm">log</span> n)</span></td>
+</tr>
+<tr>
+<td>club</td>
+<td>正解（后悔贪心）</td>
+<td>全部</td>
+<td><strong>100</strong></td>
+<td><span class="tex">O(n<span class="rm">log</span> n)</span></td>
+</tr>
+<tr>
+<td>road</td>
+<td>L1：k=0</td>
+<td>1~4</td>
+<td>16</td>
+<td><span class="tex">O(m<span class="rm">log</span> m)</span></td>
+</tr>
+<tr>
+<td>road</td>
+<td>L2：2ᵏ 枚举 + 每次重排</td>
+<td>1~8</td>
+<td>32</td>
+<td><span class="tex">O(2<sup>k</sup>m<span class="rm">log</span> m)</span></td>
+</tr>
+<tr>
+<td>road</td>
+<td>L3：预排序 + 跳过未改造</td>
+<td>1~12,17~20</td>
+<td>64</td>
+<td><span class="tex">O(m<span class="rm">log</span> m + 2<sup>k</sup>(n+kn))</span></td>
+</tr>
+<tr>
+<td>road</td>
+<td>正解</td>
+<td>全部</td>
+<td><strong>100</strong></td>
+<td><span class="tex">O(m<span class="rm">log</span> m + 2<sup>k</sup>n)</span></td>
+</tr>
+<tr>
+<td>replace</td>
+<td>定义暴力</td>
+<td>1,2</td>
+<td>10</td>
+<td><span class="tex">O(q· nL<sup>2</sup>)</span></td>
+</tr>
+<tr>
+<td>replace</td>
+<td>哈希暴力</td>
+<td>1~8, 13,14（性质 A 下 <span class="tex">q=1</span>，暴力也扛得住 <span class="tex">L=5×10<sup>6</sup></span>）</td>
+<td>50</td>
+<td><span class="tex">O(q(L<sub>1</sub>+L<sub>2</sub>))</span></td>
+</tr>
+<tr>
+<td>replace</td>
+<td>正解（两棵 Trie + 差分 BIT）</td>
+<td>全部</td>
+<td><strong>100</strong></td>
+<td><span class="tex">O(L<sub>1</sub>+L<sub>2</sub>+(n+q)<span class="rm">log</span>)</span></td>
+</tr>
+<tr>
+<td>employ</td>
+<td>全排列暴力</td>
+<td>1,2</td>
+<td>8</td>
+<td><span class="tex">O(n!· n)</span></td>
+</tr>
+<tr>
+<td>employ</td>
+<td>+状压 DP</td>
+<td>3~5</td>
+<td>20</td>
+<td><span class="tex">O(2<sup>n</sup>n<sup>2</sup>)</span></td>
+</tr>
+<tr>
+<td>employ</td>
+<td>+m=1 专解</td>
+<td>12~14</td>
+<td>32</td>
+<td><span class="tex">O(n<span class="rm">log</span> n)</span></td>
+</tr>
+<tr>
+<td>employ</td>
+<td>+m=n 专解</td>
+<td>15</td>
+<td>36</td>
+<td><span class="tex">O(n)</span></td>
+</tr>
+<tr>
+<td>employ</td>
+<td>+性质 A / B 专版（正解 DP 的特化）</td>
+<td>6~8,9~11,16~21</td>
+<td>84</td>
+<td><span class="tex">O(n<sup>3</sup>)</span></td>
+</tr>
+<tr>
+<td>employ</td>
+<td>正解（容斥 + 延后贡献 DP）</td>
+<td>22~25</td>
+<td><strong>100</strong></td>
+<td><span class="tex">O(n<sup>3</sup>)</span></td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="2-club">2. club 社团招新</h2>
+<h3 id="2-1">2.1 题意与关键结论</h3>
+<p><span class="tex">n</span> 个人（<span class="tex">n</span> 为偶数）分到 3 个部门，要求<strong>每个部门人数不超过 <span class="tex">n/2</span></strong>，第 <span class="tex">i</span> 人放进部门 <span class="tex">d<sub>i</sub></span> 的满意度是 <span class="tex">a<sub>i,d<sub>i</sub></sub></span>，最大化总满意度。多组数据。</p>
+<p><strong>关键结论（全题唯一的突破口）</strong>：三个部门人数之和恒为 <span class="tex">n</span>，所以</p>
+<div class="formula"><p><span class="rm">存在部门人数</span> &gt; <span class="unb"><i>n</i><i>2</i></span> ⟺ <span class="rm">某个部门人数</span> &gt; <span class="unb"><i>n</i><i>2</i></span></p></div><p>即<strong>最多只有一个部门会超限</strong>。这条结论把"三个容量约束"退化成了"一个约束"，也是后面贪心能成立的原因。</p>
+<h3 id="2-2-1-o-n3-dp-55-111-n-200">2.2 档位 1：<span class="tex">O(n<sup>3</sup>)</span> 暴力 DP（55 分，测试点 1~11，<span class="tex">n≤ 200</span>）</h3>
+<p>只用记录部门 1、部门 2 各放了几个人（部门 3 的人数 = 已放人数 − 两者之和，自动确定）。</p>
+<ul>
+<li>状态：<code>dp[j][k]</code> = 前 <span class="tex">i</span> 个人中，部门 1 有 <span class="tex">j</span> 人、部门 2 有 <span class="tex">k</span> 人时的最大满意度；</li>
+<li>转移：第 <span class="tex">i</span> 个人三个去向各试一次，同时检查三个容量（<span class="tex">j+1≤ n/2</span>、<span class="tex">k+1≤ n/2</span>、部门 3 人数 <span class="tex">+1≤ n/2</span>）；</li>
+<li>复杂度 <span class="tex">O(n<sup>3</sup>)</span>，<span class="tex">n=200</span> 时约 <span class="tex">8× 10<sup>6</sup></span>，非常稳。</li>
+</ul>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2025 T1 社团招新 (club) —— 档1：O(n^3) 暴力 DP</span>
+<span class="co">// 适用：测试点 1~11（n&lt;=30 及 n=200），共 55 分</span>
+<span class="co">// 编译：g++-15 -O2 -std=c++14 club.cpp -o club</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="k">typedef</span> <span class="ty">long</span> <span class="ty">long</span> <span class="ty">ll</span>;
+<span class="k">const</span> <span class="ty">ll</span> NEG = LLONG_MIN / <span class="nu">4</span>;
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="ty">int</span> T;
+    <span class="k">if</span> (<span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;T) != <span class="nu">1</span>) <span class="k">return</span> <span class="nu">0</span>;
+    <span class="k">while</span> (T--) {
+        <span class="ty">int</span> n; <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;n);
+        <span class="ty">int</span> half = n / <span class="nu">2</span>;
+        <span class="co">// dp[j][k]：已处理若干人，其中 j 人在部门1、k 人在部门2（其余在部门3）</span>
+        <span class="k">static</span> <span class="ty">ll</span> dp[<span class="nu">2</span>][<span class="nu">205</span>][<span class="nu">205</span>];
+        <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt;= half; j++)
+            <span class="k">for</span> (<span class="ty">int</span> k = <span class="nu">0</span>; k &lt;= half; k++) dp[<span class="nu">0</span>][j][k] = NEG;
+        dp[<span class="nu">0</span>][<span class="nu">0</span>][<span class="nu">0</span>] = <span class="nu">0</span>;
+        <span class="ty">int</span> cur = <span class="nu">0</span>;
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) {
+            <span class="ty">ll</span> a[<span class="nu">3</span>]; <span class="fn">scanf</span>(<span class="st">"%lld %lld %lld"</span>, &amp;a[<span class="nu">0</span>], &amp;a[<span class="nu">1</span>], &amp;a[<span class="nu">2</span>]);
+            <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt;= half; j++)
+                <span class="k">for</span> (<span class="ty">int</span> k = <span class="nu">0</span>; k &lt;= half; k++) dp[cur ^ <span class="nu">1</span>][j][k] = NEG;
+            <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt;= half; j++)
+                <span class="k">for</span> (<span class="ty">int</span> k = <span class="nu">0</span>; k &lt;= half; k++) {
+                    <span class="ty">ll</span> v = dp[cur][j][k];
+                    <span class="k">if</span> (v == NEG) <span class="k">continue</span>;
+                    <span class="ty">int</span> l = (i - <span class="nu">1</span>) - j - k;          <span class="co">// 部门3人数</span>
+                    <span class="k">if</span> (l &lt; <span class="nu">0</span> || l &gt; half) <span class="k">continue</span>;
+                    <span class="k">if</span> (j + <span class="nu">1</span> &lt;= half) dp[cur ^ <span class="nu">1</span>][j + <span class="nu">1</span>][k] = <span class="fn">max</span>(dp[cur ^ <span class="nu">1</span>][j + <span class="nu">1</span>][k], v + a[<span class="nu">0</span>]);
+                    <span class="k">if</span> (k + <span class="nu">1</span> &lt;= half) dp[cur ^ <span class="nu">1</span>][j][k + <span class="nu">1</span>] = <span class="fn">max</span>(dp[cur ^ <span class="nu">1</span>][j][k + <span class="nu">1</span>], v + a[<span class="nu">1</span>]);
+                    <span class="k">if</span> (l + <span class="nu">1</span> &lt;= half) dp[cur ^ <span class="nu">1</span>][j][k]     = <span class="fn">max</span>(dp[cur ^ <span class="nu">1</span>][j][k],     v + a[<span class="nu">2</span>]);
+                }
+            cur ^= <span class="nu">1</span>;
+        }
+        <span class="ty">ll</span> ans = <span class="nu">0</span>;
+        <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt;= half; j++)
+            <span class="k">for</span> (<span class="ty">int</span> k = <span class="nu">0</span>; k &lt;= half; k++) {
+                <span class="ty">int</span> l = n - j - k;
+                <span class="k">if</span> (l &lt; <span class="nu">0</span> || l &gt; half) <span class="k">continue</span>;
+                <span class="k">if</span> (dp[cur][j][k] != NEG) ans = <span class="fn">max</span>(ans, dp[cur][j][k]);
+            }
+        <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, ans);
+    }
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<p><strong>为什么只有 55 分</strong>：<span class="tex">n=10<sup>5</sup></span> 时 <span class="tex">O(n<sup>3</sup>)</span> 完全不可能，第 12 个点就过不去了。它只能吃掉"<span class="tex">n≤ 200</span> 全包"的 11 个点。</p>
+<h3 id="2-3-2-a-ai-2-ai-3-0-60-12">2.3 档位 2：特殊性质 A（<span class="tex">a<sub>i,2</sub>=a<sub>i,3</sub>=0</span>）（60 分，测试点 12）</h3>
+<p>部门 2、3 的满意度恒为 <span class="tex">0</span>，放进去就是白给。所以：</p>
+<ul>
+<li>只有部门 1 能产生收益，容量是 <span class="tex">n/2</span>；</li>
+<li>于是把 <span class="tex">a<sub>i,1</sub></span> <strong>最大的 <span class="tex">n/2</span> 个人</strong>放进部门 1，其余随便丢进部门 2/3（收益 0）。</li>
+</ul>
+<p>答案 = <span class="tex">a<sub>i,1</sub></span> 中最大的 <span class="tex">n/2</span> 个之和。排序一次即可，<span class="tex">O(n<span class="rm">log</span> n)</span>。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2025 T1 社团招新 (club) —— 档2：特殊性质 A (a[i][2]=a[i][3]=0)</span>
+<span class="co">// 适用：测试点 12，累计 60 分</span>
+<span class="co">// 结论：只有部门1有分，把 a[i][1] 最大的 n/2 个人放进部门1，其余随便丢（贡献 0）。</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="k">typedef</span> <span class="ty">long</span> <span class="ty">long</span> <span class="ty">ll</span>;
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="ty">int</span> T; <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;T);
+    <span class="k">while</span> (T--) {
+        <span class="ty">int</span> n; <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;n);
+        <span class="ty">int</span> half = n / <span class="nu">2</span>;
+        <span class="ty">vector</span>&lt;<span class="ty">ll</span>&gt; v;
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) {
+            <span class="ty">ll</span> a, b, c; <span class="fn">scanf</span>(<span class="st">"%lld %lld %lld"</span>, &amp;a, &amp;b, &amp;c);
+            v.<span class="fn">push_back</span>(a);                 <span class="co">// 只用第一列</span>
+        }
+        <span class="fn">sort</span>(v.<span class="fn">begin</span>(), v.<span class="fn">end</span>(), greater&lt;<span class="ty">ll</span>&gt;());
+        <span class="ty">ll</span> ans = <span class="nu">0</span>;
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; half; i++) ans += v[i];
+        <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, ans);
+    }
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="2-4-3-b-ai-3-0-70-9-13-14">2.4 档位 3：特殊性质 B（<span class="tex">a<sub>i,3</sub>=0</span>）（70 分，测试点 9,13,14）</h3>
+<p>部门 3 恒为 <span class="tex">0</span>，所以没有人主动想去部门 3；又因为部门 1、2 的人数之和必须是 <span class="tex">n</span>、各自 <span class="tex">≤ n/2</span>，<strong>两个部门都恰好是 <span class="tex">n/2</span> 人</strong>。</p>
+<p>于是问题变成："选 <span class="tex">n/2</span> 个人进部门 1，其余进部门 2"。</p>
+<ul>
+<li>先假设所有人都在部门 2：<span class="tex"><span class="rm">base</span>=∑<sub>i</sub> a<sub>i,2</sub></span>；</li>
+<li>把第 <span class="tex">i</span> 个人从部门 2 挪到部门 1 的<strong>净收益</strong>是 <span class="tex">a<sub>i,1</sub>−a<sub>i,2</sub></span>；</li>
+<li>每个人独立、没有别的约束，所以取<strong>净收益最大的 <span class="tex">n/2</span> 个</strong>即可。</li>
+</ul>
+<p>答案 <span class="tex">=<span class="rm">base</span>+∑</span> 最大的 <span class="tex">n/2</span> 个 <span class="tex">(a<sub>i,1</sub>−a<sub>i,2</sub>)</span>。同样 <span class="tex">O(n<span class="rm">log</span> n)</span>。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2025 T1 社团招新 (club) —— 档3：特殊性质 B (a[i][3]=0)</span>
+<span class="co">// 适用：测试点 13,14，累计 70 分</span>
+<span class="co">// 结论：a[i][3]=0 时最优解里 n 个人必然全被分完（部门1、2 各恰好 n/2 人）。</span>
+<span class="co">//       答案 = sum a[i][2] + (a[i][1]-a[i][2]) 中最大的 n/2 个之和。</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="k">typedef</span> <span class="ty">long</span> <span class="ty">long</span> <span class="ty">ll</span>;
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="ty">int</span> T; <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;T);
+    <span class="k">while</span> (T--) {
+        <span class="ty">int</span> n; <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;n);
+        <span class="ty">int</span> half = n / <span class="nu">2</span>;
+        <span class="ty">vector</span>&lt;<span class="ty">ll</span>&gt; d;
+        <span class="ty">ll</span> base = <span class="nu">0</span>;
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) {
+            <span class="ty">ll</span> a, b, c; <span class="fn">scanf</span>(<span class="st">"%lld %lld %lld"</span>, &amp;a, &amp;b, &amp;c);
+            base += b;                     <span class="co">// 先假设所有人都去部门2</span>
+            d.<span class="fn">push_back</span>(a - b);            <span class="co">// 改成去部门1 的“增量”</span>
+        }
+        <span class="fn">sort</span>(d.<span class="fn">begin</span>(), d.<span class="fn">end</span>(), greater&lt;<span class="ty">ll</span>&gt;());
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; half; i++) base += d[i];
+        <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, base);
+    }
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="2-5-4-100">2.5 档位 4：正解 —— 后悔贪心（100 分）</h3>
+<p><strong>第一步：先不管容量，让每个人去自己最满意的部门。</strong></p>
+<p>记 <code>mx</code> 为最优部门、<code>best = a[i][mx]</code>、<code>second = </code> 三个数里的次大值。这一步给出的是<strong>上界</strong>。</p>
+<p><strong>第二步：由 2.1 的结论，至多一个部门 <span class="tex">d</span> 超限。</strong></p>
+<p>设 <code>cnt[d] &gt; n/2</code>，需要从 <span class="tex">d</span> 里"赶出去" <code>need = cnt[d] - n/2</code> 个人。</p>
+<p><strong>第三步：赶人的代价。</strong></p>
+<p>把一个原本在 <span class="tex">d</span> 的人挪走，他最好的去处是<strong>另外两个部门中更好的那个</strong>，所以代价是</p>
+<div class="formula"><p><span class="rm">loss</span><sub>i</sub> = best<sub>i</sub> − second<sub>i</sub> ≥ 0</p></div><p>为了让总满意度损失最小，把 <span class="tex">d</span> 里的人按 <code>loss</code> 升序排序，挪走最小的 <code>need</code> 个。</p>
+<p><strong>为什么这样是对的：</strong></p>
+<ol>
+<li>答案的上界就是"无容量约束时的最大和"，而最优解必须是它的某个"改动"；</li>
+<li>只有 <span class="tex">d</span> 超限，所以任何可行解都必须把 <span class="tex">d</span> 里至少 <code>need</code> 个人挪走；</li>
+<li>挪走一个非 <span class="tex">d</span> 部门的人不但不减 <span class="tex">d</span> 的人数，还会破坏总收益，永远不优；</li>
+<li>挪走的人之间<strong>互不影响</strong>（各自独立地选自己第二好的部门），所以选 <code>loss</code> 最小的 <code>need</code> 个是贪心最优；</li>
+<li>搬完之后：<span class="tex">d</span> 恰好 <span class="tex">n/2</span> 人，另外两个部门合计 <span class="tex">n/2</span> 人，因此<strong>各自都不超过 <span class="tex">n/2</span></strong>，合法。</li>
+</ol>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2025 T1 社团招新 (club) —— 正解：反悔贪心  O(n log n)</span>
+<span class="co">// 适用：全部测试点，100 分</span>
+<span class="co">//</span>
+<span class="co">// 引理1：按“每人先去自己最满意的部门”得到的三个部门人数 c1,c2,c3，</span>
+<span class="co">//        至多只有一个部门 &gt; n/2（因为三者之和为 n）。</span>
+<span class="co">// 引理2：若部门 d 超载 e = c_d - n/2 人，只需从“最满意为 d”的人中挑 e 个改去自己的次优部门，</span>
+<span class="co">//        且一定不会让别的部门再次超载（因为另两部门的前缀和 &lt;= n/2 - c_others）。</span>
+<span class="co">// 引理3：为了让损失最小，按 (最优值 - 次优值) 升序取前 e 个。</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="k">typedef</span> <span class="ty">long</span> <span class="ty">long</span> <span class="ty">ll</span>;
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="ty">int</span> T; <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;T);
+    <span class="k">while</span> (T--) {
+        <span class="ty">int</span> n; <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;n);
+        <span class="ty">int</span> half = n / <span class="nu">2</span>;
+        <span class="ty">long</span> <span class="ty">long</span> base = <span class="nu">0</span>;
+        <span class="ty">int</span> cnt[<span class="nu">3</span>] = {<span class="nu">0</span>, <span class="nu">0</span>, <span class="nu">0</span>};
+        <span class="ty">vector</span>&lt;<span class="ty">ll</span>&gt; loss[<span class="nu">3</span>];
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) {
+            <span class="ty">ll</span> a[<span class="nu">3</span>];
+            <span class="fn">scanf</span>(<span class="st">"%lld %lld %lld"</span>, &amp;a[<span class="nu">0</span>], &amp;a[<span class="nu">1</span>], &amp;a[<span class="nu">2</span>]);
+            <span class="ty">int</span> mx = <span class="nu">0</span>;                            <span class="co">// 满意度最高的部门</span>
+            <span class="k">if</span> (a[<span class="nu">1</span>] &gt; a[mx]) mx = <span class="nu">1</span>;
+            <span class="k">if</span> (a[<span class="nu">2</span>] &gt; a[mx]) mx = <span class="nu">2</span>;
+            <span class="ty">ll</span> second = <span class="nu">0</span>;                         <span class="co">// 其余两个部门中的较大值</span>
+            <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt; <span class="nu">3</span>; j++)
+                <span class="k">if</span> (j != mx) second = <span class="fn">max</span>(second, a[j]);
+            base += a[mx];
+            cnt[mx]++;
+            loss[mx].<span class="fn">push_back</span>(a[mx] - second);    <span class="co">// 改去次优部门的损失</span>
+        }
+        <span class="k">for</span> (<span class="ty">int</span> d = <span class="nu">0</span>; d &lt; <span class="nu">3</span>; d++) {
+            <span class="k">if</span> (cnt[d] &gt; half) {
+                <span class="fn">sort</span>(loss[d].<span class="fn">begin</span>(), loss[d].<span class="fn">end</span>());
+                <span class="ty">int</span> need = cnt[d] - half;
+                <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; need; i++) base -= loss[d][i];
+            }
+        }
+        <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, base);
+    }
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<p><strong>复杂度</strong> <span class="tex">O(n<span class="rm">log</span> n)</span>（只对超限部门的 <code>loss</code> 排序），<span class="tex">n=10<sup>5</sup></span> 实测 0.05 s / 8.8 MB。</p>
+<hr>
+<h2 id="3-road">3. road 道路修复</h2>
+<h3 id="3-1">3.1 题意</h3>
+<p><span class="tex">n</span> 个点、<span class="tex">m</span> 条<strong>原图</strong>乡村道路（带边权）。另有 <span class="tex">k</span> 个乡镇，第 <span class="tex">j</span> 个乡镇的"改造费"为 <span class="tex">c<sub>j</sub></span>；若把该乡镇改造，则它可以向点 <span class="tex">i</span> 修一条边权为 <span class="tex">a<sub>j,i</sub></span> 的路。</p>
+<p>自由选择要改造的乡镇集合 <span class="tex">S</span>，此时可用的边集是</p>
+<div class="formula"><p><span class="rm">原图边</span>  ∪ {a<sub>j,i</sub> | j∈ S, 1≤ i≤ n}</p></div><p>要求图连通，最小化</p>
+<div class="formula"><p><span class="rm">（生成树的边权和）</span> + ∑<sub>j∈ S</sub> c<sub>j</sub></p></div><p><strong>先想清楚一件事</strong>：改造费是"买路权"的一次性开销，与选多少条边无关。所以枚举 <span class="tex">S</span>（<span class="tex">2<sup>k</sup></span> 种）后，问题就是"在这个边集上求 MST"，再在枚举里取 min。</p>
+<h3 id="3-2">3.2 贯穿全题的三个观察</h3>
+<ol>
+<li><strong>每个被改造的乡镇最多贡献 <span class="tex">n−1</span> 条边</strong>（剩下的边必然被 MST 淘汰）。所以任何合法方案只需在 <span class="tex">O(n + kn)</span> 条边上做 MST，不必理会 <span class="tex">m</span> 条原图边里的"废边"。</li>
+<li><strong>原图里"不可能进 MST"的边，对任何 <span class="tex">S</span> 都不可能进 MST</strong>——因为它们连在原图上的权值就已经劣了。因此<strong>先对原图单独跑一次 Kruskal，只留下 <span class="tex">n−1</span> 条树边</strong>，其余 <span class="tex">m−(n−1)</span> 条可以永久扔掉。</li>
+<li><strong>枚举 <span class="tex">S</span> 时不要重复排序</strong>：把"要用的边"一次性排好序，之后每个 <span class="tex">S</span> 只做一遍<strong>线性扫描</strong>。</li>
+</ol>
+<p>第 3 点是 L2 → L3 的分水岭，第 2 点是 L3 → 正解的分水岭。</p>
+<h3 id="3-3-l1-k-0-16-14">3.3 L1：<span class="tex">k=0</span>（16 分，测试点 1~4）</h3>
+<p><span class="tex">k=0</span>，一个乡镇都不能改造，答案就是对原图跑 Kruskal 的 MST 边权和。<span class="tex">O(m<span class="rm">log</span> m)</span>。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2025 T2 道路修复 (road) —— 档1 (预期 16 分, 测试点 1~4: k=0)</span>
+<span class="co">// 只有原图 m 条边, 直接跑一遍 Kruskal 输出即可。</span>
+<span class="co">// 注意：k&gt;0 时它忽略乡镇, 答案会偏大 —— 这正是它只有 16 分的原因。</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="k">typedef</span> <span class="ty">long</span> <span class="ty">long</span> <span class="ty">ll</span>;
+<span class="k">static</span> <span class="k">inline</span> <span class="ty">int</span> <span class="fn">rd</span>() {
+    <span class="ty">int</span> x = <span class="nu">0</span>; <span class="ty">char</span> ch = <span class="fn">getchar</span>();
+    <span class="k">while</span> (ch &lt; <span class="st">'0'</span> || ch &gt; <span class="st">'9'</span>) ch = <span class="fn">getchar</span>();
+    <span class="k">while</span> (ch &gt;= <span class="st">'0'</span> &amp;&amp; ch &lt;= <span class="st">'9'</span>) { x = x * <span class="nu">10</span> + (ch - <span class="st">'0'</span>); ch = <span class="fn">getchar</span>(); }
+    <span class="k">return</span> x;
+}
+<span class="k">struct</span> Edge { <span class="ty">int</span> u, v, w; };
+<span class="ty">int</span> fa[<span class="nu">10015</span>];
+<span class="ty">int</span> <span class="fn">find</span>(<span class="ty">int</span> x) { <span class="k">return</span> fa[x] == x ? x : fa[x] = <span class="fn">find</span>(fa[x]); }
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="ty">int</span> n = <span class="fn">rd</span>(), m = <span class="fn">rd</span>(), k = <span class="fn">rd</span>();
+    <span class="ty">vector</span>&lt;Edge&gt; <span class="fn">e</span>(m);
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; m; i++) { e[i].u = <span class="fn">rd</span>(); e[i].v = <span class="fn">rd</span>(); e[i].w = <span class="fn">rd</span>(); }
+    <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">1</span>; j &lt;= k; j++) { <span class="fn">rd</span>(); <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) <span class="fn">rd</span>(); }  <span class="co">// 读掉但不使用</span>
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) fa[i] = i;
+    <span class="fn">sort</span>(e.<span class="fn">begin</span>(), e.<span class="fn">end</span>(), [](<span class="k">const</span> Edge&amp; a, <span class="k">const</span> Edge&amp; b) { <span class="k">return</span> a.w &lt; b.w; });
+    <span class="ty">ll</span> ans = <span class="nu">0</span>; <span class="ty">int</span> cnt = <span class="nu">0</span>;
+    <span class="k">for</span> (<span class="k">const</span> Edge&amp; x : e) {
+        <span class="ty">int</span> u = <span class="fn">find</span>(x.u), v = <span class="fn">find</span>(x.v);
+        <span class="k">if</span> (u != v) { fa[u] = v; ans += x.w; <span class="k">if</span> (++cnt == n - <span class="nu">1</span>) <span class="k">break</span>; }
+    }
+    <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, ans);
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="3-4-l2-2k-32-18">3.4 L2：<span class="tex">2<sup>k</sup></span> 枚举 + 每个集合重新排序（32 分，测试点 1~8）</h3>
+<p>最直接的做法：枚举 <code>mask</code>，把"原图 <span class="tex">m</span> 条边 + 已改造乡镇的边"合起来排序，跑一遍 Kruskal，取最小值。</p>
+<ul>
+<li><span class="tex">m≤ 10<sup>5</sup>, k≤ 5</span> 时：<span class="tex">2<sup>5</sup>× 10<sup>5</sup><span class="rm">log</span> ≈ 5× 10<sup>7</sup></span>，能过；</li>
+<li><span class="tex">m=10<sup>6</sup></span> 时：<span class="tex">32× 10<sup>6</sup>× 20 ≈ 6× 10<sup>8</sup></span>，<strong>直接超时</strong>——所以它只能吃到第 8 个点。</li>
+</ul>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2025 T2 道路修复 (road) —— 档2 (预期 32 分, 测试点 1~8: m&lt;=1e5, k&lt;=5)</span>
+<span class="co">// 枚举 2^k 个改造集合, 每个集合把「原图 m 条边 + 选中乡镇的 k*n 条边」合并后重新排序跑 Kruskal。</span>
+<span class="co">// 复杂度 O(2^k * (m + kn) log(m + kn))，m 到 1e6 就会被卡。</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="k">typedef</span> <span class="ty">long</span> <span class="ty">long</span> <span class="ty">ll</span>;
+<span class="k">static</span> <span class="k">inline</span> <span class="ty">int</span> <span class="fn">rd</span>() {
+    <span class="ty">int</span> x = <span class="nu">0</span>; <span class="ty">char</span> ch = <span class="fn">getchar</span>();
+    <span class="k">while</span> (ch &lt; <span class="st">'0'</span> || ch &gt; <span class="st">'9'</span>) ch = <span class="fn">getchar</span>();
+    <span class="k">while</span> (ch &gt;= <span class="st">'0'</span> &amp;&amp; ch &lt;= <span class="st">'9'</span>) { x = x * <span class="nu">10</span> + (ch - <span class="st">'0'</span>); ch = <span class="fn">getchar</span>(); }
+    <span class="k">return</span> x;
+}
+<span class="k">struct</span> Edge { <span class="ty">int</span> u, v, w; };
+<span class="ty">int</span> n, m, k;
+<span class="ty">vector</span>&lt;Edge&gt; orig;
+<span class="ty">vector</span>&lt;<span class="ty">vector</span>&lt;Edge&gt;&gt; townEdge;
+<span class="ty">int</span> c[<span class="nu">12</span>];
+<span class="ty">int</span> fa[<span class="nu">10015</span>];
+<span class="ty">int</span> <span class="fn">find</span>(<span class="ty">int</span> x) { <span class="k">return</span> fa[x] == x ? x : fa[x] = <span class="fn">find</span>(fa[x]); }
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    n = <span class="fn">rd</span>(); m = <span class="fn">rd</span>(); k = <span class="fn">rd</span>();
+    orig.<span class="fn">resize</span>(m);
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; m; i++) { orig[i].u = <span class="fn">rd</span>(); orig[i].v = <span class="fn">rd</span>(); orig[i].w = <span class="fn">rd</span>(); }
+    townEdge.<span class="fn">assign</span>(k + <span class="nu">1</span>, {});
+    <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">1</span>; j &lt;= k; j++) {
+        c[j] = <span class="fn">rd</span>();
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) townEdge[j].<span class="fn">push_back</span>({n + j, i, <span class="fn">rd</span>()});
+    }
+    <span class="ty">ll</span> ans = LLONG_MAX;
+    <span class="ty">vector</span>&lt;Edge&gt; cur;
+    <span class="k">for</span> (<span class="ty">int</span> mask = <span class="nu">0</span>; mask &lt; (<span class="nu">1</span> &lt;&lt; k); mask++) {
+        cur = orig;                                     <span class="co">// 每次重新拷贝 m 条边</span>
+        <span class="ty">ll</span> cost = <span class="nu">0</span>;
+        <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">1</span>; j &lt;= k; j++)
+            <span class="k">if</span> (mask &gt;&gt; (j - <span class="nu">1</span>) &amp; <span class="nu">1</span>) { cost += c[j]; cur.<span class="fn">insert</span>(cur.<span class="fn">end</span>(), townEdge[j].<span class="fn">begin</span>(), townEdge[j].<span class="fn">end</span>()); }
+        <span class="fn">sort</span>(cur.<span class="fn">begin</span>(), cur.<span class="fn">end</span>(), [](<span class="k">const</span> Edge&amp; a, <span class="k">const</span> Edge&amp; b) { <span class="k">return</span> a.w &lt; b.w; });
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n + k; i++) fa[i] = i;
+        <span class="k">for</span> (<span class="k">const</span> Edge&amp; e : cur) {
+            <span class="ty">int</span> u = <span class="fn">find</span>(e.u), v = <span class="fn">find</span>(e.v);
+            <span class="k">if</span> (u != v) { fa[u] = v; cost += e.w; }
+        }
+        ans = <span class="fn">min</span>(ans, cost);
+    }
+    <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, ans);
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="3-5-l3-64-k-5">3.5 L3：全边一次性预排序 + 跳过未改造乡镇（64 分，所有 <span class="tex">k≤ 5</span> 的点）</h3>
+<p>把原来的"每个 mask 排一次序"改成"<strong>所有 mask 共用同一个有序数组</strong>"：</p>
+<ol>
+<li>取出原图的 <span class="tex">m</span> 条边 <strong>加上</strong> <span class="tex">k</span> 个乡镇的全部边（共 <span class="tex">m+kn</span> 条），按边权<strong>一次性排序</strong>；</li>
+<li>枚举 <code>mask</code>，对排序后的数组做一次线性扫描跑 Kruskal：遇到 <code>town != 0 &amp;&amp; mask 中该镇未被改造</code> 的边就 <code>continue</code>；</li>
+<li>加剪枝 <code>if (cost &gt;= ans) continue;</code>。</li>
+</ol>
+<p>复杂度 <span class="tex">O(m<span class="rm">log</span> m + 2<sup>k</sup>(n+kn))</span>。</p>
+<p>实测：<span class="tex">n=10<sup>4</sup>, m=10<sup>6</sup>, k=5</span> 用时 <strong>0.29 s</strong>，答案与正解完全一致；但 <span class="tex">k=10</span> 时要 <strong>2.04 s</strong>（<span class="tex">2<sup>10</sup>× (n+kn)</span> 太大），所以止步在 <span class="tex">k≤ 5</span> 的 16 个点。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2025 T2 道路修复 (road) —— 档3 (预期 48 分, 测试点 1~12: k&lt;=5)</span>
+<span class="co">// 把排序提到枚举外面：所有 m + k*n 条边只排一次, 枚举集合时线性扫描并跳过未改造乡镇的边。</span>
+<span class="co">// 复杂度 O(m log m + (kn) log(kn) + 2^k * (m + kn))，k=10 时 2^k*m 会炸。</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="k">typedef</span> <span class="ty">long</span> <span class="ty">long</span> <span class="ty">ll</span>;
+<span class="k">struct</span> Edge { <span class="ty">int</span> u, v, w, town; };
+<span class="k">static</span> <span class="k">inline</span> <span class="ty">int</span> <span class="fn">rd</span>() {
+    <span class="ty">int</span> x = <span class="nu">0</span>; <span class="ty">char</span> ch = <span class="fn">getchar</span>();
+    <span class="k">while</span> (ch &lt; <span class="st">'0'</span> || ch &gt; <span class="st">'9'</span>) ch = <span class="fn">getchar</span>();
+    <span class="k">while</span> (ch &gt;= <span class="st">'0'</span> &amp;&amp; ch &lt;= <span class="st">'9'</span>) { x = x * <span class="nu">10</span> + (ch - <span class="st">'0'</span>); ch = <span class="fn">getchar</span>(); }
+    <span class="k">return</span> x;
+}
+<span class="ty">int</span> n, m, k;
+<span class="ty">vector</span>&lt;Edge&gt; all;
+<span class="ty">int</span> c[<span class="nu">12</span>];
+<span class="ty">int</span> fa[<span class="nu">10015</span>];
+<span class="ty">int</span> <span class="fn">find</span>(<span class="ty">int</span> x) { <span class="k">while</span> (fa[x] != x) { fa[x] = fa[fa[x]]; x = fa[x]; } <span class="k">return</span> x; }
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    n = <span class="fn">rd</span>(); m = <span class="fn">rd</span>(); k = <span class="fn">rd</span>();
+    all.<span class="fn">reserve</span>(m + (<span class="ty">size_t</span>)k * n);
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; m; i++) { <span class="ty">int</span> u = <span class="fn">rd</span>(), v = <span class="fn">rd</span>(), w = <span class="fn">rd</span>(); all.<span class="fn">push_back</span>({u, v, w, <span class="nu">0</span>}); }
+    <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">1</span>; j &lt;= k; j++) {
+        c[j] = <span class="fn">rd</span>();
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) all.<span class="fn">push_back</span>({n + j, i, <span class="fn">rd</span>(), j});
+    }
+    <span class="fn">sort</span>(all.<span class="fn">begin</span>(), all.<span class="fn">end</span>(), [](<span class="k">const</span> Edge&amp; a, <span class="k">const</span> Edge&amp; b) { <span class="k">return</span> a.w &lt; b.w; });
+    <span class="ty">ll</span> ans = LLONG_MAX;
+    <span class="k">for</span> (<span class="ty">int</span> mask = <span class="nu">0</span>; mask &lt; (<span class="nu">1</span> &lt;&lt; k); mask++) {
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n + k; i++) fa[i] = i;
+        <span class="ty">ll</span> cost = <span class="nu">0</span>;
+        <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">1</span>; j &lt;= k; j++) <span class="k">if</span> (mask &gt;&gt; (j - <span class="nu">1</span>) &amp; <span class="nu">1</span>) cost += c[j];
+        <span class="k">for</span> (<span class="k">const</span> Edge&amp; e : all) {
+            <span class="k">if</span> (e.town &amp;&amp; !(mask &gt;&gt; (e.town - <span class="nu">1</span>) &amp; <span class="nu">1</span>)) <span class="k">continue</span>;
+            <span class="ty">int</span> u = <span class="fn">find</span>(e.u), v = <span class="fn">find</span>(e.v);
+            <span class="k">if</span> (u != v) { fa[u] = v; cost += e.w; }
+        }
+        ans = <span class="fn">min</span>(ans, cost);
+    }
+    <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, ans);
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="3-6-mst-100">3.6 正解：原图只留 MST 树边 + 预排序扫描（100 分）</h3>
+<p>在 L3 的基础上加<strong>观察 2</strong>：</p>
+<ul>
+<li>对原图单独跑一次 Kruskal，得到 <span class="tex">n−1</span> 条树边；<strong>其余 <span class="tex">m−n+1</span> 条边永久丢弃</strong>；</li>
+<li>把"这 <span class="tex">n−1</span> 条树边 + <span class="tex">kn</span> 条城乡边"一次性排序，作为所有 mask 共用的数组；</li>
+<li>每个 mask 只在这个 <span class="tex">O(n+kn)</span> 的数组上线性扫描跑 Kruskal。</li>
+</ul>
+<p>复杂度降到</p>
+<div class="formula"><p>O(m<span class="rm">log</span> m + (n+kn)<span class="rm">log</span>(n+kn) + 2<sup>k</sup>(n+kn))</p></div><p><span class="tex">n=10<sup>4</sup>, m=10<sup>6</sup>, k=10</span> 实测 <strong>0.65 s</strong>，卡在 1 s 之内。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2025 T2 道路修复 (road) —— 正解 (100 分)</span>
+<span class="co">// 关键两步：</span>
+<span class="co">//   1) 原图先跑一遍 Kruskal，只保留 n-1 条树边：任何一条非树边在任何改造方案下都不会被选中。</span>
+<span class="co">//   2) 把这 n-1 条树边 + 所有 k*n 条城乡边一次性排序，枚举 2^k 个改造集合时只做线性扫描，</span>
+<span class="co">//      跳过“没被改造的乡镇”所对应的边。</span>
+<span class="co">// 复杂度 O(m log m + (nk) log(nk) + 2^k * (n + k) * α)</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="k">typedef</span> <span class="ty">long</span> <span class="ty">long</span> <span class="ty">ll</span>;
+
+<span class="k">struct</span> Edge { <span class="ty">int</span> u, v, w, town; };   <span class="co">// town=0 表示城市边, 否则为 1..k</span>
+
+<span class="k">static</span> <span class="k">inline</span> <span class="ty">int</span> <span class="fn">rd</span>() {
+    <span class="ty">int</span> x = <span class="nu">0</span>; <span class="ty">char</span> c = <span class="fn">getchar</span>();
+    <span class="k">while</span> (c &lt; <span class="st">'0'</span> || c &gt; <span class="st">'9'</span>) c = <span class="fn">getchar</span>();
+    <span class="k">while</span> (c &gt;= <span class="st">'0'</span> &amp;&amp; c &lt;= <span class="st">'9'</span>) { x = x * <span class="nu">10</span> + (c - <span class="st">'0'</span>); c = <span class="fn">getchar</span>(); }
+    <span class="k">return</span> x;
+}
+
+<span class="ty">int</span> n, m, k;
+<span class="ty">vector</span>&lt;Edge&gt; base;
+<span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; c;                       <span class="co">// 改造费用</span>
+<span class="ty">int</span> fa[<span class="nu">10015</span>];
+<span class="ty">int</span> <span class="fn">find</span>(<span class="ty">int</span> x) { <span class="k">while</span> (fa[x] != x) { fa[x] = fa[fa[x]]; x = fa[x]; } <span class="k">return</span> x; }
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    n = <span class="fn">rd</span>(); m = <span class="fn">rd</span>(); k = <span class="fn">rd</span>();
+    <span class="ty">vector</span>&lt;Edge&gt; <span class="fn">orig</span>(m);
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; m; i++) {
+        <span class="ty">int</span> u = <span class="fn">rd</span>(), v = <span class="fn">rd</span>(), w = <span class="fn">rd</span>();
+        orig[i] = {u, v, w, <span class="nu">0</span>};
+    }
+    <span class="co">// ---- 第 1 步：原图 Kruskal，只留树边 ----</span>
+    <span class="fn">sort</span>(orig.<span class="fn">begin</span>(), orig.<span class="fn">end</span>(), [](<span class="k">const</span> Edge&amp; a, <span class="k">const</span> Edge&amp; b) { <span class="k">return</span> a.w &lt; b.w; });
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) fa[i] = i;
+    base.<span class="fn">reserve</span>(n - <span class="nu">1</span> + (<span class="ty">size_t</span>)k * n);
+    <span class="k">for</span> (<span class="k">const</span> Edge&amp; e : orig) {
+        <span class="ty">int</span> u = <span class="fn">find</span>(e.u), v = <span class="fn">find</span>(e.v);
+        <span class="k">if</span> (u != v) { fa[u] = v; base.<span class="fn">push_back</span>(e); }
+    }
+    <span class="co">// ---- 读入乡镇, 生成城乡边 ----</span>
+    c.<span class="fn">assign</span>(k + <span class="nu">1</span>, <span class="nu">0</span>);
+    <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">1</span>; j &lt;= k; j++) {
+        c[j] = <span class="fn">rd</span>();
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) base.<span class="fn">push_back</span>({n + j, i, <span class="fn">rd</span>(), j});
+    }
+    <span class="co">// ---- 第 2 步：一次性排序 ----</span>
+    <span class="fn">sort</span>(base.<span class="fn">begin</span>(), base.<span class="fn">end</span>(), [](<span class="k">const</span> Edge&amp; a, <span class="k">const</span> Edge&amp; b) { <span class="k">return</span> a.w &lt; b.w; });
+
+    <span class="ty">ll</span> ans = LLONG_MAX;
+    <span class="k">for</span> (<span class="ty">int</span> mask = <span class="nu">0</span>; mask &lt; (<span class="nu">1</span> &lt;&lt; k); mask++) {
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n + k; i++) fa[i] = i;
+        <span class="ty">ll</span> cost = <span class="nu">0</span>;
+        <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">1</span>; j &lt;= k; j++) <span class="k">if</span> (mask &gt;&gt; (j - <span class="nu">1</span>) &amp; <span class="nu">1</span>) cost += c[j];
+        <span class="k">if</span> (cost &gt;= ans) <span class="k">continue</span>;                    <span class="co">// 小剪枝</span>
+        <span class="k">for</span> (<span class="k">const</span> Edge&amp; e : base) {
+            <span class="k">if</span> (e.town &amp;&amp; !(mask &gt;&gt; (e.town - <span class="nu">1</span>) &amp; <span class="nu">1</span>)) <span class="k">continue</span>;
+            <span class="ty">int</span> u = <span class="fn">find</span>(e.u), v = <span class="fn">find</span>(e.v);
+            <span class="k">if</span> (u != v) { fa[u] = v; cost += e.w; }
+        }
+        <span class="k">if</span> (cost &lt; ans) ans = cost;
+    }
+    <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, ans);
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="3-7">3.7 实现要点与坑</h3>
+<ul>
+<li><strong>改造费一定要计入</strong>：<code>total = MST 边权和 + Σ_{j∈S} c_j</code>，很多人的第一版会忘掉 <span class="tex">c<sub>j</sub></span>。</li>
+<li><strong>并查集重置</strong>：<span class="tex">2<sup>10</sup>=1024</span> 次 Kruskal，每次 <code>memset</code> 整个 <span class="tex">n</span> 数组即可（<span class="tex">10<sup>4</sup>× 1024 = 10<sup>7</sup></span>，可接受）；也可以用"时间戳版本号"把重置降到 <span class="tex">O(1)</span> 每次。</li>
+<li><strong>边权与答案要开 <code>long long</code></strong>：边权 <span class="tex">10<sup>9</sup></span>、<span class="tex">n=10<sup>4</sup></span>，MST 边权和可达 <span class="tex">10<sup>13</sup></span>。</li>
+<li><strong>枚举时的剪枝顺序</strong>：先算改造费，<code>cost &gt;= ans</code> 就 <code>continue</code>，能省掉大量无用扫描。</li>
+<li><strong>性质 A（<span class="tex">c<sub>j</sub>=0</span> 且存在 <span class="tex">a<sub>j,i</sub>=0</span>）</strong>：改造是免费的，全部改造（或至少把所有 <span class="tex">c<sub>j</sub>=0</span> 的乡镇都改造）不会让答案变差，可以退化成"一次 Kruskal"，是 L1/L2 档位在 5,6,9,10 号点上的捷径。</li>
+</ul>
+<hr>
+<h2 id="4-replace">4. replace 谐音替换</h2>
+<h3 id="4-1">4.1 题意</h3>
+<p>给出 <span class="tex">n</span> 个二元组 <span class="tex">(s<sub>i,1</sub>,s<sub>i,2</sub>)</span>，满足 <span class="tex">|s<sub>i,1</sub>|=|s<sub>i,2</sub>|</span>。对字符串 <span class="tex">s</span> 的一次<strong>替换</strong>是：挑一个子串 <span class="tex">y=s<sub>i,1</sub></span>（写成 <span class="tex">s=x+y+z</span>），把它换成 <span class="tex">y'=s<sub>i,2</sub></span>，得到 <span class="tex">x+s<sub>i,2</sub>+z</span>。</p>
+<p><span class="tex">q</span> 个询问 <span class="tex">(t<sub>j,1</sub>,t<sub>j,2</sub>)</span>：问<strong>有多少种替换能把 <span class="tex">t<sub>j,1</sub></span> 变成 <span class="tex">t<sub>j,2</sub></span></strong>。两种替换不同 <span class="tex">⟺</span> 子串位置不同 <strong>或</strong> 用到的二元组不同。</p>
+<p>数据：<span class="tex">n,q≤ 2×10<sup>5</sup></span>，<span class="tex">L<sub>1</sub>=∑(|s<sub>i,1</sub>|+|s<sub>i,2</sub>|)≤ 5×10<sup>6</sup></span>，<span class="tex">L<sub>2</sub></span> 同理。</p>
+<h3 id="4-2">4.2 第一步：把"替换"翻译成"窗口"</h3>
+<p>因为 <span class="tex">|s<sub>i,1</sub>|=|s<sub>i,2</sub>|</span>，替换<strong>不改变字符串长度</strong>，所以先决条件是 <span class="tex">|t<sub>j,1</sub>|=|t<sub>j,2</sub>|</span>。</p>
+<p>一次替换 <span class="tex">(i, <span class="rm">位置 </span>p)</span> 能成立 <span class="tex">⟺</span> 在 <span class="tex">t<sub>1</sub></span> 上开一个长度 <span class="tex">L<sub>i</sub></span> 的窗口 <span class="tex">[p, p+L<sub>i</sub>−1]</span>，使得</p>
+<ol>
+<li><span class="tex">t<sub>1</sub>[p..p+L<sub>i</sub>−1]=s<sub>i,1</sub></span>；</li>
+<li><span class="tex">t<sub>2</sub>[p..p+L<sub>i</sub>−1]=s<sub>i,2</sub></span>；</li>
+<li>窗口<strong>外面</strong>的 <span class="tex">t<sub>1</sub></span>、<span class="tex">t<sub>2</sub></span> 完全相同。</li>
+</ol>
+<p>设 <span class="tex">lo</span>、<span class="tex">hi</span> 是 <span class="tex">t<sub>1</sub>,t<sub>2</sub></span> 第一个 / 最后一个不同的位置。由于窗口外的部分必须逐字符相同，条件 3 等价于</p>
+<div class="formula"><p>[lo, hi]⊆ [p, p+L<sub>i</sub>−1]  ⟺   p≤ lo,  p+L<sub>i</sub>−1≥ hi</p></div><p>于是合法的 <span class="tex">p</span> 范围是</p>
+<div class="formula"><p>p∈[<span class="rm">max</span>(0, hi−L<sub>i</sub>+1), <span class="rm">min</span>(lo, |t<sub>1</sub>|−L<sub>i</sub>)]</p></div><p><strong>条件 3 是最容易漏掉的一条</strong>——只判断"同一位置两串同时匹配"会把样例 1 算成 3（正确答案是 2）。</p>
+<h3 id="4-3-1-10-1-2">4.3 档位 1：按定义暴力（10 分，测试点 1,2）</h3>
+<p>枚举 <span class="tex">(i,p)</span>，直接用 <code>std::string</code> 逐字符比较两个窗口。复杂度 <span class="tex">O(nL<sup>2</sup>)</span> 量级，<span class="tex">L≤200</span> 时可过。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// T3 参考暴力（对拍基准）：严格按定义 —— t1 = x + s1_i + z 且 t2 = x + s2_i + z</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="ty">int</span> n, q;
+    <span class="k">if</span> (<span class="fn">scanf</span>(<span class="st">"%d %d"</span>, &amp;n, &amp;q) != <span class="nu">2</span>) <span class="k">return</span> <span class="nu">0</span>;
+    <span class="ty">vector</span>&lt;<span class="ty">string</span>&gt; <span class="fn">s1</span>(n), <span class="fn">s2</span>(n);
+    <span class="k">static</span> <span class="ty">char</span> buf[<span class="nu">5000006</span>];
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; n; i++) {
+        <span class="fn">scanf</span>(<span class="st">"%s"</span>, buf); s1[i] = buf;
+        <span class="fn">scanf</span>(<span class="st">"%s"</span>, buf); s2[i] = buf;
+    }
+    <span class="k">while</span> (q--) {
+        <span class="fn">scanf</span>(<span class="st">"%s"</span>, buf); <span class="ty">string</span> t1 = buf;
+        <span class="fn">scanf</span>(<span class="st">"%s"</span>, buf); <span class="ty">string</span> t2 = buf;
+        <span class="ty">long</span> <span class="ty">long</span> ans = <span class="nu">0</span>;
+        <span class="k">if</span> (t1.<span class="fn">size</span>() == t2.<span class="fn">size</span>()) {
+            <span class="ty">int</span> L1 = (<span class="ty">int</span>)t1.<span class="fn">size</span>();
+            <span class="co">// 两串不同的“最小包围区间” [lo, hi]</span>
+            <span class="ty">int</span> lo = -<span class="nu">1</span>, hi = -<span class="nu">1</span>;
+            <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; L1; i++) <span class="k">if</span> (t1[i] != t2[i]) { <span class="k">if</span> (lo &lt; <span class="nu">0</span>) lo = i; hi = i; }
+            <span class="k">if</span> (lo &gt;= <span class="nu">0</span>) {
+                <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; n; i++) {
+                    <span class="ty">int</span> L = (<span class="ty">int</span>)s1[i].<span class="fn">size</span>();
+                    <span class="k">for</span> (<span class="ty">int</span> p = <span class="nu">0</span>; p + L &lt;= L1; p++) {
+                        <span class="k">if</span> (p &gt; lo || p + L - <span class="nu">1</span> &lt; hi) <span class="k">continue</span>;      <span class="co">// 窗口必须盖住差异区</span>
+                        <span class="k">if</span> (t1.<span class="fn">compare</span>(p, L, s1[i]) == <span class="nu">0</span> &amp;&amp; t2.<span class="fn">compare</span>(p, L, s2[i]) == <span class="nu">0</span>) ans++;
+                    }
+                }
+            }
+        }
+        <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, ans);
+    }
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="4-4-2-50-18-13-14">4.4 档位 2：哈希暴力（50 分，测试点 1~8、13,14）</h3>
+<p>把"逐字符比较"换成"<span class="tex">O(1)</span> 的哈希比较"：</p>
+<ol>
+<li>预处理每条规则 <span class="tex">(s<sub>i,1</sub>,s<sub>i,2</sub>)</span> 的整体哈希值；</li>
+<li>每次询问先 <span class="tex">O(L<sub>2</sub>)</span> 扫一遍求出 <span class="tex">lo,hi</span>，并建好 <span class="tex">t<sub>1</sub>,t<sub>2</sub></span> 的前缀哈希；</li>
+<li>枚举 <span class="tex">i</span>，再枚举 <span class="tex">p∈[<span class="rm">max</span>(0,hi−L<sub>i</sub>+1),<span class="rm">min</span>(lo,|t<sub>1</sub>|−L<sub>i</sub>)]</span>，<span class="tex">O(1)</span> 判两个窗口哈希。</li>
+</ol>
+<p>每次询问复杂度 <span class="tex">O(L<sub>2</sub>+∑<sub>i</sub>|s<sub>i,1</sub>|)</span>（<strong>与 <span class="tex">q</span> 无关地与所有规则过一遍</strong>）。于是：</p>
+<ul>
+<li>测试点 1~6：<span class="tex">n,q≤10<sup>3</sup></span>、<span class="tex">L≤2000</span>，直接稳过；</li>
+<li>测试点 <strong>7,8 和 13,14</strong>：它们的 <span class="tex">L</span> 上限高达 <span class="tex">10<sup>6</sup>∼5×10<sup>6</sup></span>，但<strong>特殊性质 A 保证 <span class="tex">q=1</span></strong>，整个程序只跑一次询问，代价就是 <span class="tex">O(L<sub>1</sub>/2+L<sub>2</sub>)</span>，照样秒过；</li>
+<li>测试点 11,12、15~20：<span class="tex">q</span> 到了 <span class="tex">2×10<sup>5</sup></span>，<span class="tex">q× L<sub>1</sub></span> 直接爆掉，必须上正解。</li>
+</ul>
+<p>所以这个"看起来只能拿 25 分"的暴力，实际靠 <span class="tex">q=1</span> 能拿到 <strong>50 分</strong>——这是这道题最值钱的一个部分分。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2025 T3 谐音替换 (replace) —— 档1：暴力 (预期 25 分, 测试点 1~5)</span>
+<span class="co">// 定义：答案 = #{(i, p) : t1 = x + s1_i + z 且 t2 = x + s2_i + z}</span>
+<span class="co">// 等价条件（设 [lo,hi] 为 t1,t2 第一个/最后一个不同位置）：</span>
+<span class="co">//   (1) 窗口 [p, p+L-1] 覆盖 [lo,hi]，即 p &lt;= lo 且 p+L-1 &gt;= hi；</span>
+<span class="co">//   (2) t1[p..p+L-1] = s1_i；(3) t2[p..p+L-1] = s2_i。</span>
+<span class="co">// 复杂度 O(n * L2)，n 和 L2 都在 1e3~2e3 量级时可过。</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="k">typedef</span> <span class="ty">unsigned</span> <span class="ty">long</span> <span class="ty">long</span> <span class="ty">ull</span>;
+<span class="k">const</span> <span class="ty">ull</span> B = <span class="nu">131</span>;
+<span class="k">static</span> <span class="ty">char</span> b1[<span class="nu">5000006</span>], b2[<span class="nu">5000006</span>];
+<span class="k">static</span> <span class="ty">ull</span> h1[<span class="nu">5000006</span>], h2[<span class="nu">5000006</span>], pw[<span class="nu">5000006</span>];
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="ty">int</span> n, q;
+    <span class="fn">scanf</span>(<span class="st">"%d %d"</span>, &amp;n, &amp;q);
+    <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; <span class="fn">len</span>(n);
+    <span class="ty">vector</span>&lt;<span class="ty">ull</span>&gt; <span class="fn">H1</span>(n), <span class="fn">H2</span>(n);
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; n; i++) {
+        <span class="fn">scanf</span>(<span class="st">"%s %s"</span>, b1, b2);
+        <span class="ty">int</span> m = (<span class="ty">int</span>)<span class="fn">strlen</span>(b1);
+        len[i] = m;
+        <span class="ty">ull</span> x = <span class="nu">0</span>, y = <span class="nu">0</span>;
+        <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt; m; j++) { x = x * B + (<span class="ty">ull</span>)(b1[j] - <span class="st">'a'</span> + <span class="nu">1</span>); y = y * B + (<span class="ty">ull</span>)(b2[j] - <span class="st">'a'</span> + <span class="nu">1</span>); }
+        H1[i] = x; H2[i] = y;
+    }
+    pw[<span class="nu">0</span>] = <span class="nu">1</span>;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt; <span class="nu">5000006</span>; i++) pw[i] = pw[i - <span class="nu">1</span>] * B;
+    <span class="k">for</span> (<span class="ty">int</span> qi = <span class="nu">0</span>; qi &lt; q; qi++) {
+        <span class="fn">scanf</span>(<span class="st">"%s %s"</span>, b1, b2);
+        <span class="ty">int</span> L1 = (<span class="ty">int</span>)<span class="fn">strlen</span>(b1), L2 = (<span class="ty">int</span>)<span class="fn">strlen</span>(b2);
+        <span class="ty">long</span> <span class="ty">long</span> ans = <span class="nu">0</span>;
+        <span class="k">if</span> (L1 == L2) {
+            h1[<span class="nu">0</span>] = <span class="nu">0</span>; <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt; L1; j++) h1[j + <span class="nu">1</span>] = h1[j] * B + (<span class="ty">ull</span>)(b1[j] - <span class="st">'a'</span> + <span class="nu">1</span>);
+            h2[<span class="nu">0</span>] = <span class="nu">0</span>; <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt; L2; j++) h2[j + <span class="nu">1</span>] = h2[j] * B + (<span class="ty">ull</span>)(b2[j] - <span class="st">'a'</span> + <span class="nu">1</span>);
+            <span class="ty">int</span> lo = -<span class="nu">1</span>, hi = -<span class="nu">1</span>;
+            <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt; L1; j++) <span class="k">if</span> (b1[j] != b2[j]) { <span class="k">if</span> (lo &lt; <span class="nu">0</span>) lo = j; hi = j; }
+            <span class="k">if</span> (lo &gt;= <span class="nu">0</span>) {
+                <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; n; i++) {
+                    <span class="ty">int</span> L = len[i];
+                    <span class="ty">int</span> pmin = <span class="fn">max</span>(<span class="nu">0</span>, hi - L + <span class="nu">1</span>), pmax = <span class="fn">min</span>(lo, L1 - L);
+                    <span class="k">for</span> (<span class="ty">int</span> p = pmin; p &lt;= pmax; p++) {
+                        <span class="k">if</span> (h1[p + L] - h1[p] * pw[L] == H1[i] &amp;&amp; h2[p + L] - h2[p] * pw[L] == H2[i]) ans++;
+                    }
+                }
+            }
+        }
+        <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, ans);
+    }
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="4-5-a-b-c-aa-bq-cc-trie-bit-100">4.5 正解：拆 <span class="tex">(A,B,C)</span> / <span class="tex">(AA,BQ,CC)</span> + 分组 + 两棵 Trie + 差分 BIT（100 分）</h3>
+<h4 id="4-5-1">4.5.1 结论</h4>
+<p>把规则拆成</p>
+<div class="formula"><p>s<sub>i,1</sub>=A<sub>i</sub>+B<sub>i</sub>+C<sub>i</sub>,     s<sub>i,2</sub>=A<sub>i</sub>+D<sub>i</sub>+C<sub>i</sub></p></div><p>其中 <span class="tex">A<sub>i</sub></span> = 两串的最长公共前缀，<span class="tex">C<sub>i</sub></span> = 最长公共后缀，<span class="tex">B<sub>i</sub></span>、<span class="tex">D<sub>i</sub></span> 是剩下的中间段（长度相等）。</p>
+<p>询问同样拆成</p>
+<div class="formula"><p>t<sub>j,1</sub>=AA<sub>j</sub>+BQ<sub>j</sub>+CC<sub>j</sub>,     t<sub>j,2</sub>=AA<sub>j</sub>+DQ<sub>j</sub>+CC<sub>j</sub></p></div><p>（注意 <span class="tex">lo=|AA<sub>j</sub>|</span>，所以 <span class="tex">BQ<sub>j</sub>=t<sub>1</sub>[lo..hi]</span>、<span class="tex">DQ<sub>j</sub>=t<sub>2</sub>[lo..hi]</span>。）</p>
+<p>那么——</p>
+<blockquote>
+<p><strong>规则 <span class="tex">i</span> 对询问 <span class="tex">j</span> 的贡献只可能是 0 或 1；贡献为 1 的充要条件是</strong></p>
+</blockquote>
+<div class="formula"><p>B<sub>i</sub>=BQ<sub>j</sub>,   D<sub>i</sub>=DQ<sub>j</sub>,   A<sub>i</sub><span class="rm"> 是 </span>AA<sub>j</sub><span class="rm"> 的后缀</span>,   C<sub>i</sub><span class="rm"> 是 </span>CC<sub>j</sub><span class="rm"> 的前缀</span></p></div><h4 id="4-5-2">4.5.2 为什么</h4>
+<ul>
+<li>替换位置 <span class="tex">p</span> 由"中间段对齐"唯一夹定：<span class="tex">p=|AA<sub>j</sub>|−|A<sub>i</sub>|</span>。所以匹配与否只有 0/1，不会出现同一个规则有多个合法 <span class="tex">p</span>。</li>
+<li>窗口左端 <span class="tex">[p, p+|A<sub>i</sub>|−1]</span> 的 <span class="tex">A</span> 段必须落在 <span class="tex">t<sub>1</sub>,t<sub>2</sub></span> 相同的区域里，否则会成为"不同的字符"，于是 <span class="tex">A<sub>i</sub></span> 必须是 <span class="tex">AA<sub>j</sub></span> 的后缀；</li>
+<li>窗口右端的 <span class="tex">C</span> 段同理必须落在公共后缀里，所以 <span class="tex">C<sub>i</sub></span> 必须是 <span class="tex">CC<sub>j</sub></span> 的前缀；</li>
+<li>反过来，若 <span class="tex">|B<sub>i</sub>|≠|BQ<sub>j</sub>|</span>，窗口的 <span class="tex">A</span> 段或 <span class="tex">C</span> 段必然跨过 <span class="tex">lo</span> / <span class="tex">hi</span> 边界，那一段就不可能同时在 <span class="tex">t<sub>1</sub>,t<sub>2</sub></span> 里相同。<strong>所以只有 <span class="tex">B,D</span> 完全相同才可能</strong>（<span class="tex">A</span>、<span class="tex">C</span> 可以被"吸收"进 <span class="tex">AA</span>、<span class="tex">CC</span> 的更长部分里，<span class="tex">B</span>、<span class="tex">D</span> 不能）。</li>
+</ul>
+<h4 id="4-5-3">4.5.3 怎么数</h4>
+<p>按 <span class="tex">(B,D)</span> 分组（key 用字符串 <code>B + '#' + D</code>）。组内要数的是</p>
+<div class="formula"><p>#{i: A<sub>i</sub> <span class="rm"> 是 </span> AA<sub>j</sub> <span class="rm"> 的后缀</span>, C<sub>i</sub> <span class="rm"> 是 </span> CC<sub>j</sub> <span class="rm"> 的前缀</span>}</p></div><p>两个"前后缀关系"都能翻译成 <strong>Trie 上的祖先关系</strong>：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>条件</th>
+<th>等价说法</th>
+<th>Trie 上的含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><span class="tex">A<sub>i</sub></span> 是 <span class="tex">AA<sub>j</sub></span> 的后缀</td>
+<td><span class="tex"><span class="rm">rev</span>(A<sub>i</sub>)</span> 是 <span class="tex"><span class="rm">rev</span>(AA<sub>j</sub>)</span> 的前缀</td>
+<td><code>nodeA(rev(A_i))</code> 是 <code>nodeA(rev(AA_j))</code> 的祖先</td>
+</tr>
+<tr>
+<td><span class="tex">C<sub>i</sub></span> 是 <span class="tex">CC<sub>j</sub></span> 的前缀</td>
+<td>同义</td>
+<td><code>nodeC(C_i)</code> 是 <code>nodeC(CC_j)</code> 的祖先</td>
+</tr>
+</tbody></table></div>
+<p>于是用经典套路：</p>
+<ol>
+<li>建 TrieA（插所有 <span class="tex"><span class="rm">rev</span>(A<sub>i</sub>)</span>）和 TrieC（插所有 <span class="tex">C<sub>i</sub></span>），各自求 Euler 序 <code>tin/tout</code>；</li>
+<li><strong>在 TrieA 上 DFS</strong>：进入结点 <span class="tex">u</span> 时，把"<code>nodeA</code> 恰好是 <span class="tex">u</span> 的那些规则"在 TrieC 上做<strong>子树区间加</strong> <code>[tinC, toutC] += 1</code>；离开 <span class="tex">u</span> 时撤销（<code>-= 1</code>）；</li>
+<li>走到某个询问所在的结点时，BIT 里的 <span class="tex">+1</span> 恰好对应"<code>nodeA</code> 是它祖先（或自身）"的规则；此时<strong>单点查</strong> <code>tinC(nodeC(CC_j))</code>，得到的就是"<code>nodeC(C_i)</code> 是它的祖先"的规则个数。</li>
+<li>区间加 + 单点查用<strong>差分树状数组</strong>。</li>
+</ol>
+<p>每个 <span class="tex">(B,D)</span> 分组单独建一次 TrieA/TrieC 并跑一次 DFS+BIT，跑完清零复用。</p>
+<h4 id="4-5-4">4.5.4 复杂度与实测</h4>
+<p>每组 Trie 的规模是该组规则的 <span class="tex">|A<sub>i</sub>|+|C<sub>i</sub>|</span>，所有组求和为 <span class="tex">O(L<sub>1</sub>)</span>；询问侧就是 walk 一遍字符串 <span class="tex">O(L<sub>2</sub>)</span>。因此</p>
+<div class="formula"><p>O(L<sub>1</sub>+L<sub>2</sub>+(n+q)<span class="rm">log</span> L<sub>1</sub>) <span class="rm">时间</span>,     O(L<sub>1</sub>) <span class="rm">空间</span></p></div><p>实测 <span class="tex">n=10<sup>5</sup>, q=5×10<sup>4</sup></span> 用时 <strong>0.06 s</strong>；构造"长公共前后缀"的压力数据 <strong>0.12 s / 79 MB</strong>。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2025 T3 谐音替换 (replace) —— 正解  O(L1 + L2 + (n+q) log)</span>
+<span class="co">// ---------------------------------------------------------------------------</span>
+<span class="co">// 关键转化（用定义 t1 = x + s1_i + z, t2 = x + s2_i + z 推出）</span>
+<span class="co">//  规则 i : s1 = A + B + C,  s2 = A + D + C   (A=最长公共前缀, C=最长公共后缀, B/D=中间段)</span>
+<span class="co">//  询问 j : t1 = AA + BQ + CC, t2 = AA + DQ + CC  (同样取最长公共前后缀)</span>
+<span class="co">//  规则 i 对询问 j 恰好贡献 1 条，当且仅当</span>
+<span class="co">//      B == BQ  且  D == DQ  且  A 是 AA 的后缀  且  C 是 CC 的前缀</span>
+<span class="co">//  （替换位置被两端唯一夹定，所以匹配的规则至多贡献 1。）</span>
+<span class="co">// ---------------------------------------------------------------------------</span>
+<span class="co">// 计数：按 (B,D) 分组。组内要数 #{ i : A_i 是 AA 的后缀, C_i 是 CC 的前缀 }。</span>
+<span class="co">//  · A 是 AA 的后缀 &lt;=&gt; rev(A) 是 rev(AA) 的前缀</span>
+<span class="co">//  · C 是 CC 的前缀 &lt;=&gt; C 是 CC 的前缀</span>
+<span class="co">// 两者都是「前缀」关系 —— 在 Trie 上就是「结点的祖先关系」：</span>
+<span class="co">//  记 nodeA(x)=x 在 TrieA 中走到的结点（走不动就停在最深处，根 = 空串）。</span>
+<span class="co">//  要数的是 #{ i : nodeA(revA_i) 是 nodeA(revAA_j) 的祖先 且 nodeC(C_i) 是 nodeC(CC_j) 的祖先 }。</span>
+<span class="co">// 经典技巧：在 TrieA 上 DFS，进入结点 u 时把「nodeA=u 的规则 i」在 TrieC 上做</span>
+<span class="co">//  区间加 [tinC(C_i), toutC(C_i)] += 1，离开时撤销；到询问所在结点时，BIT 里恰好是</span>
+<span class="co">//  「nodeA 是祖先」的那些规则，单点查 tinC(nodeC(CC_j)) 得到的就是</span>
+<span class="co">//  「nodeC(C_i) 是它的祖先」的个数。区间加 + 单点查用差分 BIT。</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+
+<span class="co">/* ---------------- 快速输入 ---------------- */</span>
+<span class="k">static</span> <span class="ty">char</span> ibuf[<span class="nu">1</span> &lt;&lt; <span class="nu">25</span>];
+<span class="k">static</span> <span class="ty">size_t</span> ipos = <span class="nu">0</span>, ilen = <span class="nu">0</span>;
+<span class="k">static</span> <span class="k">inline</span> <span class="ty">int</span> <span class="fn">gc</span>() { <span class="k">if</span> (ipos == ilen) { ilen = <span class="fn">fread</span>(ibuf, <span class="nu">1</span>, <span class="k">sizeof</span>(ibuf), stdin); ipos = <span class="nu">0</span>; <span class="k">if</span> (!ilen) <span class="k">return</span> -<span class="nu">1</span>; } <span class="k">return</span> ibuf[ipos++]; }
+<span class="k">static</span> <span class="k">inline</span> <span class="ty">void</span> <span class="fn">readStr</span>(<span class="ty">string</span>&amp; s) {
+    s.<span class="fn">clear</span>(); <span class="ty">int</span> c = <span class="fn">gc</span>();
+    <span class="k">while</span> (c != -<span class="nu">1</span> &amp;&amp; (c == <span class="st">' '</span> || c == <span class="st">'\n'</span> || c == <span class="st">'\r'</span> || c == <span class="st">'\t'</span>)) c = <span class="fn">gc</span>();
+    <span class="k">while</span> (c != -<span class="nu">1</span> &amp;&amp; c != <span class="st">' '</span> &amp;&amp; c != <span class="st">'\n'</span> &amp;&amp; c != <span class="st">'\r'</span> &amp;&amp; c != <span class="st">'\t'</span>) { s.<span class="fn">push_back</span>((<span class="ty">char</span>)c); c = <span class="fn">gc</span>(); }
+}
+<span class="k">static</span> <span class="k">inline</span> <span class="ty">int</span> <span class="fn">readInt</span>() { <span class="ty">int</span> c = <span class="fn">gc</span>(); <span class="k">while</span> (c &lt; <span class="st">'0'</span> || c &gt; <span class="st">'9'</span>) c = <span class="fn">gc</span>(); <span class="ty">int</span> x = <span class="nu">0</span>; <span class="k">while</span> (c &gt;= <span class="st">'0'</span> &amp;&amp; c &lt;= <span class="st">'9'</span>) { x = x * <span class="nu">10</span> + c - <span class="st">'0'</span>; c = <span class="fn">gc</span>(); } <span class="k">return</span> x; }
+
+<span class="co">/* ---------------- Trie（前向星孩子） ---------------- */</span>
+<span class="k">struct</span> Trie {
+    <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; head, nxt, to; <span class="ty">vector</span>&lt;<span class="ty">unsigned</span> <span class="ty">char</span>&gt; ch; <span class="ty">int</span> cnt = <span class="nu">0</span>;
+    <span class="ty">void</span> <span class="fn">reset</span>() { head.<span class="fn">clear</span>(); nxt.<span class="fn">clear</span>(); to.<span class="fn">clear</span>(); ch.<span class="fn">clear</span>(); cnt = <span class="nu">0</span>; <span class="fn">newNode</span>(); }
+    <span class="k">inline</span> <span class="ty">int</span> <span class="fn">newNode</span>() { head.<span class="fn">push_back</span>(-<span class="nu">1</span>); <span class="k">return</span> cnt++; }
+    <span class="k">inline</span> <span class="ty">int</span> <span class="fn">getChild</span>(<span class="ty">int</span> u, <span class="ty">int</span> c) {
+        <span class="k">for</span> (<span class="ty">int</span> e = head[u]; e != -<span class="nu">1</span>; e = nxt[e]) <span class="k">if</span> (ch[e] == (<span class="ty">unsigned</span> <span class="ty">char</span>)c) <span class="k">return</span> to[e];
+        <span class="ty">int</span> v = <span class="fn">newNode</span>(); ch.<span class="fn">push_back</span>((<span class="ty">unsigned</span> <span class="ty">char</span>)c); to.<span class="fn">push_back</span>(v); nxt.<span class="fn">push_back</span>(head[u]); head[u] = (<span class="ty">int</span>)to.<span class="fn">size</span>() - <span class="nu">1</span>; <span class="k">return</span> v;
+    }
+    <span class="k">inline</span> <span class="ty">int</span> <span class="fn">findChild</span>(<span class="ty">int</span> u, <span class="ty">int</span> c) {
+        <span class="k">for</span> (<span class="ty">int</span> e = head[u]; e != -<span class="nu">1</span>; e = nxt[e]) <span class="k">if</span> (ch[e] == (<span class="ty">unsigned</span> <span class="ty">char</span>)c) <span class="k">return</span> to[e];
+        <span class="k">return</span> -<span class="nu">1</span>;
+    }
+    <span class="k">inline</span> <span class="ty">int</span> <span class="fn">walk</span>(<span class="k">const</span> <span class="ty">string</span>&amp; s) { <span class="ty">int</span> u = <span class="nu">0</span>; <span class="k">for</span> (<span class="ty">char</span> c : s) { <span class="ty">int</span> v = <span class="fn">findChild</span>(u, c); <span class="k">if</span> (v == -<span class="nu">1</span>) <span class="k">break</span>; u = v; } <span class="k">return</span> u; }
+};
+
+<span class="co">/* ---------------- 差分 BIT：区间加 + 单点查 ---------------- */</span>
+<span class="k">static</span> <span class="ty">vector</span>&lt;<span class="ty">long</span> <span class="ty">long</span>&gt; bitv; <span class="k">static</span> <span class="ty">int</span> bitn = <span class="nu">0</span>;
+<span class="k">static</span> <span class="k">inline</span> <span class="ty">void</span> <span class="fn">bitUpd</span>(<span class="ty">int</span> i, <span class="ty">long</span> <span class="ty">long</span> v) { <span class="k">for</span> (++i; i &lt;= bitn; i += i &amp; (-i)) bitv[i] += v; }
+<span class="k">static</span> <span class="k">inline</span> <span class="ty">void</span> <span class="fn">rangeAdd</span>(<span class="ty">int</span> l, <span class="ty">int</span> r, <span class="ty">long</span> <span class="ty">long</span> v) { <span class="fn">bitUpd</span>(l, v); <span class="k">if</span> (r + <span class="nu">1</span> &lt; bitn) <span class="fn">bitUpd</span>(r + <span class="nu">1</span>, -v); }
+<span class="k">static</span> <span class="k">inline</span> <span class="ty">long</span> <span class="ty">long</span> <span class="fn">pointGet</span>(<span class="ty">int</span> i) { <span class="ty">long</span> <span class="ty">long</span> s = <span class="nu">0</span>; <span class="k">for</span> (++i; i &gt; <span class="nu">0</span>; i -= i &amp; (-i)) s += bitv[i]; <span class="k">return</span> s; }
+
+<span class="co">/* ---------------- 迭代 DFS 求 tin / tout ---------------- */</span>
+<span class="k">static</span> <span class="ty">void</span> <span class="fn">euler</span>(Trie&amp; T, <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt;&amp; tin, <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt;&amp; tout) {
+    <span class="ty">int</span> N = T.cnt; tin.<span class="fn">assign</span>(N, <span class="nu">0</span>); tout.<span class="fn">assign</span>(N, <span class="nu">0</span>);
+    <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; stN, stE; <span class="ty">int</span> timer = <span class="nu">0</span>;
+    stN.<span class="fn">push_back</span>(<span class="nu">0</span>); tin[<span class="nu">0</span>] = timer++;
+    stE.<span class="fn">push_back</span>(T.head[<span class="nu">0</span>]);
+    <span class="k">while</span> (!stN.<span class="fn">empty</span>()) {
+        <span class="ty">int</span> u = stN.<span class="fn">back</span>(); <span class="ty">int</span>&amp; e = stE.<span class="fn">back</span>();
+        <span class="k">if</span> (e == -<span class="nu">1</span>) { tout[u] = timer - <span class="nu">1</span>; stN.<span class="fn">pop_back</span>(); stE.<span class="fn">pop_back</span>(); <span class="k">continue</span>; }
+        <span class="ty">int</span> v = T.to[e]; e = T.nxt[e];
+        tin[v] = timer++;
+        stN.<span class="fn">push_back</span>(v); stE.<span class="fn">push_back</span>(T.head[v]);
+    }
+}
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="ty">int</span> n = <span class="fn">readInt</span>(), q = <span class="fn">readInt</span>();
+    <span class="ty">unordered_map</span>&lt;<span class="ty">string</span>, <span class="ty">int</span>&gt; gmap;
+    gmap.<span class="fn">reserve</span>((<span class="ty">size_t</span>)n * <span class="nu">2</span> + <span class="nu">10</span>);
+    <span class="ty">vector</span>&lt;<span class="ty">string</span>&gt; ruleA, ruleC;                     <span class="co">// rev(A) 与 C</span>
+    <span class="ty">vector</span>&lt;<span class="ty">vector</span>&lt;<span class="ty">int</span>&gt;&gt; gRules, gQueries;
+
+    <span class="ty">string</span> s1, s2;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; n; i++) {
+        <span class="fn">readStr</span>(s1); <span class="fn">readStr</span>(s2);
+        <span class="ty">int</span> len = (<span class="ty">int</span>)s1.<span class="fn">size</span>();
+        <span class="ty">int</span> a = <span class="nu">0</span>; <span class="k">while</span> (a &lt; len &amp;&amp; s1[a] == s2[a]) a++;
+        <span class="k">if</span> (a == len) <span class="k">continue</span>;                      <span class="co">// s1 == s2 不产生贡献</span>
+        <span class="ty">int</span> b = <span class="nu">0</span>; <span class="k">while</span> (b &lt; len - a &amp;&amp; s1[len - <span class="nu">1</span> - b] == s2[len - <span class="nu">1</span> - b]) b++;
+        <span class="ty">int</span> blen = len - a - b;
+        <span class="ty">string</span> key; key.<span class="fn">reserve</span>(<span class="nu">2</span> * blen + <span class="nu">1</span>);
+        key.<span class="fn">append</span>(s1, a, blen); key.<span class="fn">push_back</span>(<span class="st">'#'</span>); key.<span class="fn">append</span>(s2, a, blen);
+        <span class="k">auto</span> it = gmap.<span class="fn">find</span>(key);
+        <span class="ty">int</span> gid;
+        <span class="k">if</span> (it == gmap.<span class="fn">end</span>()) { gid = (<span class="ty">int</span>)gRules.<span class="fn">size</span>(); gmap.<span class="fn">emplace</span>(std::<span class="fn">move</span>(key), gid); gRules.<span class="fn">push_back</span>({}); gQueries.<span class="fn">push_back</span>({}); }
+        <span class="k">else</span> gid = it-&gt;second;
+        <span class="ty">string</span> <span class="fn">revA</span>(s1.<span class="fn">begin</span>(), s1.<span class="fn">begin</span>() + a); <span class="fn">reverse</span>(revA.<span class="fn">begin</span>(), revA.<span class="fn">end</span>());
+        <span class="ty">string</span> <span class="fn">C</span>(s1.<span class="fn">begin</span>() + len - b, s1.<span class="fn">end</span>());
+        gRules[gid].<span class="fn">push_back</span>((<span class="ty">int</span>)ruleA.<span class="fn">size</span>());
+        ruleA.<span class="fn">push_back</span>(std::<span class="fn">move</span>(revA));
+        ruleC.<span class="fn">push_back</span>(std::<span class="fn">move</span>(C));
+    }
+
+    <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; <span class="fn">qgid</span>(q, -<span class="nu">1</span>), <span class="fn">qNodeA</span>(q, <span class="nu">0</span>), <span class="fn">qNodeC</span>(q, <span class="nu">0</span>);
+    <span class="ty">vector</span>&lt;<span class="ty">string</span>&gt; <span class="fn">qRevAA</span>(q), <span class="fn">qCC</span>(q);
+    <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt; q; j++) {
+        <span class="fn">readStr</span>(s1); <span class="fn">readStr</span>(s2);
+        <span class="k">if</span> (s1.<span class="fn">size</span>() != s2.<span class="fn">size</span>()) <span class="k">continue</span>;
+        <span class="ty">int</span> L = (<span class="ty">int</span>)s1.<span class="fn">size</span>(), lo = -<span class="nu">1</span>, hi = -<span class="nu">1</span>;
+        <span class="k">for</span> (<span class="ty">int</span> t = <span class="nu">0</span>; t &lt; L; t++) <span class="k">if</span> (s1[t] != s2[t]) { <span class="k">if</span> (lo &lt; <span class="nu">0</span>) lo = t; hi = t; }
+        <span class="k">if</span> (lo &lt; <span class="nu">0</span>) <span class="k">continue</span>;                        <span class="co">// t1 == t2</span>
+        <span class="ty">string</span> key; key.<span class="fn">reserve</span>(<span class="nu">2</span> * (hi - lo + <span class="nu">1</span>) + <span class="nu">1</span>);
+        key.<span class="fn">append</span>(s1, lo, hi - lo + <span class="nu">1</span>); key.<span class="fn">push_back</span>(<span class="st">'#'</span>); key.<span class="fn">append</span>(s2, lo, hi - lo + <span class="nu">1</span>);
+        <span class="k">auto</span> it = gmap.<span class="fn">find</span>(key);
+        <span class="k">if</span> (it == gmap.<span class="fn">end</span>()) <span class="k">continue</span>;              <span class="co">// 该分组不存在 =&gt; 答案 0</span>
+        qgid[j] = it-&gt;second;
+        gQueries[it-&gt;second].<span class="fn">push_back</span>(j);
+        <span class="ty">string</span> <span class="fn">revAA</span>(s1.<span class="fn">begin</span>(), s1.<span class="fn">begin</span>() + lo); <span class="fn">reverse</span>(revAA.<span class="fn">begin</span>(), revAA.<span class="fn">end</span>());
+        qRevAA[j] = std::<span class="fn">move</span>(revAA);
+        qCC[j] = s1.<span class="fn">substr</span>(hi + <span class="nu">1</span>);
+    }
+
+    <span class="ty">vector</span>&lt;<span class="ty">long</span> <span class="ty">long</span>&gt; <span class="fn">ans</span>(q, <span class="nu">0</span>);
+    Trie TA, TC;
+    <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; tinA, toutA, tinC, toutC;
+    <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; atA, nxtA, valA, atC, nxtC, valC;
+    <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; qAtA, qNxtA, qValA;
+    <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; <span class="fn">nodeCof</span>(ruleA.<span class="fn">size</span>(), <span class="nu">0</span>);
+
+    <span class="k">for</span> (<span class="ty">int</span> g = <span class="nu">0</span>; g &lt; (<span class="ty">int</span>)gRules.<span class="fn">size</span>(); g++) {
+        <span class="k">if</span> (gQueries[g].<span class="fn">empty</span>()) <span class="k">continue</span>;
+        <span class="ty">int</span> m = (<span class="ty">int</span>)gRules[g].<span class="fn">size</span>();
+        (<span class="ty">void</span>)m;
+        <span class="co">/* ---------- 建 TrieA（rev(A)） ---------- */</span>
+        TA.<span class="fn">reset</span>();
+        atA.<span class="fn">assign</span>(<span class="nu">1</span>, -<span class="nu">1</span>); nxtA.<span class="fn">clear</span>(); valA.<span class="fn">clear</span>();
+        <span class="k">for</span> (<span class="ty">int</span> id : gRules[g]) {
+            <span class="ty">int</span> u = <span class="nu">0</span>;
+            <span class="k">for</span> (<span class="ty">char</span> c : ruleA[id]) { u = TA.<span class="fn">getChild</span>(u, c); <span class="k">if</span> ((<span class="ty">int</span>)atA.<span class="fn">size</span>() &lt; TA.cnt) atA.<span class="fn">resize</span>(TA.cnt, -<span class="nu">1</span>); }
+            <span class="k">if</span> ((<span class="ty">int</span>)atA.<span class="fn">size</span>() &lt; TA.cnt) atA.<span class="fn">resize</span>(TA.cnt, -<span class="nu">1</span>);
+            valA.<span class="fn">push_back</span>(id); nxtA.<span class="fn">push_back</span>(atA[u]); atA[u] = (<span class="ty">int</span>)valA.<span class="fn">size</span>() - <span class="nu">1</span>;
+        }
+        atA.<span class="fn">resize</span>(TA.cnt, -<span class="nu">1</span>);
+        <span class="fn">euler</span>(TA, tinA, toutA);
+        <span class="co">/* ---------- 建 TrieC（C） ---------- */</span>
+        TC.<span class="fn">reset</span>();
+        atC.<span class="fn">assign</span>(<span class="nu">1</span>, -<span class="nu">1</span>); nxtC.<span class="fn">clear</span>(); valC.<span class="fn">clear</span>();
+        <span class="k">for</span> (<span class="ty">int</span> id : gRules[g]) {
+            <span class="ty">int</span> u = <span class="nu">0</span>;
+            <span class="k">for</span> (<span class="ty">char</span> c : ruleC[id]) { u = TC.<span class="fn">getChild</span>(u, c); <span class="k">if</span> ((<span class="ty">int</span>)atC.<span class="fn">size</span>() &lt; TC.cnt) atC.<span class="fn">resize</span>(TC.cnt, -<span class="nu">1</span>); }
+            <span class="k">if</span> ((<span class="ty">int</span>)atC.<span class="fn">size</span>() &lt; TC.cnt) atC.<span class="fn">resize</span>(TC.cnt, -<span class="nu">1</span>);
+            nodeCof[id] = u;
+            valC.<span class="fn">push_back</span>(id); nxtC.<span class="fn">push_back</span>(atC[u]); atC[u] = (<span class="ty">int</span>)valC.<span class="fn">size</span>() - <span class="nu">1</span>;
+        }
+        atC.<span class="fn">resize</span>(TC.cnt, -<span class="nu">1</span>);
+        <span class="fn">euler</span>(TC, tinC, toutC);
+        <span class="co">/* ---------- 询问各自走到的最深结点 ---------- */</span>
+        qAtA.<span class="fn">assign</span>(TA.cnt, -<span class="nu">1</span>); qNxtA.<span class="fn">clear</span>(); qValA.<span class="fn">clear</span>();
+        <span class="k">for</span> (<span class="ty">int</span> j : gQueries[g]) {
+            qNodeA[j] = TA.<span class="fn">walk</span>(qRevAA[j]);
+            qNodeC[j] = TC.<span class="fn">walk</span>(qCC[j]);
+            qValA.<span class="fn">push_back</span>(j); qNxtA.<span class="fn">push_back</span>(qAtA[qNodeA[j]]); qAtA[qNodeA[j]] = (<span class="ty">int</span>)qValA.<span class="fn">size</span>() - <span class="nu">1</span>;
+        }
+        <span class="co">/* ---------- TrieA 上 DFS + BIT ---------- */</span>
+        bitn = TC.cnt; bitv.<span class="fn">assign</span>(bitn + <span class="nu">1</span>, <span class="nu">0</span>);
+        <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; stN, stE;
+        <span class="co">// 进入结点 u：加上 nodeA=u 的规则（在 TrieC 上做子树区间加），再回答挂在 u 上的询问</span>
+        <span class="k">auto</span> enterNode = [&amp;](<span class="ty">int</span> u) {
+            <span class="k">for</span> (<span class="ty">int</span> e = atA[u]; e != -<span class="nu">1</span>; e = nxtA[e]) { <span class="ty">int</span> id = valA[e]; <span class="fn">rangeAdd</span>(tinC[nodeCof[id]], toutC[nodeCof[id]], +<span class="nu">1</span>); }
+            <span class="k">for</span> (<span class="ty">int</span> e = qAtA[u]; e != -<span class="nu">1</span>; e = qNxtA[e]) { <span class="ty">int</span> j = qValA[e]; ans[j] = <span class="fn">pointGet</span>(tinC[qNodeC[j]]); }
+        };
+        <span class="k">auto</span> leaveNode = [&amp;](<span class="ty">int</span> u) {
+            <span class="k">for</span> (<span class="ty">int</span> e = atA[u]; e != -<span class="nu">1</span>; e = nxtA[e]) { <span class="ty">int</span> id = valA[e]; <span class="fn">rangeAdd</span>(tinC[nodeCof[id]], toutC[nodeCof[id]], -<span class="nu">1</span>); }
+        };
+        <span class="fn">enterNode</span>(<span class="nu">0</span>);
+        stN.<span class="fn">push_back</span>(<span class="nu">0</span>); stE.<span class="fn">push_back</span>(TA.head[<span class="nu">0</span>]);
+        <span class="k">while</span> (!stN.<span class="fn">empty</span>()) {
+            <span class="ty">int</span> u = stN.<span class="fn">back</span>(); <span class="ty">int</span>&amp; e = stE.<span class="fn">back</span>();
+            <span class="k">if</span> (e == -<span class="nu">1</span>) { <span class="fn">leaveNode</span>(u); stN.<span class="fn">pop_back</span>(); stE.<span class="fn">pop_back</span>(); <span class="k">continue</span>; }
+            <span class="ty">int</span> v = TA.to[e]; e = TA.nxt[e];
+            stN.<span class="fn">push_back</span>(v); stE.<span class="fn">push_back</span>(TA.head[v]);
+            <span class="fn">enterNode</span>(v);
+        }
+    }
+    <span class="ty">string</span> out;
+    <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt; q; j++) { out += <span class="fn">to_string</span>(ans[j]); out.<span class="fn">push_back</span>(<span class="st">'\n'</span>); }
+    <span class="fn">fwrite</span>(out.<span class="fn">data</span>(), <span class="nu">1</span>, out.<span class="fn">size</span>(), stdout);
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="4-6">4.6 这一题的几个致命坑</h3>
+<ol>
+<li><strong>漏"窗口外必须相同"</strong>：这是本场最容易挂的地方，样例 1 就会暴露（错算成 3）。</li>
+<li><strong>分组 key 别用 <span class="tex">(A,B,C,D)</span></strong>：只有 <span class="tex">B,D</span> 必须完全相同，<span class="tex">A,C</span> 是可以被更长的 <span class="tex">AA,CC</span> 吸收的。key 用 <code>B#D</code>，询问侧就是 <code>t1[lo..hi]#t2[lo..hi]</code>。</li>
+<li><strong>Trie 动态开点后立刻 <code>resize</code> 附属数组</strong>：<code>getChild</code> 可能新建结点，忘记 <code>resize</code> 会读越界/丢数据。</li>
+<li><strong>输入要快读</strong>：<span class="tex">L<sub>1</sub>+L<sub>2</sub></span> 可达 <span class="tex">10<sup>7</sup></span> 字符，<code>cin &gt;&gt; string</code> 会慢到超时，必须 <code>fread</code> 手写缓冲。</li>
+<li><strong>逐组重建、别跨组复用</strong>：TrieA/TrieC 与 BIT 必须按分组清空，否则不同 <span class="tex">(B,D)</span> 的规则会串味。</li>
+</ol>
+<hr>
+<h2 id="5-employ">5. employ 员工招聘</h2>
+<h3 id="5-1">5.1 题意</h3>
+<p><span class="tex">n</span> 天，每天面试一个人；小 Z 决定面试顺序 <span class="tex">p</span>（<span class="tex">1∼ n</span> 的排列）。第 <span class="tex">i</span> 天的题目难度 <span class="tex">s<sub>i</sub>∈{0,1}</span>：<span class="tex">s<sub>i</sub>=0</span> 表示没人做得出（<strong>拒绝</strong>），<span class="tex">s<sub>i</sub>=1</span> 表示所有人都做得出（<strong>录用</strong>）。</p>
+<p>编号 <span class="tex">i</span> 的人耐心为 <span class="tex">c<sub>i</sub></span>：<strong>若在他之前已经有"不少于 <span class="tex">c<sub>i</sub></span> 人"被拒绝或放弃参加面试，那么他也放弃参加面试。</strong></p>
+<p>求能<strong>录用至少 <span class="tex">m</span> 人</strong>的排列 <span class="tex">p</span> 的数量（对 <span class="tex">998244353</span> 取模）。</p>
+<p><span class="tex">1≤ m≤ n≤ 500</span>，<span class="tex">s<sub>i</sub>∈{0,1}</span>，<span class="tex">0≤ c<sub>i</sub>≤ n</span>。</p>
+<h3 id="5-2">5.2 把过程形式化（全题的地基）</h3>
+<p>设 <span class="tex">a<sub>i</sub></span> 表示第 <span class="tex">i</span> 天的人是否被录用，<span class="tex">b<sub>i</sub></span> 表示<strong>前 <span class="tex">i−1</span> 天</strong>里"未录用（被拒 <span class="tex">∪</span> 放弃）"的人数。若第 <span class="tex">i</span> 天来的人耐心为 <span class="tex">c</span>，则：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>情形</th>
+<th>结果</th>
+<th>约束</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><span class="tex">s<sub>i</sub>=0</span></td>
+<td>必然不被录用</td>
+<td>对 <span class="tex">c</span> <strong>无限制</strong></td>
+</tr>
+<tr>
+<td><span class="tex">s<sub>i</sub>=1</span> 且不录用</td>
+<td>他放弃了</td>
+<td><span class="tex">c≤ b<sub>i</sub></span>（<strong>上限</strong>）</td>
+</tr>
+<tr>
+<td><span class="tex">s<sub>i</sub>=1</span> 且录用</td>
+<td>他做了题</td>
+<td><span class="tex">c&gt;b<sub>i</sub></span>（<strong>下限</strong>）</td>
+</tr>
+</tbody></table></div>
+<p>记最终录用 <span class="tex">k</span> 人，则未录用 <span class="tex">j=n−k</span> 人，<strong>"录用至少 <span class="tex">m</span> 人" <span class="tex">⟺ j≤ n−m</span></strong>。这个 <span class="tex">j</span> 就是下面 DP 的第一维。</p>
+<p>整道题就是"在一个同时有<strong>上限</strong>约束和<strong>下限</strong>约束的排列计数问题"。</p>
+<h3 id="5-3-1-8-1-2">5.3 档位 1：全排列暴力（8 分，测试点 1,2）</h3>
+<p><code>next_permutation</code> 枚举 <span class="tex">p</span>，按 5.2 的三条规则模拟即可。<span class="tex">O(n!· n)</span>，<span class="tex">n≤10</span> 时 <span class="tex">10!×10≈ 3.6×10<sup>7</sup></span>，能过。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2025 T4 employ —— 档位1：全排列暴力</span>
+<span class="co">// 覆盖测试点 1,2 (n&lt;=10)  预期 8 分</span>
+<span class="co">// 复杂度 O(n! * n)</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="ty">int</span> n, m;
+<span class="ty">char</span> s[<span class="nu">32</span>];
+<span class="ty">int</span> c[<span class="nu">32</span>];
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="fn">scanf</span>(<span class="st">"%d %d"</span>, &amp;n, &amp;m);
+    <span class="fn">scanf</span>(<span class="st">"%s"</span>, s + <span class="nu">1</span>);
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;c[i]);
+
+    <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; <span class="fn">p</span>(n);
+    <span class="fn">iota</span>(p.<span class="fn">begin</span>(), p.<span class="fn">end</span>(), <span class="nu">1</span>);   <span class="co">// p[j] = 第 j+1 天来面试的人</span>
+    <span class="ty">long</span> <span class="ty">long</span> ans = <span class="nu">0</span>;
+    <span class="k">do</span> {
+        <span class="ty">int</span> bad = <span class="nu">0</span>, hire = <span class="nu">0</span>;
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) {
+            <span class="ty">int</span> u = p[i - <span class="nu">1</span>];
+            <span class="k">if</span> (bad &gt;= c[u]) {
+                <span class="co">// 之前已有 &gt;= c_u 人被拒绝或放弃 -&gt; 他放弃</span>
+                bad++;
+            } <span class="k">else</span> <span class="k">if</span> (s[i] == <span class="st">'0'</span>) {
+                <span class="co">// 参加但做不出题 -&gt; 被拒绝</span>
+                bad++;
+            } <span class="k">else</span> {
+                <span class="co">// 做出题 -&gt; 录用</span>
+                hire++;
+            }
+        }
+        <span class="k">if</span> (hire &gt;= m) ans++;
+    } <span class="k">while</span> (<span class="fn">next_permutation</span>(p.<span class="fn">begin</span>(), p.<span class="fn">end</span>()));
+
+    <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, ans);
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="5-4-2-dp-20-35">5.4 档位 2：状压 DP（20 分，测试点 3~5）</h3>
+<p>注意一个关键恒等式：<strong>未录用数 = 已过天数 − 录用数</strong>，所以只要记住"面试了哪些人"和"录用了几个"，未录用数就算出来了。</p>
+<ul>
+<li>状态 <code>dp[mask][h]</code>：已面试集合为 <code>mask</code>，其中录用 <span class="tex">h</span> 人；</li>
+<li>已过天数 <span class="tex">i=<span class="rm">popcount</span>(mask)+1</span>，未录用数 <span class="tex"><span class="rm">bad</span>=<span class="rm">popcount</span>(mask)−h</span>；</li>
+<li>转移：枚举一个未面试的人 <span class="tex">u</span>，按 5.2 三条规则决定 <span class="tex">h</span> 变不变。</li>
+</ul>
+<p>复杂度 <span class="tex">O(2<sup>n</sup> n<sup>2</sup>)</span>，<span class="tex">n=18</span> 时约 <span class="tex">2×10<sup>7</sup></span>，<strong>实测 0.04 s</strong>。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2025 T4 employ —— 档位2：状压 DP</span>
+<span class="co">// 覆盖测试点 3~5 (n&lt;=18)  累计 20 分</span>
+<span class="co">// dp[mask][h] : 已面试集合 mask，其中录用 h 人</span>
+<span class="co">//   由 mask 可得已过天数 i=popcount(mask)，未录用(=被拒/放弃)人数 bad = popcount(mask)-h</span>
+<span class="co">// 复杂度 O(2^n * n^2)，内存 O(2^n * n)</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="k">const</span> <span class="ty">int</span> MOD = <span class="nu">998244353</span>;
+<span class="ty">int</span> n, m;
+<span class="ty">char</span> s[<span class="nu">32</span>];
+<span class="ty">int</span> c[<span class="nu">32</span>];
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="fn">scanf</span>(<span class="st">"%d %d"</span>, &amp;n, &amp;m);
+    <span class="fn">scanf</span>(<span class="st">"%s"</span>, s + <span class="nu">1</span>);
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;c[i]);
+
+    <span class="ty">int</span> full = <span class="nu">1</span> &lt;&lt; n;
+    <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; <span class="fn">dp</span>((<span class="ty">size_t</span>)full * (n + <span class="nu">1</span>), <span class="nu">0</span>);
+    <span class="k">auto</span> at = [&amp;](<span class="ty">int</span> mask, <span class="ty">int</span> h) -&gt; <span class="ty">int</span>&amp; { <span class="k">return</span> dp[(<span class="ty">size_t</span>)mask * (n + <span class="nu">1</span>) + h]; };
+    <span class="fn">at</span>(<span class="nu">0</span>, <span class="nu">0</span>) = <span class="nu">1</span>;
+
+    <span class="k">for</span> (<span class="ty">int</span> mask = <span class="nu">0</span>; mask &lt; full; mask++) {
+        <span class="ty">int</span> pc = <span class="fn">__builtin_popcount</span>(mask);
+        <span class="ty">int</span> day = pc + <span class="nu">1</span>;                 <span class="co">// 下一天</span>
+        <span class="k">if</span> (day &gt; n) <span class="k">continue</span>;
+        <span class="ty">char</span> sd = s[day];
+        <span class="k">for</span> (<span class="ty">int</span> h = <span class="nu">0</span>; h &lt;= pc; h++) {
+            <span class="ty">int</span> cur = dp[(<span class="ty">size_t</span>)mask * (n + <span class="nu">1</span>) + h];
+            <span class="k">if</span> (!cur) <span class="k">continue</span>;
+            <span class="ty">int</span> bad = pc - h;
+            <span class="k">for</span> (<span class="ty">int</span> u = <span class="nu">1</span>; u &lt;= n; u++) {
+                <span class="k">if</span> (mask &gt;&gt; (u - <span class="nu">1</span>) &amp; <span class="nu">1</span>) <span class="k">continue</span>;
+                <span class="ty">int</span> nh;
+                <span class="k">if</span> (bad &gt;= c[u]) nh = h;          <span class="co">// 放弃</span>
+                <span class="k">else</span> <span class="k">if</span> (sd == <span class="st">'0'</span>) nh = h;       <span class="co">// 参加但被拒</span>
+                <span class="k">else</span> nh = h + <span class="nu">1</span>;                  <span class="co">// 录用</span>
+                <span class="ty">int</span> &amp;to = dp[(<span class="ty">size_t</span>)(mask | (<span class="nu">1</span> &lt;&lt; (u - <span class="nu">1</span>))) * (n + <span class="nu">1</span>) + nh];
+                to += cur;
+                <span class="k">if</span> (to &gt;= MOD) to -= MOD;
+            }
+        }
+    }
+
+    <span class="ty">long</span> <span class="ty">long</span> ans = <span class="nu">0</span>;
+    <span class="k">for</span> (<span class="ty">int</span> h = m; h &lt;= n; h++) ans += <span class="fn">at</span>(full - <span class="nu">1</span>, h);
+    <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, ans % MOD);
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="5-5-3-m-1-1214">5.5 档位 3：<span class="tex">m=1</span> 专用（测试点 12~14）</h3>
+<p><strong>答案 = <span class="tex">n!</span> −（一个人都没录用的排列数）</strong>。</p>
+<p>"一个人都没录用" <span class="tex">⟺</span> 每天来的人都成为"未录用"，也就是<strong>第 <span class="tex">i</span> 天之前的未录用数恒为 <span class="tex">i−1</span></strong>：</p>
+<ul>
+<li><span class="tex">s<sub>i</sub>=0</span>：这天的人必然未录用，对 <span class="tex">c</span> 无约束；</li>
+<li><span class="tex">s<sub>i</sub>=1</span>：这天的人<strong>必须放弃</strong>，即要求 <span class="tex">c≤ i−1</span>。</li>
+</ul>
+<p>设 <span class="tex">S=#{i:s<sub>i</sub>=1}</span>，把这些天按 <span class="tex">i</span> 升序记为 <span class="tex">i<sub>1</sub>&lt;…&lt;i<sub>S</sub></span>。先给这些受约束的位置选人：</p>
+<div class="formula"><p>#{c≤ i<sub>t</sub>−1}−(t−1)</p></div><p>（前 <span class="tex">t−1</span> 个位置用掉的人耐心都 <span class="tex">≤ i<sub>t−1</sub>−1≤ i<sub>t</sub>−1</span>，所以都在同一个集合里，直接减。）剩下 <span class="tex">n−S</span> 个位置全是 <span class="tex">s=0</span>、无约束，自由排剩余的人 <span class="tex">×(n−S)!</span>。</p>
+<div class="formula"><p><span class="boxed"><span class="rm">ans</span>=n!−∏<sub>t=1</sub><sup>S</sup>(d<sub>i<sub>t</sub>−1</sub>−(t−1))×(n−S)!</span></p></div><p><span class="tex">O(n<span class="rm">log</span> n)</span>。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2025 T4 employ —— 档位3：m=1 专用（测试点 12~14，n&lt;=500, m=1）</span>
+<span class="co">// 思路：答案 = n! - (一个人都没录用的方案数)</span>
+<span class="co">//   "一个人都没录用" 等价于：每一天来的人都成为"未录用"（被拒或放弃），即第 i 天之前未录用数恒为 i-1。</span>
+<span class="co">//   - s_i = 0：该天的人必然未录用，对 c 无限制；</span>
+<span class="co">//   - s_i = 1：该天的人必须"放弃"，即要求 c &lt;= i-1。</span>
+<span class="co">//   记 S = "1" 的个数，把 s_i=1 的天按 i 升序记为 i_1&lt;...&lt;i_S。</span>
+<span class="co">//   先给这些受约束的位置选人：第 t 个位置可选 #{c&lt;=i_t-1} - (t-1) 人；</span>
+<span class="co">//   剩下 n-S 个（全是 s=0）位置自由排剩余的人，乘 (n-S)!。</span>
+<span class="co">//   本文件只在 m=1 时正确。</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="k">const</span> <span class="ty">int</span> MOD = <span class="nu">998244353</span>;
+<span class="ty">int</span> n, m;
+<span class="ty">char</span> s[<span class="nu">505</span>];
+<span class="ty">int</span> cnt[<span class="nu">505</span>], d[<span class="nu">505</span>];
+<span class="ty">long</span> <span class="ty">long</span> fac[<span class="nu">505</span>];
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="fn">scanf</span>(<span class="st">"%d %d"</span>, &amp;n, &amp;m);
+    <span class="fn">scanf</span>(<span class="st">"%s"</span>, s + <span class="nu">1</span>);
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) { <span class="ty">int</span> x; <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;x); cnt[x]++; }
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt;= n; i++) d[i] = (i ? d[i - <span class="nu">1</span>] : <span class="nu">0</span>) + cnt[i];   <span class="co">// d[i]=#{c&lt;=i}</span>
+    <span class="co">// d[-1] 视为 0：用 d[i-1] 时 i&gt;=1，i=1 时 d[0]=cnt[0]，注意这里表示 #{c&lt;=i-1}=d[i-1]</span>
+    fac[<span class="nu">0</span>] = <span class="nu">1</span>;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) fac[i] = fac[i - <span class="nu">1</span>] * i % MOD;
+
+    <span class="ty">int</span> S = <span class="nu">0</span>;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) <span class="k">if</span> (s[i] == <span class="st">'1'</span>) S++;
+
+    <span class="ty">long</span> <span class="ty">long</span> zero = <span class="nu">1</span>;     <span class="co">// 0 人录用的方案数</span>
+    <span class="ty">int</span> t = <span class="nu">0</span>;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) {
+        <span class="k">if</span> (s[i] != <span class="st">'1'</span>) <span class="k">continue</span>;
+        t++;
+        <span class="ty">long</span> <span class="ty">long</span> avail = (i - <span class="nu">1</span> &gt;= <span class="nu">0</span> ? d[i - <span class="nu">1</span>] : <span class="nu">0</span>) - (t - <span class="nu">1</span>);   <span class="co">// #{c &lt;= i-1} 中还没用的</span>
+        <span class="k">if</span> (avail &lt;= <span class="nu">0</span>) { zero = <span class="nu">0</span>; <span class="k">break</span>; }
+        zero = zero * (avail % MOD) % MOD;
+    }
+    zero = zero * fac[n - S] % MOD;
+
+    <span class="ty">long</span> <span class="ty">long</span> ans = (fac[n] - zero) % MOD;
+    <span class="k">if</span> (ans &lt; <span class="nu">0</span>) ans += MOD;
+    <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, ans);
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="5-6-4-m-n-15">5.6 档位 4：<span class="tex">m=n</span> 专用（测试点 15）</h3>
+<p>要录用<strong>全部</strong> <span class="tex">n</span> 人，必须每天都能录用：</p>
+<ul>
+<li>只要有某个 <span class="tex">s<sub>i</sub>=0</span>，第 <span class="tex">i</span> 天的人必然被拒 → 答案 <span class="tex">0</span>；</li>
+<li>于是 <span class="tex">s</span> 必须全为 <code>1</code>。此时<strong>只要所有 <span class="tex">c<sub>i</sub>≥1</span></strong>，未录用数永远是 <span class="tex">0</span>，而 <span class="tex">0&lt;c<sub>i</sub></span> 恒成立，就没人会放弃，每个人的题都做得出来 → <span class="tex">n!</span> 种排列全部合法；</li>
+<li>若存在 <span class="tex">c<sub>i</sub>=0</span>：该人轮到时"未录用数 <span class="tex">0≥0</span>"必然放弃 → 答案 <span class="tex">0</span>。</li>
+</ul>
+<div class="formula"><p><span class="rm">ans</span>=<span class="cases"><span class="brace">{</span><span class="crows"><span class="crow"><span class="cl">n!,</span><span class="cr"><span class="rm">s 全为 1 且所有 </span>c<sub>i</sub>≥1</span></span><span class="crow"><span class="cl">0,</span><span class="cr"><span class="rm">否则</span></span></span></span></span></p></div><div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2025 T4 employ —— 档位4：m=n 专用（测试点 15，n&lt;=500, m=n）</span>
+<span class="co">// 思路：要录用全部 n 人，必须每一天都成功录用。</span>
+<span class="co">//   - 只要有某个 s_i = 0，第 i 天的人必然被拒 -&gt; 不可能，答案 0；</span>
+<span class="co">//   - 于是 s 全为 1；此时只要所有 c_i &gt;= 1，就永远不会有人放弃</span>
+<span class="co">//     （未录用数恒为 0 &lt; c_i，每个人都参加面试且做出题），全部 n! 种排列都合法；</span>
+<span class="co">//   - 若存在 c_i = 0，该人轮到时"未录用数 0 &gt;= 0"必然放弃 -&gt; 答案 0。</span>
+<span class="co">// 结论：answer = n!  当且仅当 (s 全为 '1' 且 min c_i &gt;= 1)，否则 0。</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="k">const</span> <span class="ty">int</span> MOD = <span class="nu">998244353</span>;
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="ty">int</span> n, m;
+    <span class="k">static</span> <span class="ty">char</span> s[<span class="nu">505</span>];
+    <span class="fn">scanf</span>(<span class="st">"%d %d"</span>, &amp;n, &amp;m);
+    <span class="fn">scanf</span>(<span class="st">"%s"</span>, s + <span class="nu">1</span>);
+    <span class="ty">int</span> mnc = INT_MAX;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) { <span class="ty">int</span> x; <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;x); mnc = <span class="fn">min</span>(mnc, x); }
+    <span class="ty">bool</span> ok = (mnc &gt;= <span class="nu">1</span>);
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) <span class="k">if</span> (s[i] != <span class="st">'1'</span>) ok = <span class="k">false</span>;
+    <span class="ty">long</span> <span class="ty">long</span> ans = <span class="nu">0</span>;
+    <span class="k">if</span> (ok) {
+        ans = <span class="nu">1</span>;
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) ans = ans * i % MOD;
+    }
+    <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, ans);
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="5-7-5-a-si-1-68-16-17">5.7 档位 5：特殊性质 A（所有 <span class="tex">s<sub>i</sub>=1</span>）（测试点 6~8、16,17）</h3>
+<p>性质 A <strong>不需要新算法</strong>：<span class="tex">s</span> 全为 1 时，正解 DP 里 <code>s='0'</code> 那条分支永远不会被走到，代码只是正解去掉一个分支。所以"先写出正解框架"就能直接吃掉 6~8（<span class="tex">n≤100</span>）和 16,17（<span class="tex">n≤500</span>）这 20 分。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2025 T4 employ —— 档位3：特殊性质 A 专版（测试点 6~8、16,17；所有 s_i = 1）</span>
+<span class="co">// 说明：性质 A 不需要新算法，正解 DP 在 s 全为 1 时只剩"录用/不录用"三个转移。</span>
+<span class="co">//       本文件即把 std 中 s=0 的分支删去的版本（仅当 s 全为 1 时保证正确）。</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="k">const</span> <span class="ty">int</span> MOD = <span class="nu">998244353</span>;
+<span class="k">const</span> <span class="ty">int</span> N = <span class="nu">505</span>;
+<span class="ty">int</span> n, m;
+<span class="ty">char</span> s[N];
+<span class="ty">int</span> cnt[N], d[N];
+<span class="ty">int</span> f[N][N], g[N][N];
+<span class="ty">long</span> <span class="ty">long</span> fac[N];
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="fn">scanf</span>(<span class="st">"%d %d"</span>, &amp;n, &amp;m);
+    <span class="fn">scanf</span>(<span class="st">"%s"</span>, s + <span class="nu">1</span>);
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) { <span class="ty">int</span> x; <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;x); cnt[x]++; }
+    d[<span class="nu">0</span>] = cnt[<span class="nu">0</span>];
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) d[i] = d[i - <span class="nu">1</span>] + cnt[i];
+    fac[<span class="nu">0</span>] = <span class="nu">1</span>;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) fac[i] = fac[i - <span class="nu">1</span>] * i % MOD;
+
+    f[<span class="nu">0</span>][<span class="nu">0</span>] = <span class="nu">1</span>;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) {          <span class="co">// s[i] 恒为 '1'</span>
+        <span class="fn">memset</span>(g, <span class="nu">0</span>, <span class="k">sizeof</span>(g));
+        <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt;= n; j++)
+            <span class="k">for</span> (<span class="ty">int</span> k = <span class="nu">0</span>; k &lt;= n; k++) {
+                <span class="ty">int</span> cur = f[j][k];
+                <span class="k">if</span> (!cur) <span class="k">continue</span>;
+                <span class="ty">int</span> avail = d[j] - k; <span class="k">if</span> (avail &lt; <span class="nu">0</span>) avail = <span class="nu">0</span>;
+                <span class="ty">long</span> <span class="ty">long</span> w = (<span class="ty">long</span> <span class="ty">long</span>)cur * avail % MOD;
+                <span class="ty">int</span> &amp;a1 = g[j + <span class="nu">1</span>][k + <span class="nu">1</span>]; a1 += (<span class="ty">int</span>)w; <span class="k">if</span> (a1 &gt;= MOD) a1 -= MOD;   <span class="co">// 不录用：真上限</span>
+                <span class="ty">int</span> &amp;a2 = g[j][k];         a2 += cur;   <span class="k">if</span> (a2 &gt;= MOD) a2 -= MOD;   <span class="co">// 录用，不钦定</span>
+                <span class="ty">int</span> &amp;a3 = g[j][k + <span class="nu">1</span>];     a3 -= (<span class="ty">int</span>)w; <span class="k">if</span> (a3 &lt; <span class="nu">0</span>) a3 += MOD;     <span class="co">// 录用但钦定违反</span>
+            }
+        <span class="fn">memcpy</span>(f, g, <span class="k">sizeof</span>(f));
+    }
+    <span class="ty">long</span> <span class="ty">long</span> ans = <span class="nu">0</span>;
+    <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt;= n - m; j++)
+        <span class="k">for</span> (<span class="ty">int</span> k = <span class="nu">0</span>; k &lt;= n; k++)
+            ans = (ans + (<span class="ty">long</span> <span class="ty">long</span>)f[j][k] * fac[n - k]) % MOD;
+    <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, ans);
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="5-8-6-b-i-si-18-1821">5.8 档位 6：特殊性质 B（<span class="tex">∑<sub>i</sub> s<sub>i</sub>≤18</span>）（测试点 18~21）</h3>
+<p>一个必须一眼看出来的剪枝：<strong>录用只可能发生在 <span class="tex">s<sub>i</sub>=1</span> 的那天</strong>，所以</p>
+<div class="formula"><p><span class="rm">录用人数</span> ≤ S:=∑<sub>i</sub> s<sub>i</sub>≤ 18</p></div><ul>
+<li>若 <span class="tex">m&gt;S</span>，直接输出 <code>0</code>（这一条能挡掉不少点）；</li>
+<li>反向地，未录用人数 <span class="tex">j≥ n−S</span>，所以正解 DP 的答案求和下标从 <span class="tex">n−S</span> 起。</li>
+</ul>
+<p>其余完全复用正解。<span class="tex">n≤500</span> 时正解本来就是 0.09 s 级别，加上剪枝更快。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2025 T4 employ —— 档位4：特殊性质 B 专版（测试点 18~21；n&lt;=500 且 sum s_i &lt;= 18）</span>
+<span class="co">// 关键剪枝：录用只可能发生在 s_i = 1 的天上，所以"录用人数 &lt;= S = #s_i=1"。</span>
+<span class="co">//   - 若 m &gt; S，直接输出 0；</span>
+<span class="co">//   - 同时"未录用人数 j &gt;= n - S"，答案求和的下标从 n-S 起。</span>
+<span class="co">// 其余完全复用正解 DP。</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="k">const</span> <span class="ty">int</span> MOD = <span class="nu">998244353</span>;
+<span class="k">const</span> <span class="ty">int</span> N = <span class="nu">505</span>;
+<span class="ty">int</span> n, m;
+<span class="ty">char</span> s[N];
+<span class="ty">int</span> cnt[N], d[N];
+<span class="ty">int</span> f[N][N], g[N][N];
+<span class="ty">long</span> <span class="ty">long</span> fac[N];
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="fn">scanf</span>(<span class="st">"%d %d"</span>, &amp;n, &amp;m);
+    <span class="fn">scanf</span>(<span class="st">"%s"</span>, s + <span class="nu">1</span>);
+    <span class="ty">int</span> S = <span class="nu">0</span>;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) <span class="k">if</span> (s[i] == <span class="st">'1'</span>) S++;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) { <span class="ty">int</span> x; <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;x); cnt[x]++; }
+
+    <span class="k">if</span> (m &gt; S) { <span class="fn">printf</span>(<span class="st">"0\n"</span>); <span class="k">return</span> <span class="nu">0</span>; }      <span class="co">// 录用数上界就是 S</span>
+
+    d[<span class="nu">0</span>] = cnt[<span class="nu">0</span>];
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) d[i] = d[i - <span class="nu">1</span>] + cnt[i];
+    fac[<span class="nu">0</span>] = <span class="nu">1</span>;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) fac[i] = fac[i - <span class="nu">1</span>] * i % MOD;
+
+    f[<span class="nu">0</span>][<span class="nu">0</span>] = <span class="nu">1</span>;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) {
+        <span class="fn">memset</span>(g, <span class="nu">0</span>, <span class="k">sizeof</span>(g));
+        <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt;= n; j++)
+            <span class="k">for</span> (<span class="ty">int</span> k = <span class="nu">0</span>; k &lt;= n; k++) {
+                <span class="ty">int</span> cur = f[j][k];
+                <span class="k">if</span> (!cur) <span class="k">continue</span>;
+                <span class="k">if</span> (s[i] == <span class="st">'0'</span>) {
+                    <span class="ty">int</span> &amp;to = g[j + <span class="nu">1</span>][k];
+                    to += cur; <span class="k">if</span> (to &gt;= MOD) to -= MOD;
+                } <span class="k">else</span> {
+                    <span class="ty">int</span> avail = d[j] - k; <span class="k">if</span> (avail &lt; <span class="nu">0</span>) avail = <span class="nu">0</span>;
+                    <span class="ty">long</span> <span class="ty">long</span> w = (<span class="ty">long</span> <span class="ty">long</span>)cur * avail % MOD;
+                    <span class="ty">int</span> &amp;a1 = g[j + <span class="nu">1</span>][k + <span class="nu">1</span>]; a1 += (<span class="ty">int</span>)w; <span class="k">if</span> (a1 &gt;= MOD) a1 -= MOD;
+                    <span class="ty">int</span> &amp;a2 = g[j][k];         a2 += cur;   <span class="k">if</span> (a2 &gt;= MOD) a2 -= MOD;
+                    <span class="ty">int</span> &amp;a3 = g[j][k + <span class="nu">1</span>];     a3 -= (<span class="ty">int</span>)w; <span class="k">if</span> (a3 &lt; <span class="nu">0</span>) a3 += MOD;
+                }
+            }
+        <span class="fn">memcpy</span>(f, g, <span class="k">sizeof</span>(f));
+    }
+    <span class="ty">long</span> <span class="ty">long</span> ans = <span class="nu">0</span>;
+    <span class="ty">int</span> jlo = <span class="fn">max</span>(<span class="nu">0</span>, n - S);                 <span class="co">// 未录用人数至少 n-S</span>
+    <span class="k">for</span> (<span class="ty">int</span> j = jlo; j &lt;= n - m; j++)
+        <span class="k">for</span> (<span class="ty">int</span> k = <span class="nu">0</span>; k &lt;= n; k++)
+            ans = (ans + (<span class="ty">long</span> <span class="ty">long</span>)f[j][k] * fac[n - k]) % MOD;
+    <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, ans);
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="5-9-dp-100">5.9 正解：容斥 + 贡献延后 DP（100 分）</h3>
+<h4 id="5-9-1">5.9.1 先解决"只有上限"的版本</h4>
+<p>如果所有约束都是"<span class="tex">c≤</span>某上限"，答案是现成的：</p>
+<blockquote>
+<p>把 <span class="tex">n</span> 个上限从小到大排成 <span class="tex">up<sub>1</sub>≤ up<sub>2</sub>≤⋯≤ up<sub>n</sub></span>，则方案数</p>
+</blockquote>
+<div class="formula"><p>∏<sub>t=1</sub><sup>n</sup>(<span class="rm">cnt</span><sub>up<sub>t</sub></sub>−(t−1)),     <span class="rm">cnt</span><sub>x</sub>=#{i:c<sub>i</sub>≤ x}</p></div><blockquote>
+<p>（第 <span class="tex">t</span> 个位置（上限最小）只能从 <span class="tex"><span class="rm">cnt</span><sub>up<sub>t</sub></sub></span> 个"够小"的人里挑，前面已经用掉 <span class="tex">t−1</span> 个。）</p>
+</blockquote>
+<p>本题里 <span class="tex">b<sub>i</sub></span> 随 <span class="tex">i</span> <strong>单调不降</strong>，所以上限天然就是从小到大排好的，不需要额外排序。</p>
+<h4 id="5-9-2">5.9.2 用容斥把"下限"变成"上限"，并延后贡献</h4>
+<p>三类约束里，<span class="tex">s<sub>i</sub>=1</span> 且录用那种是<strong>下限</strong>（<span class="tex">c&gt;b<sub>i</sub></span>）。对它做容斥：</p>
+<div class="formula"><p>#{c&gt;b<sub>i</sub>}=<span class="unb"><i>#{<span class="rm">任意</span>}</i><i><span class="rm">不钦定</span></i></span>−<span class="unb"><i>#{c≤ b<sub>i</sub>}</i><i><span class="rm">钦定违反，系数 </span>−1</i></span></p></div><p>也就是：<strong>把"录用位"先当成"没有任何约束"，同时额外允许它"被钦定成上限 <span class="tex">c≤ b<sub>i</sub></span>、带 <span class="tex">−1</span> 系数"</strong>。这样一来，全部约束都变成上限了。</p>
+<p><strong>贡献延后</strong>：不钦定的招募位，当下<strong>不乘任何系数</strong>（因为还不知道有多少人可选），留到全部决策做完之后，统一按"给剩下 <span class="tex">n−k</span> 个自由位置随便分配剩下的人"来处理，也就是最后乘 <span class="tex">(n−k)!</span>。</p>
+<h4 id="5-9-3-dp">5.9.3 DP 转移（本场的核心）</h4>
+<p>设 <span class="tex">d<sub>j</sub>=#{i:c<sub>i</sub>≤ j}</span>，<span class="tex">f[j][k]</span> = 处理到当前位置，<strong>未录用 <span class="tex">j</span> 人</strong>、<strong>已确定 <span class="tex">k</span> 个"上限位"</strong>（真上限 + 钦定违反下限的）的方案数。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>当前 <span class="tex">s<sub>i</sub></span></th>
+<th>选择</th>
+<th>转移到</th>
+<th>系数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>'0'</code></td>
+<td>不录用</td>
+<td><span class="tex">f[j+1][k]</span></td>
+<td><span class="tex">+f[j][k]</span></td>
+</tr>
+<tr>
+<td><code>'1'</code></td>
+<td>不录用（真上限 <span class="tex">c≤ j</span>）</td>
+<td><span class="tex">f[j+1][k+1]</span></td>
+<td><span class="tex">+f[j][k]·(d<sub>j</sub>−k)</span></td>
+</tr>
+<tr>
+<td><code>'1'</code></td>
+<td>录用，不钦定（无约束）</td>
+<td><span class="tex">f[j][k]</span></td>
+<td><span class="tex">+f[j][k]</span></td>
+</tr>
+<tr>
+<td><code>'1'</code></td>
+<td>录用，但钦定违反下限（假上限 <span class="tex">c≤ j</span>）</td>
+<td><span class="tex">f[j][k+1]</span></td>
+<td><span class="tex">−f[j][k]·(d<sub>j</sub>−k)</span></td>
+</tr>
+</tbody></table></div>
+<p><span class="tex">(d<sub>j</sub>−k)</span> 的含义：所有"上限位"的人耐心都 <span class="tex">≤</span> 当前 <span class="tex">j</span>（因为 <span class="tex">b</span> 单调不降），已经用掉 <span class="tex">k</span> 个，所以还能从 <span class="tex"><span class="rm">cnt</span><sub>j</sub>−k</span> 个里挑一个。</p>
+<p><strong>最终答案</strong></p>
+<div class="formula"><p><span class="rm">ans</span>=∑<sub>j=0</sub><sup>n−m</sup> ∑<sub>k=0</sub><sup>n</sup> f[j][k]×(n−k)!</p></div><p><span class="tex">(n−k)!</span> 就是"给剩下 <span class="tex">n−k</span> 个没有上限约束的位置自由分配剩余人"的方案数（等价于把这些位置的上限当成 <span class="tex">n</span>）。</p>
+<h4 id="5-9-4-c-bi">5.9.4 为什么这个容斥表达的是"<span class="tex">c&gt;b<sub>i</sub></span>"</h4>
+<p>只看最后一步，设当前 <span class="tex">j,k</span>：</p>
+<div class="formula"><p>(n−k)!−（n−k−1)!·(d<sub>j</sub>−k)=(n−k−1)![(n−k)−(d<sub>j</sub>−k)]=(n−k−1)!·(n−d<sub>j</sub>)</p></div><p>右式的 <span class="tex">n−d<sub>j</sub></span> 正是"<span class="tex">c&gt;j</span> 的人数"——也就是录用位真正可以挑的人。<strong>"任意 <span class="tex">−</span> 上限"这一步恰好把下限 <span class="tex">c&gt;j</span> 还原了出来</strong>，这就是这个 DP 成立的原因。</p>
+<h4 id="5-9-5">5.9.5 复杂度</h4>
+<p><span class="tex">O(n<sup>3</sup>)</span> 时间（<span class="tex">i× j× k</span>，<span class="tex">n=500</span> 时 <span class="tex">1.25×10<sup>8</sup></span>），<span class="tex">O(n<sup>2</sup>)</span> 空间。
+实测 <span class="tex">n=500</span> 最坏 <strong>0.09 s / 8.9 MB</strong>，相对 1 s / 512 MiB 有极大余量。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2025 T4 employ —— 档位5：正解（容斥 + 贡献延后 DP）</span>
+<span class="co">// 覆盖全部测试点 1~25  n&lt;=500  100 分</span>
+<span class="co">// 复杂度 O(n^3)，内存 O(n^2)</span>
+<span class="co">//</span>
+<span class="co">// 思路：</span>
+<span class="co">//   设 a_i 表示第 i 天的人是否被录用，b_i 表示前 i-1 天里"未录用(被拒/放弃)"的人数。</span>
+<span class="co">//   第 i 天的人耐心为 c 时：</span>
+<span class="co">//     s_i=0              -&gt; 必不录用                    （对 c 无限制）</span>
+<span class="co">//     s_i=1 且不录用      -&gt; 放弃，要求 c &lt;= b_i        （上限约束）</span>
+<span class="co">//     s_i=1 且录用        -&gt; 参加并录用，要求 c &gt; b_i   （下限约束）</span>
+<span class="co">//   "只有上限"的排列计数：把每个位置的上限排成非降序列 up_1..up_n，</span>
+<span class="co">//    方案数 = prod (cnt_{up_t} - (t-1))，cnt_x = 人数中 c&lt;=x 的个数。</span>
+<span class="co">//   下限用容斥去掉：钦定某些"录用"位违反下限（改成上限 c&lt;=b_i），系数 -1。</span>
+<span class="co">//   DP: f[j][k] = 处理到当前位置，b=j（未录用 j 人），已确定 k 个"上限位"（含真上限与钦定违反的）方案数。</span>
+<span class="co">//     s_i=0 : f[j+1][k]   += f[j][k]</span>
+<span class="co">//     s_i=1 : f[j+1][k+1] += f[j][k] * (cnt_j - k)      // 不录用（真上限 c&lt;=j）</span>
+<span class="co">//             f[j  ][k  ] += f[j][k]                    // 录用，且不钦定（下限留到末尾一起算）</span>
+<span class="co">//             f[j  ][k+1] -= f[j][k] * (cnt_j - k)      // 录用但钦定违反下限（容斥，负号）</span>
+<span class="co">//   答案 = sum_{j=0}^{n-m} sum_k f[j][k] * (n-k)!</span>
+<span class="co">//   其中 (n-k)! 是给"没有上限约束的 n-k 个位置"自由分配剩余人的方案数（把它们的上限视作 n）。</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+<span class="k">const</span> <span class="ty">int</span> MOD = <span class="nu">998244353</span>;
+<span class="k">const</span> <span class="ty">int</span> N = <span class="nu">505</span>;
+
+<span class="ty">int</span> n, m;
+<span class="ty">char</span> s[N];
+<span class="ty">int</span> cnt[N], d[N];
+<span class="ty">int</span> f[N][N], g[N][N];
+<span class="ty">long</span> <span class="ty">long</span> fac[N];
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="fn">scanf</span>(<span class="st">"%d %d"</span>, &amp;n, &amp;m);
+    <span class="fn">scanf</span>(<span class="st">"%s"</span>, s + <span class="nu">1</span>);
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) { <span class="ty">int</span> x; <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;x); cnt[x]++; }
+    d[<span class="nu">0</span>] = cnt[<span class="nu">0</span>];
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) d[i] = d[i - <span class="nu">1</span>] + cnt[i];   <span class="co">// d[i] = #{c&lt;=i}</span>
+
+    fac[<span class="nu">0</span>] = <span class="nu">1</span>;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) fac[i] = fac[i - <span class="nu">1</span>] * i % MOD;
+
+    f[<span class="nu">0</span>][<span class="nu">0</span>] = <span class="nu">1</span>;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) {
+        <span class="fn">memset</span>(g, <span class="nu">0</span>, <span class="k">sizeof</span>(g));
+        <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt;= n; j++)
+            <span class="k">for</span> (<span class="ty">int</span> k = <span class="nu">0</span>; k &lt;= n; k++) {
+                <span class="ty">int</span> cur = f[j][k];
+                <span class="k">if</span> (!cur) <span class="k">continue</span>;
+                <span class="k">if</span> (s[i] == <span class="st">'0'</span>) {
+                    <span class="ty">int</span> &amp;to = g[j + <span class="nu">1</span>][k];
+                    to += cur; <span class="k">if</span> (to &gt;= MOD) to -= MOD;
+                } <span class="k">else</span> {
+                    <span class="ty">int</span> avail = d[j] - k;
+                    <span class="k">if</span> (avail &lt; <span class="nu">0</span>) avail = <span class="nu">0</span>;
+                    <span class="ty">long</span> <span class="ty">long</span> w = (<span class="ty">long</span> <span class="ty">long</span>)cur * avail % MOD;   <span class="co">// 真正可选的 c&lt;=j 的人数</span>
+                    <span class="co">// 1) 不录用：真上限，系数 +1</span>
+                    <span class="ty">int</span> &amp;a1 = g[j + <span class="nu">1</span>][k + <span class="nu">1</span>];
+                    a1 += (<span class="ty">int</span>)w; <span class="k">if</span> (a1 &gt;= MOD) a1 -= MOD;
+                    <span class="co">// 2) 录用且不钦定：无约束</span>
+                    <span class="ty">int</span> &amp;a2 = g[j][k];
+                    a2 += cur; <span class="k">if</span> (a2 &gt;= MOD) a2 -= MOD;
+                    <span class="co">// 3) 录用但钦定"违反下限"（等于强行给它一个上限 c&lt;=j），系数 -1</span>
+                    <span class="ty">int</span> &amp;a3 = g[j][k + <span class="nu">1</span>];
+                    a3 -= (<span class="ty">int</span>)w; <span class="k">if</span> (a3 &lt; <span class="nu">0</span>) a3 += MOD;
+                }
+            }
+        <span class="fn">memcpy</span>(f, g, <span class="k">sizeof</span>(f));
+    }
+
+    <span class="ty">long</span> <span class="ty">long</span> ans = <span class="nu">0</span>;
+    <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt;= n - m; j++)
+        <span class="k">for</span> (<span class="ty">int</span> k = <span class="nu">0</span>; k &lt;= n; k++)
+            ans = (ans + (<span class="ty">long</span> <span class="ty">long</span>)f[j][k] * fac[n - k]) % MOD;
+    <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, ans);
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="5-10">5.10 踩坑清单</h3>
+<ol>
+<li><strong>容斥项是负号</strong>：<code>g[j][k+1] -= w</code>，取模时必须先 <code>+MOD</code>，否则出负数。</li>
+<li><span class="tex">(d<sub>j</sub>−k)</span> <strong>可能为负</strong>（不可达状态），要 <code>max(0, ...)</code>，否则会算进垃圾贡献。</li>
+<li>答案是所有 <span class="tex">j≤ n−m</span> 的和，不是 <span class="tex">j=n−m</span> 单点——题目要的是"<strong>至少</strong> <span class="tex">m</span> 人"。</li>
+<li>别忘 <span class="tex">b</span> 单调不降这个前提：<span class="tex">(d<sub>j</sub>−k)</span> 能 O(1) 算出来全靠它。</li>
+<li>输入用 <code>long long</code> 参与乘法；<code>int</code> 存中间乘积会溢出。</li>
+</ol>
+<hr>
+<h2 id="6">6. 四题易错点汇总（按"最容易丢分"排序）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>题</th>
+<th>坑</th>
+<th>后果</th>
+<th>怎么避免</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>club</td>
+<td>忘了"至多一个部门超限"就上贪心</td>
+<td>贪心的正确性没底</td>
+<td>先用 <span class="tex">O(n<sup>3</sup>)</span> DP 对拍，确认结论</td>
+</tr>
+<tr>
+<td>club</td>
+<td>只限制部门 1、2 的容量，忘了部门 3</td>
+<td>暴力 DP 给出非法解</td>
+<td>三个容量都要判（<span class="tex">n−j−k≤ n/2</span>）</td>
+</tr>
+<tr>
+<td>club</td>
+<td>多组数据不清数组</td>
+<td>第二组开始答案错</td>
+<td>每个测试组重新初始化</td>
+</tr>
+<tr>
+<td>road</td>
+<td>改造费 <span class="tex">c<sub>j</sub></span> 没计入答案</td>
+<td>全部错</td>
+<td><code>total = MST + Σc_j</code></td>
+</tr>
+<tr>
+<td>road</td>
+<td>边权/答案用 <code>int</code></td>
+<td>溢出</td>
+<td><span class="tex">n=10<sup>4</sup></span>、边权 <span class="tex">10<sup>9</sup></span>，答案可达 <span class="tex">10<sup>13</sup></span>，开 <code>long long</code></td>
+</tr>
+<tr>
+<td>road</td>
+<td>每个 mask 重新排序</td>
+<td><span class="tex">m=10<sup>6</sup></span> 时 6e8 次操作超时</td>
+<td>全边一次性预排序 + 线性扫描；原图只留 MST 树边</td>
+</tr>
+<tr>
+<td>road</td>
+<td>并查集没重置干净</td>
+<td>随机 WA</td>
+<td>每次 Kruskal 重置全部 <span class="tex">n</span> 个点（或时间戳版本号）</td>
+</tr>
+<tr>
+<td>replace</td>
+<td><strong>漏掉"窗口外必须相同"</strong></td>
+<td>样例 1 就错（算成 3，应为 2）</td>
+<td>先求 <span class="tex">[lo,hi]</span>，强制窗口覆盖它</td>
+</tr>
+<tr>
+<td>replace</td>
+<td>分组 key 写成 <span class="tex">(A,B,C,D)</span></td>
+<td>大量漏解</td>
+<td>key 只用 <code>B#D</code></td>
+</tr>
+<tr>
+<td>replace</td>
+<td>Trie 新开结点后没 <code>resize</code> 附属数组</td>
+<td>越界/丢数据</td>
+<td><code>getChild</code> 之后立刻 <code>resize</code></td>
+</tr>
+<tr>
+<td>replace</td>
+<td>用 <code>cin &gt;&gt; string</code> 读</td>
+<td>TLE</td>
+<td><span class="tex">L<sub>1</sub>+L<sub>2</sub></span> 可达 <span class="tex">10<sup>7</sup></span>，必须 <code>fread</code> 快读</td>
+</tr>
+<tr>
+<td>employ</td>
+<td>容斥负项没 <span class="tex">+MOD</span></td>
+<td>出现负数答案</td>
+<td>减法后判负再加模</td>
+</tr>
+<tr>
+<td>employ</td>
+<td><span class="tex">(d<sub>j</sub>−k)</span> 为负仍参与乘法</td>
+<td>垃圾贡献</td>
+<td><code>max(0, d_j-k)</code></td>
+</tr>
+<tr>
+<td>employ</td>
+<td>答案只取 <span class="tex">j=n−m</span> 一项</td>
+<td>少算</td>
+<td>要对 <span class="tex">j≤ n−m</span> <strong>求和</strong></td>
+</tr>
+<tr>
+<td>employ</td>
+<td>状压时忘了记录已录用人数</td>
+<td>状态不够，无法算未录用数</td>
+<td>用 <span class="tex"><span class="rm">bad</span>=<span class="rm">popcount</span>(mask)−h</span></td>
+</tr>
+</tbody></table></div>
+<p><strong>一句话总结四题的核心思想：</strong></p>
+<ul>
+<li><strong>club</strong>：先满足"每个人最想要"，再用最小代价修回容量约束（<strong>后悔贪心</strong>）。</li>
+<li><strong>road</strong>：<span class="tex">k</span> 很小，枚举子集；把"每个子集重新排序"退化成"共用一份有序边表 + 线性扫描"。</li>
+<li><strong>replace</strong>：把"位置枚举"变成"(B,D) 分组 + A 后缀 / C 前缀 / C 前缀"的三维过滤，用 Trie 祖先关系 + 差分 BIT 数点。</li>
+<li><strong>employ</strong>：上限好做（乘积公式），下限用容斥转成上限，贡献延后到最后用阶乘统一结算。</li>
+</ul>
+<hr>
+<h2 id="7">7. 考场取舍与时间分配</h2>
+<p>（按 4 小时一场计；四题满分均为"稳、准、快"。）</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>题</th>
+<th>首轮目标</th>
+<th>建议动作</th>
+<th>二轮目标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>club</td>
+<td><strong>100</strong></td>
+<td>先花 15 min 写 <span class="tex">O(n<sup>3</sup>)</span> DP 拿到 55 分保底；再花 20 min 想清"至多一个部门超限"并写后悔贪心</td>
+<td>满分</td>
+</tr>
+<tr>
+<td>road</td>
+<td><strong>100</strong></td>
+<td><span class="tex">k≤5</span> 的预排序扫描（64 分）几乎白送；正解只多"原图先跑一次 Kruskal 只留树边"，性价比最高</td>
+<td>满分</td>
+</tr>
+<tr>
+<td>replace</td>
+<td><strong>50 → 100</strong></td>
+<td>哈希暴力直接 50 分（性质 A 保证了 <span class="tex">q=1</span> 时能扛 <span class="tex">L=5×10<sup>6</sup></span>），半小时内可拿；正解工程量最大（Trie + Euler + 差分 BIT），要留足 60~80 min</td>
+<td>视时间取舍</td>
+</tr>
+<tr>
+<td>employ</td>
+<td><strong>36 → 100</strong></td>
+<td>暴力 8 分 + 状压 20 分 = 20 分必拿；<span class="tex">m=1</span>/<span class="tex">m=n</span> 10 分几乎白送；正解想清楚"上限好做、下限容斥、贡献延后"三段再写</td>
+<td>满分</td>
+</tr>
+</tbody></table></div>
+<p><strong>经验值</strong>：</p>
+<ul>
+<li>这四题的<strong>部分分性价比</strong>排序是：employ 的状压（20 分 / 30 行） &gt; road 的 L3（64 分 / 10 行改动） &gt; replace 的哈希暴力（<strong>50 分</strong> / 30 行） &gt; club 的暴力 DP（55 分 / 30 行）。</li>
+<li>而"从部分分到满分"的<strong>性价比</strong>排序是：road（一步之差）&gt; club（一个结论）&gt; employ（一个容斥）&gt; replace（一套数据结构）。</li>
+<li>时间紧张时先把 <strong>replace 的 25 分</strong> 和 <strong>employ 的 20 分</strong> 落袋，再去啃正解。</li>
+</ul>
+<hr>
+<h2 id="8">8. 本仓库的验证记录</h2>
+<p>所有代码都做了三层验证，脚本与数据保留在工作目录中，可复现。</p>
+<h3 id="8-1-club">8.1 club</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>验证项</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>官方样例 1/2/3</td>
+<td>输出 <code>18</code>、<code>4</code>、<code>13</code>，与答案逐字节一致</td>
+</tr>
+<tr>
+<td>暴力 DP vs 正解</td>
+<td>1900+ 组随机对拍全 OK（小值域 / 中值域 / 性质 A / 性质 B / 满值域 五套生成器）</td>
+</tr>
+<tr>
+<td><span class="tex">n=200</span> 规模</td>
+<td>暴力 DP 与正解一致</td>
+</tr>
+<tr>
+<td><span class="tex">n=10<sup>5</sup></span></td>
+<td>正解 0.05 s / 8.8 MB</td>
+</tr>
+</tbody></table></div>
+<h3 id="8-2-road">8.2 road</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>验证项</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>官方样例 1~4</td>
+<td>全部一致（样例 1 的 L1 输出 15 属预期，因为它不改造任何乡镇）</td>
+</tr>
+<tr>
+<td>与 Prim 暴力对拍</td>
+<td>3000+ 组随机小图全 OK</td>
+</tr>
+<tr>
+<td>计时（<span class="tex">k=10</span>）</td>
+<td>正解 0.65 s；L3 预排序版 2.04 s（<strong>超时预警</strong>，所以止步 <span class="tex">k≤5</span>）；L2 每集合重排 1.65 s</td>
+</tr>
+<tr>
+<td>补测（<span class="tex">n=10<sup>4</sup>,m=10<sup>6</sup>,k=5</span>）</td>
+<td>正解 0.25 s、L3 0.29 s，答案一致 → L3 能吃 <span class="tex">k≤5</span> 的全部 16 个点</td>
+</tr>
+</tbody></table></div>
+<h3 id="8-3-replace">8.3 replace</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>验证项</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>官方样例 1~4</td>
+<td>全部一致（样例 1 输出 <code>2</code>、<code>0</code>）</td>
+</tr>
+<tr>
+<td>正解 vs 按定义暴力</td>
+<td>3000 组随机对拍全 OK</td>
+</tr>
+<tr>
+<td>20 组中等规模交叉验证</td>
+<td>全部 OK</td>
+</tr>
+<tr>
+<td>计时（<span class="tex">n=10<sup>5</sup>,q=5×10<sup>4</sup></span>）</td>
+<td>0.06 s</td>
+</tr>
+<tr>
+<td>长公共前后缀压力数据</td>
+<td>0.12 s / 79 MB</td>
+</tr>
+</tbody></table></div>
+<h3 id="8-4-employ">8.4 employ</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>验证项</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>官方样例 1~5</td>
+<td><code>2</code> / <code>2204128</code> / <code>161088479</code> / <code>515058943</code> / <code>225301405</code>，全部一致</td>
+</tr>
+<tr>
+<td>全排列暴力 vs 正解</td>
+<td>400 组随机 + 定向（性质 A / 性质 B / 全 0 / 随机）全 OK</td>
+</tr>
+<tr>
+<td>状压 DP vs 正解</td>
+<td>200 组（<span class="tex">n≤14</span>）全 OK</td>
+</tr>
+<tr>
+<td>边界值域（<span class="tex">c∈{0,n}</span>）</td>
+<td>150 组全 OK</td>
+</tr>
+<tr>
+<td>propA / propB / m1 / mn</td>
+<td>各 120~150 组 vs 正解全 OK；m1、mn 另与暴力比对 80 组全 OK</td>
+</tr>
+<tr>
+<td>计时（<span class="tex">n=500</span> 最坏）</td>
+<td>0.09 s / 8.9 MB</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>对拍时统一编译：<code>g++ -O2 -std=c++14</code>（CCF 为 <code>-O2 -std=c++14 -static</code>）。
+计时用 <code>/usr/bin/time -l</code>，取 <code>real</code> 与 <code>maximum resident set size</code>。</p>
+</blockquote>
+<hr>
+<h2 id="9">9. 附：文件清单</h2>
+<div class="code" data-lang="文本"><div class="code-bar"><span class="code-lang">文本</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code>t1/  brute_dp.cpp  subA.cpp  subB.cpp  std.cpp  gen.cpp
+t2/  level1_k0.cpp  level2_sort_each.cpp  level3_presort.cpp  std.cpp  brute_prim.cpp  gen.cpp
+t3/  brute_naive.cpp  level1_hash.cpp  claim.cpp  std.cpp  gen.cpp
+t4/src/  brute_perm.cpp  bitmask.cpp  m1.cpp  mn.cpp  propA.cpp  propB.cpp  std.cpp
+t4/  check.py  check2.py       （对拍脚本）
+</code></pre></div>
+<p>把任意一个 <code>.cpp</code> 开头加上 <code>freopen("xxx.in","r",stdin); freopen("xxx.out","w",stdout);</code> 即可按 CCF 的方式提交。</p>
+
+    </article>
+  </main>
+</div>
+
+<footer>
+  <span>CSP-S 2025 四题详解 · 内容与作品</span>
+  <span>代码均在本机 g++-15 -O2 -std=c++14 编译实测</span>
+</footer>
+
+<script>
+(function(){
+  var body=document.body;
+  var btn=document.querySelector('.drawer-btn');
+  if(btn) btn.addEventListener('click',function(){body.classList.toggle('nav-open');});
+  var scrim=document.querySelector('.scrim');
+  if(scrim) scrim.addEventListener('click',function(){body.classList.remove('nav-open');});
+  document.querySelectorAll('.sb-toc a').forEach(function(a){
+    a.addEventListener('click',function(){body.classList.remove('nav-open');});
+  });
+
+  var bar=document.querySelector('.progress i');
+  var heads=Array.prototype.slice.call(document.querySelectorAll('article h1, article h2, article h3'));
+  var links=Array.prototype.slice.call(document.querySelectorAll('.sb-toc a'));
+  var map={};
+  links.forEach(function(a){map[(a.getAttribute('href')||'').slice(1)]=a;});
+  var sb=document.querySelector('.sidebar');
+  var cur=null;
+  function syncActive(){
+    var best=null;
+    for(var i=0;i<heads.length;i++){
+      if(heads[i].getBoundingClientRect().top<=110) best=heads[i]; else break;
+    }
+    if(!best&&heads.length) best=heads[0];
+    if(!best||best===cur) return;
+    cur=best;
+    links.forEach(function(a){a.classList.remove('active');});
+    var a=map[best.id];
+    if(!a) return;
+    a.classList.add('active');
+    if(sb){
+      var r=a.getBoundingClientRect(), sr=sb.getBoundingClientRect();
+      var delta=(r.top+r.height/2)-(sr.top+sr.height/2);
+      if(Math.abs(delta)>sr.height/2-r.height) sb.scrollTop+=delta;
+    }
+  }
+  var ticking=false;
+  function onScroll(){
+    var h=document.documentElement.scrollHeight-window.innerHeight;
+    var p=h>0?Math.min(1,window.scrollY/h):0;
+    if(bar) bar.style.width=(p*100).toFixed(2)+'%';
+    if(!ticking){
+      ticking=true;
+      requestAnimationFrame(function(){ticking=false;syncActive();});
+    }
+  }
+  addEventListener('scroll',onScroll,{passive:true});
+  addEventListener('resize',onScroll);
+  onScroll();
+
+  document.querySelectorAll('.code .copy').forEach(function(b){
+    b.addEventListener('click',function(){
+      var code=b.closest('.code').querySelector('code');
+      var txt=code?code.innerText:'';
+      var done=function(){
+        b.classList.add('done');
+        var svg=b.innerHTML;
+        b.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        setTimeout(function(){b.classList.remove('done');b.innerHTML=svg;},1400);
+      };
+      if(navigator.clipboard&&window.isSecureContext){
+        navigator.clipboard.writeText(txt).then(done,function(){fallback(txt,done);});
+      } else fallback(txt,done);
+    });
+  });
+  function fallback(txt,cb){
+    var ta=document.createElement('textarea');
+    ta.value=txt;ta.setAttribute('readonly','');
+    ta.style.position='fixed';ta.style.left='-9999px';
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');cb();}catch(e){}
+    document.body.removeChild(ta);
+  }
+})();
+</script>
+</body>
+</html>
