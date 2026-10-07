@@ -13,17 +13,19 @@
 {
   "version": 1,
   "catalog": "https://zcxxcz.github.io/my-app/catalog.json",
-  "records": [{
-    "id": "my-app",
-    "title": "应用名称",
-    "type": "应用",
-    "summary": "一句话说清用途",
-    "tags": ["英语"],
-    "url": "https://zcxxcz.github.io/my-app/",
-    "updated": "2026-10-07",
-    "featured": true,
-    "textPaths": ["public/manual.html"]
-  }]
+  "records": [
+    {
+      "id": "my-app",
+      "title": "应用名称",
+      "type": "应用",
+      "summary": "一句话说清用途",
+      "tags": ["英语"],
+      "url": "https://zcxxcz.github.io/my-app/",
+      "updated": "2026-10-07",
+      "featured": true,
+      "textPaths": ["public/manual.html"]
+    }
+  ]
 }
 ```
 
