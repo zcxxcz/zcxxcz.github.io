@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSP-S 算法互动笔记：从数据范围到算法</title>
+<style>
+:root{
+  --paper:#f2f5f8;--panel:#ffffff;--ink:#14263b;--mute:#58697b;--line:#cfd9e3;
+  --blue:#1f5fbf;--blue-soft:#e3edfb;--onblue:#ffffff;
+  --ok:#1b7a4d;--ok-soft:#dff3e8;--bad:#b83232;--bad-soft:#fbe6e6;
+  --warn:#8a5a00;--warn-soft:#fff0cc;--demo:#6b3fa0;--demo-soft:#efe6fa;--grid:rgba(31,95,191,.07);
+  --sans:"PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Source Han Sans SC","Microsoft YaHei",system-ui,sans-serif;
+  --serif:"Songti SC","Noto Serif CJK SC","Source Han Serif SC","STSong","SimSun",serif;
+  --mono:ui-monospace,"SF Mono",Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#0e1a28;--panel:#142437;--ink:#e6eef7;--mute:#9db0c4;--line:#2b4058;
+  --blue:#6aa5ff;--blue-soft:#17315a;--onblue:#0e1a28;
+  --ok:#5fd39a;--ok-soft:#12372a;--bad:#ff8a8a;--bad-soft:#3d1c1f;
+  --warn:#f2c35b;--warn-soft:#3a2f12;--demo:#c7a5ff;--demo-soft:#2d2145;--grid:rgba(106,165,255,.08);}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;font:16px/1.7 var(--sans);-webkit-text-size-adjust:100%}
+.app{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh}
+nav{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;padding:20px 12px;border-right:1px solid var(--line);background:var(--panel)}
+nav .brand{font-family:var(--serif);font-weight:700;font-size:17px;line-height:1.4;margin:0 8px 14px}
+nav a{display:block;padding:8px 10px;border-radius:3px;color:var(--ink);text-decoration:none;font-size:15px;border-left:3px solid transparent}
+nav a:hover{background:var(--blue-soft)}
+nav a[aria-current=page]{background:var(--blue-soft);border-left-color:var(--blue);font-weight:600}
+main{padding:28px clamp(14px,4vw,44px) 90px;max-width:1000px;min-width:0}
+@media (max-width:820px){
+  .app{display:block}
+  nav{position:sticky;top:0;z-index:5;height:auto;display:flex;overflow-x:auto;gap:2px;padding:6px 8px;border-right:0;border-bottom:1px solid var(--line)}
+  nav .brand{display:none}
+  nav a{white-space:nowrap;border-left:0;border-bottom:3px solid transparent;padding:8px 10px}
+  nav a[aria-current=page]{border-bottom-color:var(--blue)}
+  main{padding:18px 14px 90px}
+}
+h1,h2,h3{font-family:var(--serif);line-height:1.35;margin:0}
+h1{font-size:clamp(26px,5vw,36px);margin-bottom:10px}
+h2{font-size:22px;margin:30px 0 10px;padding-top:6px}
+h3{font-size:17px;margin:18px 0 6px}
+p{margin:8px 0;max-width:44em}
+.lead{font-size:17px;color:var(--mute);max-width:42em}
+a{color:var(--blue)}
+code,.mono{font-family:var(--mono);font-size:.93em}
+pre{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:10px 12px;overflow-x:auto;font:13.5px/1.55 var(--mono);margin:8px 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+th{background:var(--blue-soft)}
+.scroll{overflow-x:auto}
+.doc{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:18px clamp(12px,3vw,24px);margin:14px 0}
+.ctls{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px 24px;margin:12px 0}
+.ctl{display:block}
+.cl{display:block;font-size:14px;color:var(--mute);margin-bottom:2px}
+.cl output{color:var(--ink);font-family:var(--mono);font-weight:700;margin:0 4px}
+input[type=range]{width:100%;accent-color:var(--blue);min-height:28px}
+select,input[type=text],input[type=number]{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:3px;background:var(--panel);color:var(--ink);width:100%;min-height:38px}
+.btn{font:inherit;padding:7px 13px;border:1px solid var(--blue);background:var(--panel);color:var(--blue);border-radius:3px;cursor:pointer;min-height:38px}
+.btn:hover{background:var(--blue-soft)}
+.btn.pri{background:var(--blue);color:var(--onblue)}
+.btn:disabled{opacity:.4;cursor:default}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+.seg{display:flex;flex-wrap:wrap;gap:6px 14px;margin:6px 0}
+.seg label{display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{font:inherit;font-size:14px;padding:4px 10px;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink);cursor:pointer}
+.chip[aria-pressed=true]{background:var(--blue);color:var(--onblue);border-color:var(--blue)}
+.n{display:flex;gap:10px;margin:12px 0;padding:9px 12px;border-left:4px solid var(--c);background:var(--cs);border-radius:0 3px 3px 0;max-width:52em}
+.n>b{flex:none;color:var(--c)}
+.n>div{min-width:0}
+.n-hard{--c:var(--bad);--cs:var(--bad-soft)}
+.n-why{--c:var(--blue);--cs:var(--blue-soft)}
+.n-asm{--c:var(--warn);--cs:var(--warn-soft)}
+.n-lim{--c:var(--warn);--cs:var(--warn-soft)}
+.n-tip{--c:var(--ok);--cs:var(--ok-soft)}
+.tag{display:inline-block;font-size:12px;line-height:1.5;padding:0 8px;border-radius:10px;border:1px solid currentColor;vertical-align:middle;margin-left:4px;white-space:nowrap}
+.tag.demo{color:var(--demo);background:var(--demo-soft)}
+.tag.calc{color:var(--ok);background:var(--ok-soft)}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.warnc{color:var(--warn)}.mute{color:var(--mute)}
+.kpi{display:flex;flex-wrap:wrap;gap:10px 28px;margin:10px 0}
+.kpi div span{display:block;font-size:13px;color:var(--mute)}
+.kpi div b{font-size:19px;font-family:var(--mono)}
+.track{position:relative;height:14px;background:var(--line);border-radius:2px}
+.fill{height:100%;border-radius:2px;min-width:2px}
+.fill.ok{background:var(--ok)}.fill.bad{background:var(--bad)}.fill.edge{background:var(--warn)}
+.line{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.brow{display:grid;grid-template-columns:minmax(110px,190px) 1fr 110px;gap:4px 10px;align-items:center;margin:8px 0;font-size:14.5px}
+.brow .bv{font-family:var(--mono);text-align:right}
+@media (max-width:560px){.brow{grid-template-columns:1fr}.brow .bv{text-align:left}}
+.cxr{display:grid;grid-template-columns:104px 1fr;gap:4px 12px;padding:10px 0;border-top:1px solid var(--line);align-items:center}
+.cxr .nm{font-family:var(--mono);font-weight:700}
+.cxr .meta{grid-column:1/-1;font-size:13.5px;color:var(--mute)}
+.cxr .vd{grid-column:1/-1;font-size:14.5px}
+.stepbar{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 6px}
+.stview{margin:12px 0;overflow-x:auto;padding:4px 0}
+.sttext{border:1px dashed var(--line);padding:10px 12px;border-radius:3px;min-height:3.4em;background:var(--panel);max-width:52em}
+.cell{display:inline-flex;flex-direction:column;min-width:34px;height:36px;padding:0 4px;align-items:center;justify-content:center;border:1px solid var(--line);margin:2px;font-family:var(--mono);background:var(--panel);border-radius:2px;position:relative;font-size:14px}
+.cell small{font-size:10px;color:var(--mute);line-height:1}
+.cell.in{background:var(--blue-soft);border-color:var(--blue)}
+.cell.mid{background:var(--blue);color:var(--onblue);border-color:var(--blue)}
+.cell.mid small{color:var(--onblue)}
+.cell.out{opacity:.35}
+.cell.ans{box-shadow:0 0 0 2px var(--ok)}
+.cell.chg{background:var(--warn-soft);border-color:var(--warn);font-weight:700}
+.cell.prime{background:var(--blue);color:var(--onblue);border-color:var(--blue)}
+.cell.comp{opacity:.4;text-decoration:line-through}
+.cell.cur{box-shadow:0 0 0 2px var(--warn);opacity:1}
+.cell.fin{background:var(--ok-soft);border-color:var(--ok)}
+.cell.hl{box-shadow:0 0 0 2px var(--blue)}
+.cell.win{background:var(--ok-soft);border-color:var(--ok)}
+.cell.lose{background:var(--bad-soft);border-color:var(--bad)}
+.vars{display:flex;flex-wrap:wrap;gap:6px 18px;font-family:var(--mono);margin:6px 0}
+.grid8{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:2px;max-width:420px}
+.gc{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--panel);font-family:var(--mono);font-size:13px;cursor:pointer;position:relative}
+.gc.wall{background:var(--ink);color:var(--paper)}
+.gc.vis{background:var(--blue-soft)}
+.gc.inq{border:2px dashed var(--blue)}
+.gc.nw{background:var(--warn-soft)}
+.gc.cur{box-shadow:inset 0 0 0 3px var(--warn)}
+.gc.path{background:var(--ok-soft);box-shadow:inset 0 0 0 2px var(--ok)}
+.gc.se{font-weight:700;color:var(--bad)}
+.bit{font:inherit;width:36px;height:46px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;margin:2px;border-radius:3px;font-family:var(--mono);font-size:18px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;padding:0}
+.bit small{font-size:10px;color:var(--mute)}
+.bit.one{background:var(--blue);color:var(--onblue);border-color:var(--blue)}
+.bit.one small{color:var(--onblue)}
+.bit.sign{box-shadow:0 0 0 2px var(--bad)}
+.gap{display:inline-block;width:8px}
+svg.tree{max-width:100%;height:auto;background:var(--panel);border:1px solid var(--line);border-radius:3px}
+svg.tree line{stroke:var(--mute);stroke-width:1.5}
+svg.tree circle{fill:var(--panel);stroke:var(--mute);stroke-width:1.5}
+svg.tree circle.vis{fill:var(--blue-soft);stroke:var(--blue)}
+svg.tree circle.now{fill:var(--blue);stroke:var(--blue)}
+svg.tree text{fill:var(--ink);font:600 15px var(--mono);text-anchor:middle;dominant-baseline:central}
+svg.tree text.now{fill:var(--onblue)}
+svg.tree text.ord{font:11px var(--mono);fill:var(--mute)}
+.pipe{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:12px 0}
+.pipe div{flex:1 1 170px;border:1px solid var(--line);background:var(--panel);padding:9px 11px;border-radius:3px;font-size:14.5px}
+.pipe b{display:block;font-family:var(--serif);font-size:16px}
+.ent{border-top:1px solid var(--line)}
+.ent summary{cursor:pointer;padding:9px 2px;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.ent .lv{font-size:12px;color:var(--demo);border:1px solid currentColor;border-radius:10px;padding:0 7px}
+.ent .bd{padding:2px 4px 12px 14px;font-size:15px}
+.err{color:var(--bad);font-weight:600}
+.cols2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.chk{display:flex;gap:8px;align-items:flex-start;margin:6px 0}
+.chk input{margin-top:6px;width:18px;height:18px;flex:none}
+details.fold{margin:10px 0}
+details.fold summary{cursor:pointer;color:var(--blue)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav id="nav" aria-label="章节导航"></nav>
+  <main id="main"></main>
+</div>
+<script>
+'use strict';
+/* ====== 基础工具 ====== */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>Number(n).toLocaleString('en-US');
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const lcm=(a,b)=>a/gcd(a,b)*b;
+function prng(seed){let a=seed>>>0;return()=>{a=(a+0x6D2B79F5)|0;let t=Math.imul(a^(a>>>15),1|a);t=(t+Math.imul(t^(t>>>7),61|t))^t;return((t^(t>>>14))>>>0)/4294967296;};}
+let SEED=20261006, timers=[];
+function stopTimers(){timers.forEach(clearInterval);timers=[];}
+function sci(l){if(!isFinite(l))return'∞';if(l<6)return fmt(Math.round(Math.pow(10,l)));if(l>=1e4)return'10^'+fmt(Math.round(l));const e=Math.floor(l),m=Math.pow(10,l-e);return'≈ '+m.toFixed(1)+'×10^'+e;}
+const NOTE={hard:'难点',why:'为什么',asm:'假设',lim:'适用边界',tip:'提示'};
+const note=(k,t)=>`<aside class="n n-${k}"><b>${NOTE[k]}</b><div>${t}</div></aside>`;
+const TAG_DEMO='<span class="tag demo">示意数据</span>',TAG_CALC='<span class="tag calc">实时计算</span>';
+const rng=(id,label,min,max,step,val,unit='')=>`<label class="ctl"><span class="cl">${label}<output id="${id}-o">${val}</output>${unit}</span><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}"></label>`;
+const cell=(t,c='',sub='')=>`<span class="cell ${c}">${t}${sub!==''?`<small>${sub}</small>`:''}</span>`;
+const parseInts=(s)=>s.split(/[,，\s]+/).filter(Boolean).map(Number);
+document.addEventListener('input',e=>{const t=e.target;if(t&&t.type==='range'&&t.id){const o=document.getElementById(t.id+'-o');if(o)o.textContent=t.value;}});
+function head(title,lead){return `<header><h1>${title}</h1><p class="lead">${lead}</p></header>`;}
+
+/* ====== 路由 ====== */
+const SECTIONS=[
+ {id:'home',t:'总览与使用说明',f:mod_home},
+ {id:'cx',t:'① 数据范围 → 复杂度',f:mod_cx},
+ {id:'cmp',t:'② 暴力 vs 优化',f:mod_cmp},
+ {id:'st',t:'③ 算法逐步演示',f:mod_steps},
+ {id:'bit',t:'④ 进制、补码与 ASCII',f:mod_bit},
+ {id:'pit',t:'⑤ 细节陷阱与对拍',f:mod_pit},
+ {id:'tree',t:'⑥ 二叉树与表达式',f:mod_tree},
+ {id:'mat',t:'⑦ 计数与博弈',f:mod_mat},
+ {id:'ref',t:'⑧ 知识点手册（全览）',f:mod_ref},
+ {id:'road',t:'⑨ 学习路线与检查表',f:mod_road}
+];
+function buildNav(){$('#nav').innerHTML='<div class="brand">CSP-S 算法<br>互动笔记</div>'+SECTIONS.map(s=>`<a href="#${s.id}" data-id="${s.id}">${s.t}</a>`).join('');}
+function go(){
+  const id=(location.hash||'#home').slice(1);
+  const s=SECTIONS.find(x=>x.id===id)||SECTIONS[0];
+  stopTimers();
+  const m=$('#main');m.innerHTML='';
+  const root=document.createElement('div');m.appendChild(root);
+  s.f(root);
+  $$('#nav a').forEach(a=>{if(a.dataset.id===s.id)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+  const cur=$('#nav a[aria-current]');if(cur&&cur.scrollIntoView)cur.scrollIntoView({block:'nearest',inline:'center'});
+  window.scrollTo(0,0);
+}
+
+/* ====== 总览 ====== */
+function mod_home(r){
+ r.innerHTML=head('把数据范围读成算法线索','这是为 CSP-S 备考的家长准备的互动笔记。每个页面都按「难点 → 操作 → 结果 → 原因 → 假设与边界」组织：拖动滑块、切换步骤，直接看到数字怎么变，以及为什么变。')+`
+ <div class="pipe" aria-label="解题主线">
+  <div><b>读数据范围</b>n、m、q、值域、组数 T</div>
+  <div><b>反推复杂度</b>按时限估出能做的运算次数 → <a href="#cx">页面①</a></div>
+  <div><b>缩小候选算法</b>同一复杂度对应多种算法</div>
+  <div><b>看题目结构选定</b>区间？树？图？序列？</div>
+ </div>
+ <h2>先确定难点，再选交互方式</h2>
+ <p>下面是我认为最容易卡住的 8 个理解难点，以及各自配的交互方式：</p>
+ <div class="scroll"><table>
+ <tr><th>难点</th><th>交互方式</th><th>在哪</th></tr>
+ <tr><td>数据范围到底限制了什么复杂度</td><td>滑块 + 「预算线」对比条</td><td><a href="#cx">页面①</a></td></tr>
+ <tr><td>暴力慢在哪，优化到底省了多少、何时不划算</td><td>对比视图（真实计数两种做法的运算次数）</td><td><a href="#cmp">页面②</a></td></tr>
+ <tr><td>算法每一步在干什么（二分答案、背包、单调队列、快速幂、筛法、排序、BFS）</td><td>步骤切换 + 自动播放 + 可改参数</td><td><a href="#st">页面③</a></td></tr>
+ <tr><td>计算机怎么存整数；补码、溢出</td><td>可点击的二进制位开关</td><td><a href="#bit">页面④</a></td></tr>
+ <tr><td>「思路对却丢分」：溢出、精度、取模、内存、测试数据设计</td><td>参数试验 + 迷你对拍实验</td><td><a href="#pit">页面⑤</a></td></tr>
+ <tr><td>树的三种遍历与还原；表达式与后缀式</td><td>输入序列 → 画树 → 逐步高亮</td><td><a href="#tree">页面⑥</a></td></tr>
+ <tr><td>容斥、插板、博弈结论为什么成立</td><td>勾选/滑块 + 逐项展开 + 暴力验证</td><td><a href="#mat">页面⑦</a></td></tr>
+ <tr><td>知识点太多，不知道属于哪一类</td><td>可搜索、可筛选的手册（约 100 条）</td><td><a href="#ref">页面⑧</a></td></tr>
+ </table></div>
+ <h2>三块内容怎么对应之前的总结</h2>
+ <div class="scroll"><table>
+ <tr><th>块</th><th>内容</th><th>主要页面</th></tr>
+ <tr><td>效率层</td><td>DP、前缀和、线段树、最短路、二分、哈希、KMP……（把复杂度压下来）</td><td>①②③⑧</td></tr>
+ <tr><td>工具层</td><td>语法、模拟、枚举、建模、数学基础、构造、细节</td><td>⑤⑦⑧</td></tr>
+ <tr><td>补充块</td><td>计算机基础、排序、树与堆、图补充、组合、博弈、几何、进阶结构、考试工程</td><td>③④⑥⑦⑧</td></tr>
+ </table></div>
+ ${note('asm','本页的全局假设：①「约 10⁸ 次简单运算/秒」只是估算口径，真实速度受语言、常数、缓存、评测机影响；②时间、内存限制一律以题面为准；③「效率层/工具层」是我为帮助理解划的框架，不是 CCF 官方分类；具体考点请对照官方最新大纲与当年通知；④标有'+TAG_DEMO+'的数据是随机生成或手工编的例子，'+TAG_CALC+'表示由你设置的参数现场算出。')}
+ <h2>使用说明（简版）</h2>
+ <ol>
+  <li>用左侧（手机为顶部）导航切换页面，建议先看①②，再按需看③–⑦。</li>
+  <li>滑块、下拉框、输入框改动后立即更新结果；每页的「为什么」框解释变化原因，「适用边界」框说明什么时候这个结论不成立。</li>
+  <li>页面③有「上一步 / 下一步 / 自动播放 / 跳到结尾」；迷宫可以点格子放置或拆除墙。</li>
+  <li>「换一组示意数据」会重新生成随机数据，便于观察结论是否稳定。</li>
+  <li>本文件完全离线可用，不需要网络；页面⑨的学习进度勾选会保存在本浏览器里（若浏览器禁用存储则不保存）。</li>
+ </ol>`;
+}
+
+/* ====== ① 复杂度 ====== */
+function lfact(n){if(n<=20){let s=0;for(let i=2;i<=n;i++)s+=Math.log10(i);return s;}return(n*Math.log(n)-n+0.5*Math.log(2*Math.PI*n))/Math.LN10;}
+const CX=[
+ {n:'O(log n)',lg:n=>Math.log10(Math.max(1,Math.log2(n))),al:'二分、快速幂、倍增、公式推导'},
+ {n:'O(n)',lg:n=>Math.log10(n),al:'线性扫描、前缀和/差分、双指针、单调栈/队列、桶、线性筛、KMP'},
+ {n:'O(n log n)',lg:n=>Math.log10(n*Math.max(1,Math.log2(n))),al:'排序、堆、树状数组、线段树、离散化、归并、Dijkstra 堆优化'},
+ {n:'O(n√n)',lg:n=>1.5*Math.log10(n),al:'分块、莫队'},
+ {n:'O(n²)',lg:n=>2*Math.log10(n),al:'二维 DP、朴素最短路、枚举点对、O(n²) 排序'},
+ {n:'O(n³)',lg:n=>3*Math.log10(n),al:'区间 DP、Floyd'},
+ {n:'O(2ⁿ)',lg:n=>n*Math.log10(2),al:'子集枚举、状压 DP（常带 n² 因子）、搜索加剪枝、折半搜索（降为 2^(n/2)）'},
+ {n:'O(n!)',lg:n=>lfact(n),al:'全排列枚举（n 一般 ≤ 10）'}
+];
+function maxN(lg,B){const hi=1e9;if(lg(hi)<=B)return null;if(lg(1)>B)return 0;let lo=1,h=hi;while(h-lo>1){const m=Math.floor((lo+h)/2);if(lg(m)<=B)lo=m;else h=m;}return lo;}
+function mod_cx(r){
+ r.innerHTML=head('① 数据范围 → 能用的复杂度','数据范围不是装饰：它直接告诉你评测机能承受多少次运算。拖动 n，看哪些复杂度档次还能过。')+`
+ ${note('hard','「O(n²) 到底能不能过」没有直觉。n=5000 和 n=10⁵ 只差 20 倍，运算量却差 400 倍。')}
+ <p class="mute">互动方式：滑块改变 n 与评测条件，每个复杂度一根条（对数刻度），竖线是运算预算。条在竖线左侧为可行。'+TAG_CALC+'</p>
+ <div class="doc">
+ <div class="ctls">
+  <label class="ctl"><span class="cl">数据规模 n =<output id="cx-n">100,000</output>（无单位，元素个数；滑块为对数刻度）</span><input type="range" id="cx-e" min="0.3" max="9" step="0.05" value="5"></label>
+  <label class="ctl"><span class="cl">时间限制 <output id="cx-t-o">1</output> 秒（题面给定）</span><input type="range" id="cx-t" min="0.5" max="5" step="0.5" value="1"></label>
+  <label class="ctl"><span class="cl">机器速度（假设）</span><select id="cx-s"><option value="5e7">5×10⁷ 次/秒（保守）</option><option value="1e8" selected>1×10⁸ 次/秒（常用估算）</option><option value="3e8">3×10⁸ 次/秒（简单循环，乐观）</option></select></label>
+  <label class="ctl"><span class="cl">每步的实际代价（假设）</span><select id="cx-c"><option value="1" selected>1 个基本运算（简单循环）</option><option value="3">约 3 倍（取模、数组随机访问）</option><option value="10">约 10 倍（STL set/map、线段树递归）</option><option value="30">约 30 倍（常数很大的做法）</option></select></label>
+  <label class="ctl"><span class="cl">测试组数 T（假设每组都是此规模）</span><select id="cx-g"><option value="1" selected>1 组</option><option value="10">10 组</option><option value="100">100 组</option><option value="1000">1000 组</option></select></label>
+ </div>
+ <div class="chips" id="cx-chips" aria-label="常见数据规模"></div>
+ <div id="cx-out"></div>
+ </div>`;
+ const presets=[[20,'n≈20'],[500,'n≈500'],[5000,'n≈5000'],[1e5,'n≈10⁵'],[1e6,'n≈10⁶'],[1e7,'n≈10⁷']];
+ $('#cx-chips').innerHTML=presets.map(p=>`<button class="chip" data-v="${p[0]}">${p[1]}</button>`).join('');
+ $('#cx-chips').onclick=e=>{const b=e.target.closest('button');if(!b)return;$('#cx-e').value=Math.log10(+b.dataset.v);upd();};
+ function upd(){
+  const n=Math.max(1,Math.round(Math.pow(10,+$('#cx-e').value)));
+  $('#cx-n').textContent=fmt(n);
+  const T=+$('#cx-t').value,sp=+$('#cx-s').value,c=+$('#cx-c').value,g=+$('#cx-g').value;
+  const B=T*sp/c/g,LB=Math.log10(B),SC=16;
+  let rows='',best=-1;
+  CX.forEach((x,i)=>{
+   const l=x.lg(n),ok=l<=LB,edge=ok&&l>LB-0.3;
+   if(ok)best=i;
+   const cls=!ok?'bad':edge?'edge':'ok',vd=!ok?'✗ 超时':edge?'▲ 勉强（接近上限）':'✓ 可行';
+   const mx=maxN(x.lg,LB);
+   rows+=`<div class="cxr"><div class="nm">${x.n}</div><div class="track" role="img" aria-label="${x.n} 运算量 ${sci(l)}，预算 ${sci(LB)}"><div class="fill ${cls}" style="width:${clamp(l/SC*100,1,100).toFixed(1)}%"></div><div class="line" style="left:${clamp(LB/SC*100,0,100).toFixed(1)}%"></div></div>
+   <div class="vd"><b class="${cls==='bad'?'bad':cls==='edge'?'warnc':'ok'}">${vd}</b>　运算量 ${sci(l)} 次；在此预算下最大 n ${mx===null?'≥ 10⁹':mx===0?'连 1 都不行':'≈ '+fmt(mx)}</div>
+   <div class="meta">常见做法：${x.al}</div></div>`;
+  });
+  const sum=best<0?'所有档次都超时：预算太小或每步代价太大。':`此时最慢还能接受的档次是 <b>${CX[best].n}</b>，对应的候选算法：${CX[best].al}。比它更慢的档次都要换思路降复杂度。`;
+  $('#cx-out').innerHTML=`<p>运算预算 = 时限 × 速度 ÷ 每步代价 ÷ 组数 = <b class="mono">${sci(LB)}</b> 次（图中竖线，刻度 10⁰–10¹⁶）。</p>${rows}<p>${sum}</p>`;
+ }
+ r.addEventListener('input',upd);r.addEventListener('change',upd);upd();
+ r.insertAdjacentHTML('beforeend',
+  note('why','每个复杂度的运算量随 n 增长的速度不同：O(n²) 每把 n 放大 10 倍，运算量放大 100 倍；O(2ⁿ) 每把 n 加 1，运算量翻倍，所以 n 只能到 20 左右。把滑块从 n≈5000 拖到 10⁵，观察 O(n²) 的条越过竖线。')+
+  note('lim','只比较运算次数的数量级，忽略常数。同一复杂度的两种做法，常数可差 10 倍以上（调「每步的实际代价」可看到影响）。若题目给「所有测试组的 n 之和 ≤ 某值」，应按总和而非每组计算。内存限制是另一个独立约束，见页面⑤。')+
+  note('tip','读题顺序：先找 n、m、q、值域、T；再用本页反推；再结合题目结构（区间/树/图/序列）挑算法。同一档次有多种算法，只能缩小范围，不能直接确定。'));
+}
+
+/* ====== ② 暴力 vs 优化 ====== */
+function bars(rows){const mx=Math.max(1,...rows.map(x=>x.val));const L=v=>Math.log10(v+1)/Math.log10(mx+1)*100;
+ return rows.map(x=>`<div class="brow"><div>${x.label}</div><div class="track"><div class="fill ${x.cls}" style="width:${clamp(L(x.val),2,100).toFixed(1)}%"></div></div><div class="bv">${fmt(x.val)} 次</div></div>`).join('');}
+function mod_cmp(r){
+ r.innerHTML=head('② 暴力 vs 优化：真实计数运算次数','对同一份数据，把暴力和优化后的做法都实际跑一遍，数一数各自做了多少次基本运算，并核对答案一致。')+`
+ ${note('hard','「优化」到底省在哪？什么时候不划算？直觉不可靠，要看两边的运算次数。')}
+ <div class="doc">
+ <div class="seg" id="cmp-sc"><label><input type="radio" name="cmpsc" value="pre" checked>区间求和：前缀和</label><label><input type="radio" name="cmpsc" value="win">最短子数组：双指针</label><label><input type="radio" name="cmpsc" value="bin">查找：二分</label></div>
+ <div class="ctls" id="cmp-par"></div>
+ <button class="btn" id="cmp-seed">换一组示意数据</button>
+ <div id="cmp-out"></div></div>`;
+ const SC={
+  pre:{par:()=>rng('p-n','数组长度 n',10,3000,10,1000,' 个')+rng('p-q','询问次数 q',1,3000,1,1000,' 次'),
+   run(){const n=+$('#p-n').value,q=+$('#p-q').value,R=prng(SEED),a=[];for(let i=0;i<n;i++)a.push(1+Math.floor(R()*9));
+    const s=[0];for(let i=0;i<n;i++)s.push(s[i]+a[i]);
+    let brute=0,pre=n,same=true,len=0;
+    for(let k=0;k<q;k++){let l=Math.floor(R()*n),h=Math.floor(R()*n);if(l>h){const t=l;l=h;h=t;}let t=0;for(let i=l;i<=h;i++){t+=a[i];brute++;}len+=h-l+1;pre++;if(t!==s[h+1]-s[l])same=false;}
+    const peek='<p class="mute">前 10 项（'+TAG_DEMO+'）：</p><div class="scroll"><table><tr><th>下标</th>'+a.slice(0,10).map((_,i)=>`<td>${i+1}</td>`).join('')+'</tr><tr><th>a[i]</th>'+a.slice(0,10).map(x=>`<td>${x}</td>`).join('')+'</tr><tr><th>前缀和 s[i]</th>'+s.slice(1,11).map(x=>`<td>${x}</td>`).join('')+'</tr></table></div>';
+    return{la:'暴力：每问把区间逐个相加',lb:'前缀和：建表 n 次 + 每问 1 次减法',na:brute,nb:pre,same,peek,
+     why:`随机区间平均长约 ${(len/q).toFixed(0)}，暴力每问就要这么多次加法。前缀和把「重复累加」的成本提前一次付清（${fmt(n)} 次），之后每问 O(1)。把 q 拖到很小（比如 1–3），你会看到预处理反而吃亏：优化有「回本点」。`,
+     lim:'假设：一次加法或减法算 1 次运算；数值 1–9 随机；区间随机。前提是数组在查询之间不修改；若有修改，改用树状数组或线段树。比较的是运算次数，不是真实耗时。'};}},
+  win:{par:()=>rng('w-n','数组长度 n',10,3000,10,1000,' 个')+rng('w-p','目标和 S 占总和的比例',1,100,1,10,' %'),
+   run(){const n=+$('#w-n').value,pct=+$('#w-p').value,R=prng(SEED),a=[];let tot=0;for(let i=0;i<n;i++){const x=1+Math.floor(R()*9);a.push(x);tot+=x;}
+    const S=Math.max(1,Math.round(tot*pct/100));
+    let best=Infinity,ops=0;
+    for(let l=0;l<n;l++){let sum=0;for(let h=l;h<n;h++){sum+=a[h];ops++;if(sum>=S){best=Math.min(best,h-l+1);break;}}}
+    let l=0,sum=0,b2=Infinity,o2=0;
+    for(let h=0;h<n;h++){sum+=a[h];o2++;while(sum-a[l]>=S){sum-=a[l];l++;o2++;}if(sum>=S)b2=Math.min(b2,h-l+1);}
+    return{la:'暴力：每个左端点向右累加到 ≥S 就停',lb:'双指针：l、r 只向右走',na:ops,nb:o2,same:best===b2,
+     peek:`<p>${TAG_DEMO} 总和 = ${fmt(tot)}，S = ${fmt(S)}，最短满足区间长度 = <b>${best}</b>。</p>`,
+     why:'暴力对每个 l 重新累加，S 越大每次累加越长，趋近 O(n²)。双指针利用「元素为正 → 窗口变大和只增不减」的单调性，l 和 r 各最多走 n 步，总计 ≤ 2n。把 S 的比例拖大，暴力的次数迅速上升而双指针几乎不变。',
+     lim:'前提：所有元素为正数。含负数或零时窗口的和不再单调，双指针失效，需要前缀和 + 其他结构。数据为随机 1–9；这里的暴力已带「提前停止」，是较温和的暴力。'};}},
+  bin:{par:()=>`<label class="ctl"><span class="cl">数组长度 n =<output id="b-n">1,000,000</output> 个（对数刻度）</span><input type="range" id="b-e" min="1" max="7" step="0.1" value="6"></label>`+rng('b-p','目标所在位置',0,100,1,70,' %')+`<label class="chk"><input type="checkbox" id="b-x"><span>目标不在数组中</span></label>`,
+   run(){const n=Math.round(Math.pow(10,+$('#b-e').value));$('#b-n').textContent=fmt(n);const pct=+$('#b-p').value,absent=$('#b-x').checked;
+    const pos=Math.floor(pct/100*(n-1)),t=absent?2*pos+2:2*pos+1;
+    const lin=absent?n:pos+1;let lo=0,hi=n-1,st=0;
+    while(lo<=hi){const mid=Math.floor((lo+hi)/2);st++;const v=2*mid+1;if(v===t)break;if(v<t)lo=mid+1;else hi=mid-1;}
+    return{la:'线性扫描：从头比较',lb:'二分查找：每次丢掉一半',na:lin,nb:st,same:true,
+     peek:`<p>${TAG_DEMO} 数组为 1,3,5,…（第 i 项 = 2i+1，已排序），查找 ${fmt(t)}。二分最多需要约 ⌈log₂(n+1)⌉ = <b>${Math.ceil(Math.log2(n+1))}</b> 次。</p>`,
+     why:'每比较一次，剩余候选区间减半，所以次数约为 log₂n；n 从 10³ 涨到 10⁷，二分只从约 10 次涨到约 24 次，线性扫描却涨了一万倍。',
+     lim:'前提：数组已排好序。排序本身要 O(n log n)：只查一次时直接线性扫描更省；要查很多次才值得先排序。一次三路比较（相等/小于/大于）记 1 次。'};}}
+ };
+ let cur='pre';
+ function setSc(){cur=$('input[name=cmpsc]:checked').value;$('#cmp-par').innerHTML=SC[cur].par();show();}
+ function show(){const o=SC[cur].run(),ratio=o.na/o.nb;
+  $('#cmp-out').innerHTML=bars([{label:o.la,val:o.na,cls:'bad'},{label:o.lb,val:o.nb,cls:'ok'}])+
+  `<p class="mute">条形长度为对数刻度（否则优化版会短到看不见）。</p>
+  <div class="kpi"><div><span>暴力 ÷ 优化（运算次数之比）</span><b>${ratio>=1?ratio.toFixed(1)+' 倍':'暴力更省（优化多 '+(1/ratio).toFixed(1)+' 倍）'}</b></div><div><span>答案核对</span><b class="${o.same?'ok':'bad'}">${o.same?'✓ 两种做法一致':'✗ 不一致'}</b></div></div>`+
+  o.peek+note('why',o.why)+note('lim',o.lim);}
+ $('#cmp-sc').addEventListener('change',setSc);
+ $('#cmp-par').addEventListener('input',show);$('#cmp-par').addEventListener('change',show);
+ $('#cmp-seed').onclick=()=>{SEED+=1;show();};
+ setSc();
+}
+
+/* ====== ③ 步骤演示 ====== */
+function algoBS(){return{n:'二分答案：木材加工',
+ hard:'「答案有单调性，所以能把求最优变成反复判断可不可行」。',
+ par:()=>`<label class="ctl"><span class="cl">木头长度（整数 1–40，逗号分隔，至多 8 根）${TAG_DEMO}</span><input type="text" id="bs-l" value="10,24,15"></label>`+rng('bs-k','需要的段数 k',1,30,1,7,' 段'),
+ build(){const L=parseInts($('#bs-l').value),k=+$('#bs-k').value;
+  if(!L.length||L.length>8||L.some(x=>!Number.isInteger(x)||x<1||x>40))return[{err:'木头长度请输入 1–8 个 1 到 40 之间的整数，用逗号分隔。'}];
+  const max=Math.max(...L),tot0=L.reduce((a,b)=>a+b,0);let lo=1,hi=max,ans=0;
+  const F=[{max,lo,hi,ans,mid:null,text:`目标：把木头切成 ≥ ${k} 段<b>等长</b>木料，求最长的段长。段长一定在 1 到 ${max} 之间。每步取中点 mid，判断「每根切 ⌊长度/mid⌋ 段，总段数够不够」。`}];
+  while(lo<=hi){const mid=(lo+hi)>>1,cnt=L.map(x=>Math.floor(x/mid)),tot=cnt.reduce((a,b)=>a+b,0),ok=tot>=k;
+   F.push({max,lo,hi,ans,mid,text:`区间 [${lo}, ${hi}]，试 mid=${mid}：各根切 ${cnt.join('+')} = <b>${tot}</b> 段，${ok?'≥':'<'} ${k}。${ok?`<b class="ok">可行</b> → 记录 ans=${mid}，答案可能更长，令 lo=${mid+1}。`:`<b class="bad">不可行</b> → 段太长了，令 hi=${mid-1}。`}`});
+   if(ok){ans=mid;lo=mid+1;}else hi=mid-1;}
+  F.push({max,lo,hi,ans,mid:null,text:ans?`lo=${lo} > hi=${hi}，结束。最大可行段长 = <b>${ans}</b>。只判断了 ${F.length-1} 次，逐个试要 ${max} 次。`:`没有任何段长可行：连段长 1 也只能切出 ${tot0} 段，不到 ${k} 段，无解。`});
+  return F;},
+ view(f){let h='';for(let v=1;v<=f.max;v++){let c=(v<f.lo||v>f.hi)?'out':'in';if(v===f.mid)c='mid';if(v===f.ans)c+=' ans';h+=cell(v,c);}
+  return `<div class="vars"><span>lo=${f.lo}</span><span>hi=${f.hi}</span><span>mid=${f.mid===null?'—':f.mid}</span><span>ans=${f.ans||'无'}</span></div><div>${h}</div><p class="mute">深蓝=mid，浅蓝=仍可能的区间，灰=已排除，绿框=当前记录的 ans。</p>`;},
+ fine:'为什么能二分：段长越大，能切出的段数越少（单调）。边界：只有「可行性随答案单调变化」的题才能用二分答案；判断函数要能在 O(n) 左右完成。示意数据为手工例子。'};}
+function algoKN(){return{n:'背包 DP：01 与完全',
+ hard:'01 背包的容量为什么要倒序，完全背包为什么要正序。',
+ par:()=>rng('kn-v','背包容量 V',1,15,1,5,' 单位')+`<label class="ctl"><span class="cl">物品「重量:价值」（至多 6 件）${TAG_DEMO}</span><input type="text" id="kn-i" value="2:3, 3:4, 4:5"></label><div class="seg"><label><input type="radio" name="knm" value="01" checked>01 背包（每件至多 1 次，容量倒序）</label><label><input type="radio" name="knm" value="full">完全背包（每件无限次，容量正序）</label></div>`,
+ build(){const V=+$('#kn-v').value,mode=$('input[name=knm]:checked').value;
+  const items=$('#kn-i').value.split(/[,，\s]+/).filter(Boolean).map(s=>s.split(':').map(Number));
+  if(!items.length||items.length>6||items.some(p=>p.length!==2||!Number.isInteger(p[0])||!Number.isInteger(p[1])||p[0]<1||p[1]<1||p[0]>20||p[1]>99))return[{err:'请按「重量:价值」填写 1–6 件物品，例如 2:3, 3:4。重量 1–20，价值 1–99。'}];
+  const run=m=>{let dp=Array(V+1).fill(0);const F=[{dp:dp.slice(),ch:[],text:`dp[j] 表示容量为 j 时的最大价值，初始全为 0。逐件处理物品。`}];
+   items.forEach(([w,v],i)=>{const nd=dp.slice(),ch=[],det=[];const js=[];if(m==='01'){for(let j=V;j>=w;j--)js.push(j);}else{for(let j=w;j<=V;j++)js.push(j);}
+    for(const j of js){const cand=nd[j-w]+v;if(cand>nd[j]){det.push(`dp[${j}]：${nd[j]}→${cand}（= dp[${j-w}]+${v}）`);ch.push(j);nd[j]=cand;}}
+    dp=nd;F.push({dp:dp.slice(),ch,text:`物品 ${i+1}（重 ${w}，值 ${v}）：容量从${m==='01'?'大到小（保证 dp[j−w] 还是「没用过本物品」的旧值）':'小到大（dp[j−w] 可能已含本物品，所以本物品可重复用）'}扫描。${det.length?'变化：'+det.join('；')+'。':'没有格子变化。'}`});});
+   return F;};
+  const F=run(mode),other=run(mode==='01'?'full':'01'),a=F[F.length-1].dp[V],b=other[other.length-1].dp[V];
+  F[F.length-1].text+=`<br><b>结果：dp[${V}] = ${a}。</b>（对照：换成${mode==='01'?'完全':'01'}背包，结果是 ${b}。）`;
+  return F;},
+ view(f){let h='';f.dp.forEach((x,j)=>{h+=cell(x,f.ch.includes(j)?'chg':'',j);});return `<div>${h}</div><p class="mute">格子上方为 dp 值，下标 j 是容量；黄色=本步被更新。</p>`;},
+ fine:'01 背包倒序是为了每件物品只用一次；改成正序就变成完全背包。复杂度 O(物品数 × V)。边界：V 很大（如 10⁹）时此法不可行；多重背包要先二进制拆分。示意物品为手工例子。'};}
+function algoDQ(){return{n:'单调队列：滑动窗口最大值',
+ hard:'为什么队尾「更小的数」可以直接丢掉，却不会丢答案。',
+ par:()=>`<label class="ctl"><span class="cl">数组（整数 −99–99，3–14 个）${TAG_DEMO}</span><input type="text" id="dq-a" value="1,3,-1,-3,5,3,6,7"></label>`+rng('dq-k','窗口大小 k',1,8,1,3,' 个'),
+ build(){const A=parseInts($('#dq-a').value);let k=+$('#dq-k').value;
+  if(A.length<3||A.length>14||A.some(x=>!Number.isInteger(x)||x<-99||x>99))return[{err:'请输入 3–14 个 −99 到 99 之间的整数。'}];
+  if(k>A.length)return[{err:`窗口大小 k=${k} 大于数组长度 ${A.length}，请把 k 调小。`}];
+  const q=[],out=[],F=[{A,k,i:-1,q:[],out:[],text:`队列里存下标，对应的值从队首到队尾<b>递减</b>。队首永远是当前窗口最大值。`}];let ops=0;
+  for(let i=0;i<A.length;i++){const pops=[];while(q.length&&A[q[q.length-1]]<=A[i]){pops.push(q.pop());ops++;}q.push(i);ops++;let outd=null;if(q[0]<=i-k){outd=q.shift();ops++;}
+   let res=null;if(i>=k-1){res=A[q[0]];out.push(res);}
+   F.push({A,k,i,q:q.slice(),out:out.slice(),text:`读入 A[${i}]=${A[i]}：${pops.length?`队尾下标 ${pops.join('、')}（值 ${pops.map(p=>A[p]).join('、')}）都不大于它，且比它早离开窗口，永远当不了最大值 → 弹出。`:'队尾没有比它小或相等的，无需弹出。'}入队。${outd!==null?`队首下标 ${outd} 已滑出窗口 → 弹出。`:''}${res!==null?`窗口 [${i-k+1}, ${i}] 的最大值 = 队首 A[${q[0]}] = <b>${res}</b>。`:'窗口还没填满，不输出。'}`});}
+  const brute=[];for(let i=k-1;i<A.length;i++)brute.push(Math.max(...A.slice(i-k+1,i+1)));
+  const same=brute.join()===out.join();
+  F[F.length-1].text+=`<br><b>输出：${out.join(' ')}</b>。暴力核对：${same?'<span class="ok">✓ 一致</span>':'<span class="bad">✗ 不一致</span>'}。队列操作共 ${ops} 次（每个元素最多入队、出队各一次，≤ 2n），暴力需要约 ${(A.length-k+1)*k} 次比较。`;
+  return F;},
+ view(f){if(f.err)return'';let h='';f.A.forEach((x,i)=>{const inw=f.i>=0&&i<=f.i&&i>f.i-f.k;h+=cell(x,(inw?'in ':'')+(i===f.i?'cur':''),i);});
+  return `<p class="mute">数组（蓝色=当前窗口，黄框=刚读入）：</p><div>${h}</div><p class="mute">队列（队首 → 队尾，格式 下标:值）：</p><div>${f.q.length?f.q.map(i=>cell(f.A[i],'mid',i)).join(''):'（空）'}</div><p class="mute">已输出：${f.out.length?f.out.join('，'):'（无）'}</p>`;},
+ fine:'每个元素只进出队各一次，所以总复杂度 O(n)。边界：求窗口最小值只需把比较方向反过来；窗口大小可变（如求区间 DP 转移的滑窗）时同样适用。示意数组为手工例子。'};}
+function algoPW(){return{n:'快速幂：反复平方',
+ hard:'指数的二进制拆分为什么能把 b 次乘法降到约 log₂b 次。',
+ par:()=>`<div class="ctls"><label class="ctl"><span class="cl">底数 a（1–1000）</span><input type="number" id="pw-a" value="3" min="1" max="1000"></label><label class="ctl"><span class="cl">指数 b（1–10⁹）</span><input type="number" id="pw-b" value="13" min="1" max="1000000000"></label><label class="ctl"><span class="cl">模数 p（2–10⁹+7）</span><select id="pw-p"><option value="1000">1000</option><option value="97">97</option><option value="1000000007" selected>1000000007（10⁹+7）</option></select></label></div>`,
+ build(){const a=clamp(Math.floor(+$('#pw-a').value)||1,1,1000),b=clamp(Math.floor(+$('#pw-b').value)||1,1,1e9),p=BigInt($('#pw-p').value);
+  const bits=b.toString(2),L=bits.length;let r=1n,base=BigInt(a)%p,bb=BigInt(b);
+  const parts=[];for(let t=0;t<L;t++)if(bits[L-1-t]==='1')parts.push(`${a}^${2**t}`);
+  const F=[{bits,t:-1,r:r.toString(),base:base.toString(),text:`${a}^${b}：把 b=${b} 写成二进制 ${bits}，得 ${a}^${b} = ${parts.join(' × ')}。从最低位开始：bit=1 就乘进结果，每步 base 自乘（平方）。`}];
+  for(let t=0;t<L;t++){const bit=bits[L-1-t];let s=`第 ${t} 位（权重 2^${t}）= <b>${bit}</b>：`;
+   if(bit==='1'){const nr=r*base%p;s+=`r = r × base mod p = ${r}×${base} mod ${p} = ${nr}；`;r=nr;}else s+='这一位是 0，r 不变；';
+   const nb=base*base%p;s+=`然后 base = base² mod p = ${base}² mod ${p} = ${nb}。`;base=nb;
+   F.push({bits,t,r:r.toString(),base:base.toString(),text:s});}
+  let chk='';if(b<=200000){let x=1n;for(let i=0;i<b;i++)x=x*BigInt(a)%p;chk=x===r?'朴素连乘校验 <span class="ok">✓ 一致</span>。':'<span class="bad">校验不一致</span>。';}
+  F[F.length-1].text+=`<br><b>结果：${a}^${b} mod ${p} = ${r}。</b>${chk}朴素连乘要 ${fmt(b-1)} 次乘法，快速幂只循环 ${L} 轮（≤ ${2*L} 次乘法）。`;
+  return F;},
+ view(f){let h='';for(let i=0;i<f.bits.length;i++){const t=f.bits.length-1-i;h+=cell(f.bits[i],f.t===t?'cur mid':(t<f.t?'out':''),'2^'+t);}
+  return `<p class="mute">b 的二进制（从右向左处理，小字是权重）：</p><div>${h}</div><div class="vars"><span>r = ${f.r}</span><span>base = ${f.base}</span></div>`;},
+ fine:'假设：用 BigInt 保证中间乘积不溢出；比赛里 C++ 若 p≈10⁹，乘积需要 long long（见页面⑤的溢出演示）。边界：a、b 本身可能比 p 大时先对 p 取模；b=0 时结果为 1。'};}
+function sieveStats(N){let st=Array(N+1).fill(0),m=0,d=0;for(let i=2;i<=N;i++)if(st[i]===0){st[i]=1;for(let j=i*i;j<=N;j+=i){if(st[j]===2)d++;else st[j]=2;m++;}}
+ const pr=[],s2=Array(N+1).fill(0);let m2=0;for(let i=2;i<=N;i++){if(!s2[i]){s2[i]=1;pr.push(i);}for(const p of pr){if(i*p>N)break;s2[i*p]=2;m2++;if(i%p===0)break;}}
+ return{em:m,ed:d,lm:m2};}
+function algoSV(){return{n:'筛法：埃氏筛 vs 线性筛',
+ hard:'「每个合数只被它最小的质因数标记一次」是什么意思。',
+ par:()=>rng('sv-n','范围 N',10,100,1,50,'（筛 2..N）')+`<div class="seg"><label><input type="radio" name="svm" value="era" checked>埃氏筛（划掉每个质数的倍数）</label><label><input type="radio" name="svm" value="lin">线性筛（每个合数只划一次）</label></div>`,
+ build(){const N=+$('#sv-n').value,mode=$('input[name=svm]:checked').value,S=sieveStats(N);
+  const st=Array(N+1).fill(0),F=[{N,st:st.slice(),cur:[],marks:0,dups:0,text:'从 2 开始。没被划掉的数就是质数。蓝=质数，灰删除线=合数，黄框=本步刚被划掉。'}];let marks=0,dups=0;
+  if(mode==='era'){for(let i=2;i<=N;i++){if(st[i]!==0)continue;st[i]=1;const cur=[];let m=0,d=0;
+    if(i*i<=N){for(let j=i*i;j<=N;j+=i){if(st[j]===2)d++;else st[j]=2;m++;cur.push(j);}}
+    marks+=m;dups+=d;
+    F.push({N,st:st.slice(),cur,marks,dups,text:`${i} 没被划掉 → <b>质数</b>。${m?`划掉 ${i}²=${i*i}, ${i*i+i}, … 共 ${m} 次，其中 <b>${d}</b> 次是重复划掉（该数已被更小的质数划过）。从 i² 开始是因为更小的倍数 ${i}×k (k<${i}) 已被更小的质数划掉。`:`${i}²=${i*i} 已超过 N，无需再划。`}`});}}
+  else{const pr=[];for(let i=2;i<=N;i++){let isP=false;if(st[i]===0){st[i]=1;pr.push(i);isP=true;}const cur=[],lg=[];let stop=null;
+    for(const p of pr){if(i*p>N)break;if(st[i*p]!==0)dups++;st[i*p]=2;marks++;cur.push(i*p);lg.push(`${p}→${i*p}`);if(i%p===0){stop=p;break;}}
+    F.push({N,st:st.slice(),cur,marks,dups,text:`i=${i}：${isP?'没被划掉 → <b>质数</b>，加入质数表。':'已被划掉（合数）。'}${lg.length?`依次用质数表里的 p 划掉 i×p：${lg.join('，')}。${stop?`因为 ${i} % ${stop} == 0，<b>停止</b>（再往后的 i×p' 会被 ${stop} 更早地划掉，不能重复）。`:`质数表用完或 i×p 超过 N，停止。`}`:'没有可划的数。'}`});}}
+  F[F.length-1].text+=`<br><b>总结（N=${N}）</b>：埃氏筛共划 ${S.em} 次，其中重复 ${S.ed} 次；线性筛共划 ${S.lm} 次，重复 0 次（≈ N 减去质数个数）。`;
+  return F;},
+ view(f){if(f.err)return'';let h='';for(let i=2;i<=f.N;i++){const s=f.st[i];h+=cell(i,(s===1?'prime ':s===2?'comp ':'')+(f.cur.includes(i)?'cur':''));}
+  return `<div>${h}</div><div class="vars"><span>已划次数：${f.marks}</span><span>其中重复：${f.dups}</span></div>`;},
+ fine:'复杂度：埃氏筛 O(N log log N)，线性筛 O(N)。N≤10⁶ 时二者差别不大，但线性筛可顺带求欧拉函数、最小质因数等。边界：筛需要 O(N) 内存，N 到 10⁸ 以上要用位压缩或分段筛。'};}
+function algoSO(){return{n:'排序：冒泡、选择、插入',
+ hard:'三种 O(n²) 排序的比较/交换次数，以及「稳定性」。',
+ par:()=>rng('so-n','元素个数 n',4,12,1,8,' 个')+`<div class="seg"><label><input type="radio" name="soa" value="bub" checked>冒泡</label><label><input type="radio" name="soa" value="sel">选择</label><label><input type="radio" name="soa" value="ins">插入</label></div><button class="btn" id="so-seed">换一组示意数据</button>`,
+ bind(rb){const b=$('#so-seed');if(b)b.onclick=()=>{SEED++;rb();};},
+ build(){const n=+$('#so-n').value,algo=$('input[name=soa]:checked').value,R=prng(SEED),a=[];
+  for(let i=0;i<n;i++)a.push({v:1+Math.floor(R()*5),t:String.fromCharCode(65+i)});
+  let cmp=0,swp=0;const F=[],snap=(hl,fin,text)=>F.push({a:a.map(x=>({...x})),hl,fin,cmp,swp,text});
+  snap([],[],`初始（${TAG_DEMO} 值为 1–5 的随机数，字母是原始顺序标记，用来观察稳定性）。`);
+  if(algo==='bub'){for(let i=0;i<n-1;i++)for(let j=0;j<n-1-i;j++){cmp++;const sw=a[j].v>a[j+1].v;if(sw){const t=a[j];a[j]=a[j+1];a[j+1]=t;swp++;}
+    snap([j,j+1],Array.from({length:i},(_,k)=>n-1-k),`第 ${i+1} 趟：比较位置 ${j} 与 ${j+1}，${sw?'前面的更大 → 交换':'顺序正确 → 不交换'}。每趟结束后最大的数「冒」到末尾。`);}}
+  else if(algo==='sel'){for(let i=0;i<n-1;i++){let m=i;for(let j=i+1;j<n;j++){cmp++;if(a[j].v<a[m].v)m=j;snap([j,m],Array.from({length:i},(_,k)=>k),`第 ${i+1} 轮：在位置 ${i+1}.. 里找最小值。比较位置 ${j}，当前最小值在位置 ${m}。`);}
+    if(m!==i){const t=a[i];a[i]=a[m];a[m]=t;swp++;}snap([i,m],Array.from({length:i+1},(_,k)=>k),`把最小值放到位置 ${i}${m!==i?'（交换，注意：这种交换可能把相同值的先后顺序打乱）':'（本来就在那里）'}。`);}}
+  else{for(let i=1;i<n;i++){let j=i;while(j>0){cmp++;const sw=a[j-1].v>a[j].v;if(sw){const t=a[j];a[j]=a[j-1];a[j-1]=t;swp++;}
+    snap([j-1,j],Array.from({length:i+1},(_,k)=>k),`把第 ${i+1} 个元素往前插：比较位置 ${j-1} 与 ${j}，${sw?'前面更大 → 交换并继续前移':'不更大 → 停在这里'}。`);if(!sw)break;j--;}}}
+  const last=a.slice();let stable=true;for(let i=1;i<n;i++)if(last[i].v===last[i-1].v&&last[i].t<last[i-1].t)stable=false;
+  const pairs=n*(n-1)/2;
+  F[F.length-1].fin=a.map((_,i)=>i);
+  F[F.length-1].text+=`<br><b>结束</b>：比较 ${cmp} 次、交换 ${swp} 次（n(n−1)/2 = ${pairs}）。相同值的先后顺序：${stable?'<span class="ok">这组数据中保持了原顺序</span>':'<span class="bad">这组数据中被打乱了</span>'}。理论上：冒泡、插入稳定；选择排序不稳定（换一组数据可能才能看到打乱）。`;
+  return F;},
+ view(f){let h='';f.a.forEach((x,i)=>{h+=cell(x.v,(f.fin.includes(i)?'fin ':'')+(f.hl.includes(i)?'cur':''),x.t);});
+  return `<div>${h}</div><div class="vars"><span>比较：${f.cmp}</span><span>交换：${f.swp}</span></div><p class="mute">大数字=值，小字母=原始位置标记；绿=已确定/已有序部分，黄框=本步涉及的两个位置。</p>`;},
+ fine:'三者都是 O(n²)，n≈5000 以内可用，n≥10⁵ 必须用 sort（O(n log n)）。插入排序在「几乎有序」时接近 O(n)。稳定性：相同的值排序后保持原先后顺序；按多关键字排序时很重要。比较/交换次数依赖随机示意数据。'};}
+const DEF_WALLS=[9,10,11,12,13,14,15,24,25,26,27,28,29,30,41,42,43,44,45,46,47];
+let BF_WALLS=new Set(DEF_WALLS);
+function algoBF(){return{n:'BFS：网格迷宫最短路',
+ hard:'为什么 BFS 第一次到达某格时的步数就是最短步数，且每格只处理一次。',
+ par:()=>`<p>点击下方格子可放置/拆除墙（起点左上 S，终点右下 E）。${TAG_DEMO} 初始为蛇形迷宫。</p><div class="seg"><button class="btn" id="bf-def">恢复蛇形迷宫</button><button class="btn" id="bf-clr">清空墙</button><button class="btn" id="bf-rnd">随机墙</button></div>`,
+ bind(rb){$('#bf-def').onclick=()=>{BF_WALLS=new Set(DEF_WALLS);rb();};$('#bf-clr').onclick=()=>{BF_WALLS=new Set();rb();};
+  $('#bf-rnd').onclick=()=>{SEED++;const R=prng(SEED);BF_WALLS=new Set();for(let i=1;i<63;i++)if(R()<0.28)BF_WALLS.add(i);rb();};},
+ click(c){if(c===0||c===63)return;if(BF_WALLS.has(c))BF_WALLS.delete(c);else BF_WALLS.add(c);},
+ build(){const N=8,dist=Array(64).fill(-1),par=Array(64).fill(-1),q=[0];dist[0]=0;const D=[[0,1,'右'],[1,0,'下'],[0,-1,'左'],[-1,0,'上']];
+  const F=[{dist:dist.slice(),q:q.slice(),cur:-1,nw:[],path:[],text:'起点 (0,0) 入队，距离 0。BFS 每次取队首，把还没访问过的邻居标上「距离+1」并入队。'}];let found=false,pr=0;
+  while(q.length){const u=q.shift();pr++;const r=(u/N)|0,c=u%N,nw=[],nt=[];
+   for(const[dr,dc,nm]of D){const nr=r+dr,nc=c+dc;if(nr<0||nr>=N||nc<0||nc>=N){nt.push(nm+'：出界');continue;}const v=nr*N+nc;if(BF_WALLS.has(v)){nt.push(nm+'：墙');continue;}if(dist[v]!==-1){nt.push(nm+'：已访问');continue;}dist[v]=dist[u]+1;par[v]=u;q.push(v);nw.push(v);nt.push(nm+`：新发现 (${nr},${nc})`);}
+   F.push({dist:dist.slice(),q:q.slice(),cur:u,nw,path:[],text:`取出队首 (${r},${c})，距离 ${dist[u]}。检查邻居（右、下、左、上）：${nt.join('；')}。队列剩 ${q.length} 个。`});
+   if(dist[63]!==-1){found=true;break;}}
+  if(found){const path=[];for(let x=63;x!==-1;x=par[x])path.push(x);
+   F.push({dist:dist.slice(),q:q.slice(),cur:-1,nw:[],path,text:`终点被发现，最短步数 = <b>${dist[63]}</b>（沿父指针回溯得到绿色路径）。共让 ${pr} 个格子出队；每个格子最多入队一次，复杂度 O(格子数)。若用 DFS 枚举所有路径，路径数会指数级增长。`});}
+  else F.push({dist:dist.slice(),q:[],cur:-1,nw:[],path:[],text:'队列空了，终点不可达（被墙隔断）。试试点击拆掉几堵墙。'});
+  return F;},
+ view(f){let h='';for(let i=0;i<64;i++){let c='gc';if(BF_WALLS.has(i))c+=' wall';else{if(f.dist[i]>=0)c+=' vis';if(f.q.includes(i))c+=' inq';if(f.nw.includes(i))c+=' nw';if(f.cur===i)c+=' cur';if(f.path.includes(i))c+=' path';}
+   if(i===0||i===63)c+=' se';const txt=i===0?'S':i===63?'E':(f.dist[i]>=0?f.dist[i]:'');h+=`<div class="${c}" data-c="${i}" role="button" aria-label="第 ${(i/8|0)+1} 行第 ${i%8+1} 列">${txt}</div>`;}
+  return `<div class="grid8">${h}</div><p class="mute">数字=起点到该格的最少步数；虚线框=在队列里等待；黄底=本步新发现；黄色内框=正在处理；黑=墙。</p>`;},
+ fine:'BFS 只适用于每步代价相同（边权为 1）的最短路；边权不同要用 Dijkstra。网格大小这里固定为 8×8（示意）。随机墙使用示意数据，可能无解。'};}
+function mod_steps(r){
+ const A=[algoBS(),algoKN(),algoDQ(),algoPW(),algoSV(),algoSO(),algoBF()];
+ r.innerHTML=head('③ 算法逐步演示','把算法拆成一帧一帧，每一帧都写明「这一步做了什么、为什么这么做」。参数可改，改完自动从头开始。')+`
+ <div class="doc">
+ <label class="ctl"><span class="cl">选择算法</span><select id="st-sel">${A.map((a,i)=>`<option value="${i}">${a.n}</option>`).join('')}</select></label>
+ <div id="st-hard"></div>
+ <div id="st-par" class="ctls"></div>
+ <div class="stepbar"><button class="btn" id="st-prev">◀ 上一步</button><button class="btn pri" id="st-next">下一步 ▶</button><button class="btn" id="st-play">▶ 自动播放</button><button class="btn" id="st-reset">回到开头</button><button class="btn" id="st-end">跳到结尾</button></div>
+ <input type="range" id="st-pos" min="0" max="0" value="0" aria-label="步骤位置"><div id="st-prog" class="mute"></div>
+ <div id="st-view" class="stview"></div><div id="st-text" class="sttext" aria-live="polite"></div>
+ <div id="st-fine"></div></div>`;
+ let cur=A[0],F=[],idx=0,timer=null;
+ function stopPlay(){if(timer){clearInterval(timer);timers=timers.filter(t=>t!==timer);timer=null;}$('#st-play').textContent='▶ 自动播放';}
+ function draw(){const f=F[idx];$('#st-pos').max=F.length-1;$('#st-pos').value=idx;
+  $('#st-prog').textContent=f.err?'':`第 ${idx+1} / ${F.length} 帧`;
+  if(f.err){$('#st-view').innerHTML='';$('#st-text').innerHTML=`<span class="err">${f.err}</span>`;}
+  else{$('#st-view').innerHTML=cur.view(f);$('#st-text').innerHTML=f.text;}
+  $('#st-prev').disabled=idx===0;$('#st-next').disabled=idx>=F.length-1;}
+ function rebuild(){stopPlay();F=cur.build();idx=0;draw();}
+ function load(i){cur=A[i];stopPlay();$('#st-hard').innerHTML=note('hard',cur.hard);$('#st-par').innerHTML=cur.par();
+  $('#st-fine').innerHTML=note('lim',cur.fine);if(cur.bind)cur.bind(rebuild);rebuild();}
+ $('#st-sel').onchange=e=>load(+e.target.value);
+ $('#st-par').addEventListener('input',rebuild);$('#st-par').addEventListener('change',rebuild);
+ $('#st-view').addEventListener('click',e=>{const c=e.target.closest('[data-c]');if(c&&cur.click){cur.click(+c.dataset.c);rebuild();}});
+ $('#st-prev').onclick=()=>{stopPlay();idx=Math.max(0,idx-1);draw();};
+ $('#st-next').onclick=()=>{stopPlay();idx=Math.min(F.length-1,idx+1);draw();};
+ $('#st-reset').onclick=()=>{stopPlay();idx=0;draw();};
+ $('#st-end').onclick=()=>{stopPlay();idx=F.length-1;draw();};
+ $('#st-pos').oninput=e=>{stopPlay();idx=+e.target.value;draw();};
+ $('#st-play').onclick=()=>{if(timer){stopPlay();return;}if(idx>=F.length-1)idx=0;draw();
+  timer=setInterval(()=>{if(idx>=F.length-1){stopPlay();return;}idx++;draw();},1000);timers.push(timer);$('#st-play').textContent='❚❚ 暂停';};
+ load(0);
+}
+
+/* ====== ④ 进制与补码 ====== */
+function mod_bit(r){
+ let w=8,u=BigInt.asUintN(8,-5n);
+ r.innerHTML=head('④ 进制、补码与 ASCII','第一轮笔试常考。点击二进制位（0/1）切换，下面立刻显示同一串位在不同解读下的值。')+`
+ ${note('hard','同一串二进制位，按「无符号」和「有符号补码」读，数值不同；超出范围会「回绕」。')}
+ <div class="doc"><div class="seg" id="bt-w"><label><input type="radio" name="btw" value="8" checked>8 位</label><label><input type="radio" name="btw" value="16">16 位</label><label><input type="radio" name="btw" value="32">32 位（相当于 int）</label></div>
+ <label class="ctl"><span class="cl">也可以直接输入十进制整数（可超出范围，观察回绕）</span><input type="text" id="bt-d" inputmode="numeric" value="-5"></label>
+ <p class="mute">点击下面的位切换 0/1，红框是符号位（最高位），小字是位权 2^i。</p><div id="bt-bits"></div><div id="bt-out"></div></div>
+ <h2>ASCII 与字符</h2><div class="doc"><label class="ctl"><span class="cl">输入一个字符</span><input type="text" id="as-c" maxlength="2" value="a"></label><div id="as-out"></div></div>`;
+ function draw(){
+  let h='';for(let i=w-1;i>=0;i--){const b=(u>>BigInt(i))&1n;h+=`<button class="bit ${b?'one':''} ${i===w-1?'sign':''}" data-i="${i}" aria-label="第 ${i} 位，当前 ${b}，点击切换">${b}<small>${i}</small></button>`;if(i&&i%8===0)h+='<br>';else if(i&&i%4===0)h+='<span class="gap"></span>';}
+  $('#bt-bits').innerHTML=h;
+  const s=BigInt.asIntN(w,u),bin=u.toString(2).padStart(w,'0'),M=1n<<BigInt(w);let ex='';
+  if(s<0n){const m=-s;if(m>=M/2n)ex=`这是 ${w} 位补码的最小值 −2^${w-1}：其绝对值放不进 ${w-1} 位，没有原码；对它取负仍得到它自己（溢出）。`;
+   else{const mag=m.toString(2).padStart(w-1,'0'),yuan='1'+mag,fan='1'+mag.split('').map(c=>c==='1'?'0':'1').join(''),bu=(BigInt('0b'+fan)+1n).toString(2).padStart(w,'0');
+    ex=`<div class="scroll"><table><tr><th>步骤</th><th>二进制</th></tr><tr><td>原码：符号位 1 + 绝对值 ${m}</td><td class="mono">${yuan}</td></tr><tr><td>反码：符号位不变，其余位取反</td><td class="mono">${fan}</td></tr><tr><td>补码：反码 + 1</td><td class="mono">${bu} ${bu===bin?'= 当前位串 ✓':''}</td></tr></table></div>`;}}
+  else ex='非负数：原码、反码、补码相同。';
+  $('#bt-out').innerHTML=`<div class="kpi"><div><span>按无符号读</span><b>${u}</b></div><div><span>按有符号补码读</span><b>${s}</b></div><div><span>十六进制</span><b>0x${u.toString(16).toUpperCase().padStart(w/4,'0')}</b></div><div><span>八进制</span><b>0${u.toString(8)}</b></div></div>
+  <p>${ex}</p>`+note('why','补码让加减法共用同一套电路：−5 的补码 + 5 的补码 = 全 0（进位丢掉）。负数的补码 = 2^w − |值|，所以位串相同、读法不同，值相差 2^w。')+
+  note('lim',`${w} 位有符号数范围是 −2^${w-1} 到 2^${w-1}−1，即 ${-(M/2n)} 到 ${M/2n-1n}；无符号为 0 到 ${M-1n}。C++ 中有符号整数溢出在标准里是「未定义行为」，下方的「回绕」只是常见机器上的表现，比赛中应当避免，而不是依赖。`);
+ }
+ function ascii(){const v=$('#as-c').value;if(!v){$('#as-out').innerHTML='';return;}const ch=[...v][0],cp=ch.codePointAt(0);let ex='';
+  if(cp>127)ex='<p class="warnc">这不是 ASCII 字符（码点 > 127），这里显示的是 Unicode 码点。</p>';
+  else if(/[a-z]/.test(ch))ex=`<p>小写字母：大写是 '${ch.toUpperCase()}'（码 ${cp-32}），小写 − 大写 = 32。</p>`;
+  else if(/[A-Z]/.test(ch))ex=`<p>大写字母：小写是 '${ch.toLowerCase()}'（码 ${cp+32}）。</p>`;
+  else if(/[0-9]/.test(ch))ex=`<p>数字字符：数值 = '${ch}' − '0' = ${cp} − 48 = <b>${cp-48}</b>。</p>`;
+  $('#as-out').innerHTML=`<div class="kpi"><div><span>十进制码</span><b>${cp}</b></div><div><span>十六进制</span><b>0x${cp.toString(16).toUpperCase()}</b></div><div><span>二进制</span><b>${cp.toString(2).padStart(8,'0')}</b></div></div>${ex}<p class="mute">常用记忆：'0'=48，'A'=65，'a'=97。</p>`;}
+ $('#bt-w').addEventListener('change',()=>{w=+$('input[name=btw]:checked').value;u=BigInt.asUintN(w,u);$('#bt-d').value=BigInt.asIntN(w,u).toString();draw();});
+ $('#bt-bits').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;u^=1n<<BigInt(b.dataset.i);$('#bt-d').value=BigInt.asIntN(w,u).toString();draw();});
+ $('#bt-d').addEventListener('input',e=>{const t=e.target.value.trim();if(!/^-?\d{1,40}$/.test(t))return;const x=BigInt(t);u=BigInt.asUintN(w,x);draw();
+  const lo=-(1n<<BigInt(w-1)),hi=(1n<<BigInt(w))-1n;if(x<lo||x>hi)$('#bt-out').insertAdjacentHTML('afterbegin',`<p class="warnc">⚠ ${t} 超出 ${w} 位能表示的范围，已按模 2^${w} 回绕为上面的位串。</p>`);});
+ $('#as-c').addEventListener('input',ascii);
+ draw();ascii();
+}
+
+/* ====== ⑤ 陷阱与对拍 ====== */
+function mod_pit(r){
+ r.innerHTML=head('⑤ 细节陷阱与对拍','思路对、代码写错的丢分，多数出在这里。每个小实验都能改参数，看错误在什么条件下出现。')+`
+ <h2>1. 整数溢出</h2><div class="doc">${note('hard','n×n 在 int 里先算后转，「long long x = n*n」依然是错的。')}
+ <div class="ctls">${rng('pi-n','n（无单位）',1,200000,1,50000,'')}${rng('pi-k','INF=0x3f3f3f3f 累加个数',1,4,1,3,' 个')}</div>
+ <div class="chips"><button class="chip" data-n="46340">n=46340</button><button class="chip" data-n="46341">n=46341</button><button class="chip" data-n="100000">n=10⁵</button></div><div id="pi-ov"></div></div>
+ <h2>2. 浮点误差</h2><div class="doc">${note('hard','0.1+0.2 不等于 0.3；比较浮点数要用误差范围。')}
+ <div class="ctls"><label class="ctl"><span class="cl">a</span><input type="text" id="fl-a" value="0.1"></label><label class="ctl"><span class="cl">b</span><input type="text" id="fl-b" value="0.2"></label><label class="ctl"><span class="cl">c（想比较的目标）</span><input type="text" id="fl-c" value="0.3"></label>${rng('fl-e','误差 eps = 10^x',-12,-1,1,-9,'')}</div><div id="fl-out"></div></div>
+ <h2>3. 除法与取模（C++ 规则）</h2><div class="doc">${note('hard','C++ 里 −7/2 是 −3，−7%3 是 −1：向零取整，余数符号跟随被除数。')}
+ <div class="ctls"><label class="ctl"><span class="cl">被除数 a（整数）</span><input type="number" id="dv-a" value="-7"></label><label class="ctl"><span class="cl">除数 b（非零整数）</span><input type="number" id="dv-b" value="3"></label></div><div id="dv-out"></div></div>
+ <h2>4. 内存估算</h2><div class="doc">${note('hard','开数组前先算字节数，别等到 MLE 才发现。')}
+ <div class="ctls"><label class="ctl"><span class="cl">行数</span><input type="number" id="mm-r" value="10000" min="1"></label><label class="ctl"><span class="cl">列数（一维数组填 1）</span><input type="number" id="mm-c" value="10000" min="1"></label><label class="ctl"><span class="cl">元素类型</span><select id="mm-t"><option value="4" selected>int（4 字节）</option><option value="8">long long / double（8 字节）</option><option value="1">char / bool（1 字节）</option></select></label><label class="ctl"><span class="cl">内存限制（假设，以题面为准）</span><select id="mm-l"><option value="64">64 MB</option><option value="128">128 MB</option><option value="256" selected>256 MB</option><option value="512">512 MB</option></select></label></div><div id="mm-out"></div></div>
+ <h2>5. 迷你对拍实验</h2><div class="doc">${note('hard','「正解」有 bug，但随机数据一直通过——因为你的数据生成器根本造不出触发 bug 的情况。')}
+ <p>问题：求数组的<b>最大子段和</b>（子段非空）。「正解」代码有一个典型 bug，暴力是 O(n²) 枚举所有子段。点「开始对拍」，随机生成小数据比对两者输出。${TAG_DEMO}</p>
+ <pre>// 有 bug 的「正解」
+int best=0,cur=0;
+for(int i=0;i&lt;n;i++){ cur+=a[i]; best=max(best,cur); if(cur&lt;0) cur=0; }
+// 暴力：best=a[0]; 枚举所有 l,r 求和取最大</pre>
+ <div class="ctls">${rng('dp-l','数组长度上限',2,10,1,6,' 个')}${rng('dp-lo','数值下限',-9,5,1,-5,'')}${rng('dp-hi','数值上限',1,9,1,5,'')}${rng('dp-r','对拍轮数',10,2000,10,300,' 轮')}</div>
+ <button class="btn pri" id="dp-go">开始对拍</button><div id="dp-out"></div></div>`;
+ const I32=x=>Number(BigInt.asIntN(32,x));
+ function ov(){const n=BigInt(+$('#pi-n').value),t=n*n,w=I32(t),over=t>2147483647n,k=BigInt(+$('#pi-k').value),inf=0x3f3f3f3fn*k,wi=I32(inf);
+  $('#pi-ov').innerHTML=`<div class="scroll"><table><tr><th>表达式</th><th>真实数学值</th><th>C++ 中的结果</th></tr>
+  <tr><td>int n; n*n</td><td class="mono">${t}</td><td class="mono ${over?'bad':'ok'}">${w} ${over?'✗ 溢出（回绕）':'✓ 未溢出'}</td></tr>
+  <tr><td>1LL*n*n（long long）</td><td class="mono">${t}</td><td class="mono ok">${t} ✓（long long 上限约 9.2×10¹⁸）</td></tr>
+  <tr><td>${k} × 0x3f3f3f3f（INF=1061109567）</td><td class="mono">${inf}</td><td class="mono ${inf>2147483647n?'bad':'ok'}">${wi} ${inf>2147483647n?'✗ 溢出':'✓ 安全'}</td></tr></table></div>`+
+  note('why','int 是 32 位，最大 2147483647。n×n 先在 int 里相乘，超过就回绕，之后再转 long long 为时已晚。必须写成 1LL*n*n，让第一次乘法就用 long long。INF 取 0x3f3f3f3f 的好处是 INF+INF 不溢出，但三个相加会溢出。')+
+  note('lim','n=46340 恰好不溢出，46341 开始溢出，可点上方按钮验证。有符号溢出在 C++ 标准里是未定义行为，这里展示的是常见机器上的回绕结果。');}
+ function fl(){const a=parseFloat($('#fl-a').value),b=parseFloat($('#fl-b').value),c=parseFloat($('#fl-c').value),e=Math.pow(10,+$('#fl-e').value);
+  if([a,b,c].some(isNaN)){$('#fl-out').innerHTML='<p class="err">请输入数字。</p>';return;}
+  const s=a+b,d=Math.abs(s-c);
+  $('#fl-out').innerHTML=`<div class="scroll"><table><tr><td>a+b 的精确二进制近似值</td><td class="mono">${s.toPrecision(21)}</td></tr><tr><td>a+b == c ?</td><td class="${s===c?'ok':'bad'}">${s===c?'相等':'不相等'}</td></tr><tr><td>|a+b−c|</td><td class="mono">${d.toExponential(3)}</td></tr><tr><td>|a+b−c| &lt; eps(${e.toExponential(0)}) ?</td><td class="${d<e?'ok':'bad'}">${d<e?'视为相等 ✓':'不相等'}</td></tr></table></div>`+
+  note('why','十进制小数 0.1 在二进制里是无限循环小数，double 只能存近似值，运算再累积误差。所以不要用 == 比较浮点数，用 fabs(x−y)<eps。能用整数的地方就用整数（比较 a/b 与 c/d 用 a*d 与 b*c）。')+
+  note('lim','这里用 JavaScript 的 double（与 C++ double 同为 IEEE 754 双精度），结果与 C++ 一致。eps 太大会误判，太小会漏判；一般按题目要求的精度再留 2–3 位。');}
+ function dv(){const a=Math.trunc(+$('#dv-a').value),b=Math.trunc(+$('#dv-b').value);if(!b){$('#dv-out').innerHTML='<p class="err">除数不能为 0。</p>';return;}
+  const q=Math.trunc(a/b),m=a%b,fq=Math.floor(a/b),ab=Math.abs(b),sm=((a%ab)+ab)%ab;
+  $('#dv-out').innerHTML=`<div class="scroll"><table><tr><th>写法</th><th>结果</th><th>含义</th></tr><tr><td>a / b</td><td class="mono">${q}</td><td>C++ 整数除法：向零取整</td></tr><tr><td>a % b</td><td class="mono">${Object.is(m,-0)?0:m}</td><td>C++ 余数：符号与 a 相同</td></tr><tr><td>floor(a/b)</td><td class="mono">${fq}</td><td>数学上的向下取整</td></tr><tr><td>((a%b)+b)%b（b&gt;0）</td><td class="mono">${sm}</td><td>非负余数，取模运算常用写法</td></tr></table></div>`+
+  note('why','C++ 的除法向零取整，所以负数时与数学上的「向下取整」不同，a%b 也可能为负。做模运算时凡是可能出现负数（减法后取模），都要写成 ((x%p)+p)%p。')+
+  note('lim','最后一行的写法假设 b>0（模数一般为正）；表中「非负余数」一栏对 b<0 取 |b|。除以 0 在 C++ 中会运行时错误。');}
+ function mm(){const R=Math.max(1,Math.floor(+$('#mm-r').value)||1),C=Math.max(1,Math.floor(+$('#mm-c').value)||1),t=+$('#mm-t').value,L=+$('#mm-l').value,mb=R*C*t/1048576;
+  $('#mm-out').innerHTML=`<div class="kpi"><div><span>总字节数</span><b>${fmt(R*C*t)}</b></div><div><span>约合</span><b class="${mb>L?'bad':mb>L*0.6?'warnc':'ok'}">${mb.toFixed(1)} MB</b></div><div><span>占限制</span><b>${(mb/L*100).toFixed(0)} %</b></div></div><p>${mb>L?'<b class="bad">✗ 超出内存限制</b>：要换思路（滚动数组、压缩状态、换数据类型）。':mb>L*0.6?'<b class="warnc">▲ 占比较高</b>：还要留出其他数组、递归栈和系统开销的余量。':'<b class="ok">✓ 有余量</b>'}</p>`+
+  note('why','内存 = 元素个数 × 每个元素的字节数。10000×10000 的 int 数组就是 4×10⁸ 字节 ≈ 381 MB。')+
+  note('lim','1 MB 按 1048576 字节计。这里只算一个数组；程序里所有数组、STL 容器、递归栈都要累加。内存限制以题面为准，示例选项仅作假设。');}
+ let dpRun=0;
+ function dp(){dpRun++;const L=+$('#dp-l').value,lo=+$('#dp-lo').value,hi=+$('#dp-hi').value,Rn=+$('#dp-r').value;
+  if(lo>hi){$('#dp-out').innerHTML='<p class="err">下限不能大于上限。</p>';return;}
+  const rd=prng(SEED+7+dpRun*131);let found=null;
+  const brute=a=>{let b=a[0];for(let l=0;l<a.length;l++){let s=0;for(let h=l;h<a.length;h++){s+=a[h];if(s>b)b=s;}}return b;};
+  const bug=a=>{let b=0,c=0;for(const x of a){c+=x;b=Math.max(b,c);if(c<0)c=0;}return b;};
+  for(let t=1;t<=Rn;t++){const n=1+Math.floor(rd()*L),a=[];for(let i=0;i<n;i++)a.push(lo+Math.floor(rd()*(hi-lo+1)));if(brute(a)!==bug(a)){found={t,a,b:brute(a),s:bug(a)};break;}}
+  const neg=Math.max(0,Math.min(hi,-1)-lo+1),tot=hi-lo+1;let p=0;for(let n=1;n<=L;n++)p+=Math.pow(neg/tot,n);p/=L;
+  $('#dp-out').innerHTML=(found?`<p><b class="bad">✗ 第 ${found.t} 轮发现不一致</b>：数组 [${found.a.join(', ')}]，暴力输出 ${found.b}，「正解」输出 ${found.s}。这个数据就是调试用的最小反例。</p>`:`<p><b class="warnc">跑了 ${Rn} 轮全部一致</b>，但这<b>不</b>代表程序正确：只说明这组数据没触发 bug。</p>`)+
+  `<p>理论上，只有「数组全为负数」才触发这个 bug。按当前生成范围，一轮随机数据全为负的概率约 <b>${(p*100).toFixed(2)}%</b>${p===0?'（数值下限 ≥ 0 时根本造不出全负数组）':''}。</p>`+
+  note('why','对拍能发现的 bug，取决于数据生成器能造出什么。把数值下限调到 0 或以上，bug 永远不会被发现；调成负数范围，几轮内就能找到。好的生成器要覆盖：最小规模、全相同、全负、边界值、有序/逆序。')+
+  note('lim','真实的对拍要写三个程序（生成器、暴力、正解），在本地用脚本循环比较。这里用 JavaScript 模拟，只演示原理。数据范围要小，才方便人工分析反例；暴力本身也必须是对的。');}
+ $('#pi-n').addEventListener('input',ov);$('#pi-k').addEventListener('input',ov);
+ r.querySelectorAll('.chip[data-n]').forEach(b=>b.onclick=()=>{$('#pi-n').value=b.dataset.n;$('#pi-n-o').textContent=b.dataset.n;ov();});
+ ['fl-a','fl-b','fl-c','fl-e'].forEach(i=>$('#'+i).addEventListener('input',fl));
+ ['dv-a','dv-b'].forEach(i=>$('#'+i).addEventListener('input',dv));
+ ['mm-r','mm-c','mm-t','mm-l'].forEach(i=>$('#'+i).addEventListener('input',mm));
+ $('#dp-go').onclick=dp;
+ ov();fl();dv();mm();
+}
+
+/* ====== ⑥ 二叉树与表达式 ====== */
+function buildTree(pre,ino){if(!pre.length)return null;const c=pre[0],i=ino.indexOf(c);if(i<0)throw new Error('bad');return{c,l:buildTree(pre.slice(1,1+i),ino.slice(0,i)),r:buildTree(pre.slice(1+i),ino.slice(i+1))};}
+function mod_tree(r){
+ r.innerHTML=head('⑥ 二叉树与表达式','输入前序和中序，自动还原二叉树，并逐步高亮四种遍历。')+`
+ ${note('hard','三种遍历的「根在什么时候访问」；已知前序+中序能唯一还原，前序+后序不能。')}
+ <div class="doc"><div class="ctls"><label class="ctl"><span class="cl">前序序列（不重复的字母，至多 10 个）${TAG_DEMO}</span><input type="text" id="tr-p" value="ABDEGCF"></label><label class="ctl"><span class="cl">中序序列（同样的字母）</span><input type="text" id="tr-i" value="DBGEACF"></label></div>
+ <div class="seg" id="tr-m"><label><input type="radio" name="trm" value="pre" checked>前序（根 左 右）</label><label><input type="radio" name="trm" value="in">中序（左 根 右）</label><label><input type="radio" name="trm" value="post">后序（左 右 根）</label><label><input type="radio" name="trm" value="lv">层序（按层）</label></div>
+ <label class="ctl"><span class="cl">已访问步数 <output id="tr-s-o">0</output></span><input type="range" id="tr-s" min="0" max="7" value="0"></label>
+ <div id="tr-out"></div></div>
+ ${note('why','遍历只是「根相对于左右子树的访问时机」不同。前序的第一个一定是根；在中序中找到根，左边就是左子树、右边是右子树，递归地还原——这就是还原的全过程。若只有前序+后序，当某结点只有一个孩子时，无法判断它是左孩子还是右孩子（例如前序 AB、后序 BA：B 可以是 A 的左孩子也可以是右孩子），所以不唯一。')}
+ <h2>堆/完全二叉树的下标计算器</h2><div class="doc"><div class="ctls">${rng('hp-n','结点总数 n',1,63,1,10,' 个')}${rng('hp-i','结点编号 i',1,63,1,5,'')}</div><div id="hp-out"></div></div>
+ <h2>表达式：中缀 → 后缀（栈）</h2><div class="doc">${note('hard','后缀表达式不需要括号；中缀转后缀靠「运算符栈」。后缀式就是表达式树的后序遍历。')}
+ <label class="ctl"><span class="cl">中缀表达式（整数、+ − × ÷ 用 + - * /、括号）${TAG_DEMO}</span><input type="text" id="ex-s" value="3+2*4-(6-2)/2"></label><div id="ex-out"></div></div>`;
+ let seq=[],tr=null;
+ function layout(root){const nodes=[];let xi=0,maxd=0;(function f(t,d){if(!t)return;f(t.l,d+1);t.x=xi++;t.d=d;maxd=Math.max(maxd,d);nodes.push(t);f(t.r,d+1);})(root,0);return{nodes,n:xi,maxd};}
+ function trav(m){const o=[];if(m==='lv'){const q=[tr];while(q.length){const t=q.shift();o.push(t);if(t.l)q.push(t.l);if(t.r)q.push(t.r);}return o;}
+  (function f(t){if(!t)return;if(m==='pre')o.push(t);f(t.l);if(m==='in')o.push(t);f(t.r);if(m==='post')o.push(t);})(tr);return o;}
+ function parse(){const p=$('#tr-p').value.trim().toUpperCase(),i=$('#tr-i').value.trim().toUpperCase();
+  const ok=p.length>=1&&p.length<=10&&p.length===i.length&&new Set(p).size===p.length&&[...p].sort().join('')===[...i].sort().join('')&&/^[A-Z]+$/.test(p);
+  if(!ok){tr=null;$('#tr-out').innerHTML='<p class="err">请输入长度相同、各不重复的大写字母（至多 10 个），且前序与中序包含同样的字母。</p>';return;}
+  try{tr=buildTree([...p],[...i]);}catch(e){tr=null;$('#tr-out').innerHTML='<p class="err">前序与中序不匹配，无法还原。</p>';return;}
+  $('#tr-s').max=p.length;if(+$('#tr-s').value>p.length){$('#tr-s').value=p.length;$('#tr-s-o').textContent=p.length;}draw();}
+ function draw(){if(!tr)return;const m=$('input[name=trm]:checked').value,s=+$('#tr-s').value,L=layout(tr),order=trav(m),vis=new Set(order.slice(0,s)),nowN=s>0?order[s-1]:null;
+  const W=L.n*46+20,H=(L.maxd+1)*62+20;let svg=`<svg class="tree" viewBox="0 0 ${W} ${H}" width="${Math.min(W,640)}" role="img" aria-label="二叉树">`;
+  L.nodes.forEach(t=>{[t.l,t.r].forEach(c=>{if(c)svg+=`<line x1="${t.x*46+33}" y1="${t.d*62+30}" x2="${c.x*46+33}" y2="${c.d*62+30}"/>`;});});
+  L.nodes.forEach(t=>{const cl=t===nowN?'now':vis.has(t)?'vis':'';const idx=order.indexOf(t)+1;
+   svg+=`<circle class="${cl}" cx="${t.x*46+33}" cy="${t.d*62+30}" r="16"/><text class="${cl==='now'?'now':''}" x="${t.x*46+33}" y="${t.d*62+30}">${t.c}</text>${vis.has(t)?`<text class="ord" x="${t.x*46+33}" y="${t.d*62+52}">${idx}</text>`:''}`;});
+  svg+='</svg>';
+  const names={pre:'前序',in:'中序',post:'后序',lv:'层序'};
+  const all=['pre','in','post','lv'].map(k=>`<tr><td>${names[k]}</td><td class="mono">${trav(k).map(t=>t.c).join(' ')}</td></tr>`).join('');
+  $('#tr-out').innerHTML=svg+`<p>${names[m]}已访问：<b class="mono">${order.slice(0,s).map(t=>t.c).join(' ')||'（尚未开始）'}</b>${s>0?`　最新访问：<b>${nowN.c}</b>`:''}</p><div class="scroll"><table><tr><th>遍历</th><th>结果</th></tr>${all}</table></div>`;}
+ function hp(){const n=+$('#hp-n').value,i=Math.min(+$('#hp-i').value,n),lc=2*i,rc=2*i+1;
+  $('#hp-out').innerHTML=`<table><tr><td>结点 ${i} 的父结点</td><td class="mono">${i===1?'无（是根）':'⌊i/2⌋ = '+(i>>1)}</td></tr><tr><td>左孩子 2i</td><td class="mono">${lc} ${lc<=n?'':'（> n，不存在）'}</td></tr><tr><td>右孩子 2i+1</td><td class="mono">${rc} ${rc<=n?'':'（> n，不存在）'}</td></tr><tr><td>所在层（根为第 1 层）</td><td class="mono">⌊log₂ i⌋+1 = ${Math.floor(Math.log2(i))+1}</td></tr><tr><td>第 k 层最多结点数</td><td class="mono">2^(k−1)，第 ${Math.floor(Math.log2(i))+1} 层最多 ${2**Math.floor(Math.log2(i))} 个</td></tr></table><p class="mute">假设：结点按「完全二叉树」从 1 开始逐层从左到右编号（二叉堆的数组存法）。若 i 大于 n，已按 n 截断。</p>`;}
+ function ex(){const s=$('#ex-s').value.replace(/\s+/g,'');if(!s){$('#ex-out').innerHTML='';return;}
+  const toks=s.match(/\d+|[-+*/()]/g)||[];
+  if(toks.join('')!==s){$('#ex-out').innerHTML='<p class="err">含有不支持的字符：只支持整数、+ - * / 和括号。</p>';return;}
+  const pr={'+':1,'-':1,'*':2,'/':2},out=[],st=[],tb=[];
+  try{for(const t of toks){if(/\d/.test(t))out.push(t);else if(t==='(')st.push(t);else if(t===')'){while(st.length&&st[st.length-1]!=='(')out.push(st.pop());if(!st.length)throw new Error('括号不匹配：多了 )');st.pop();}
+    else{while(st.length&&st[st.length-1]!=='('&&pr[st[st.length-1]]>=pr[t])out.push(st.pop());st.push(t);}
+    tb.push([t,st.join(' ')||'（空）',out.join(' ')||'（空）']);}
+   while(st.length){const t=st.pop();if(t==='(')throw new Error('括号不匹配：多了 (');out.push(t);}
+   const v=[];for(const t of out){if(/\d/.test(t))v.push(+t);else{const b=v.pop(),a=v.pop();if(a===undefined||b===undefined)throw new Error('表达式不完整（本页不支持开头的负号）');if(t==='/'&&b===0)throw new Error('除数为 0');v.push(t==='+'?a+b:t==='-'?a-b:t==='*'?a*b:a/b);}}
+   if(v.length!==1)throw new Error('表达式不完整');
+   $('#ex-out').innerHTML=`<div class="scroll"><table><tr><th>读到</th><th>运算符栈</th><th>输出</th></tr>${tb.map(x=>`<tr><td class="mono">${esc(x[0])}</td><td class="mono">${esc(x[1])}</td><td class="mono">${esc(x[2])}</td></tr>`).join('')}</table></div><p>后缀表达式：<b class="mono">${out.join(' ')}</b>　值 = <b>${Number.isInteger(v[0])?v[0]:v[0].toFixed(4)}</b></p>`+
+    note('why','读到数字直接输出；读到运算符时，先把栈里优先级不低于它的运算符弹出输出，再入栈；右括号则弹到左括号为止。后缀式求值只需一个数栈，遇到运算符就弹出两个数计算。')+
+    note('lim','这里的除法是实数除法；C++ 中整数除法向零取整，结果可能不同。不支持一元负号和小数。')}
+  catch(e){$('#ex-out').innerHTML=`<p class="err">${esc(e.message)}</p>`;}}
+ $('#tr-p').addEventListener('input',()=>{$('#tr-s').value=0;$('#tr-s-o').textContent=0;parse();});
+ $('#tr-i').addEventListener('input',()=>{$('#tr-s').value=0;$('#tr-s-o').textContent=0;parse();});
+ $('#tr-m').addEventListener('change',draw);$('#tr-s').addEventListener('input',draw);
+ $('#hp-n').addEventListener('input',hp);$('#hp-i').addEventListener('input',hp);$('#ex-s').addEventListener('input',ex);
+ parse();hp();ex();
+}
+
+/* ====== ⑦ 计数与博弈 ====== */
+function mod_mat(r){
+ r.innerHTML=head('⑦ 计数与博弈','这些题靠「推导结论」而不是「优化」。每个结论都配了暴力验证，让你相信公式不是凭空来的。')+`
+ <h2>容斥原理</h2><div class="doc">${note('hard','为什么「减去单个、加回两两、减去三三……」，以及为什么是用最小公倍数。')}
+ <p>问题：1 到 N 中，有多少个数<b>不能被</b>所选数字中的任何一个整除？</p>
+ <div class="ctls">${rng('ie-n','N',10,1000,10,100,'')}<div><span class="cl">选择除数（至多 5 个）</span><div class="seg" id="ie-d">${[2,3,4,5,6,7].map(x=>`<label><input type="checkbox" class="ie" value="${x}"${[2,3,5].includes(x)?' checked':''}>${x}</label>`).join('')}</div></div></div><div id="ie-out"></div></div>
+ <h2>插板法</h2><div class="doc">${note('hard','「把相同的球放进不同的盒子」为什么等于组合数。')}
+ <div class="ctls">${rng('sb-k','球数 k（相同的球）',1,12,1,10,' 个')}${rng('sb-m','盒子数 m（不同的盒子）',1,5,1,3,' 个')}</div>
+ <label class="chk"><input type="checkbox" id="sb-e" checked><span>允许有空盒子</span></label><div id="sb-out"></div></div>
+ <h2>取石子博弈与 Nim</h2><div class="doc">${note('hard','「必败态」是怎么递推出来的，为什么多堆用异或。')}
+ <div class="ctls">${rng('gm-m','每次最多取 m 个',1,6,1,3,' 个')}${rng('gm-n','石子总数 n',1,40,1,20,' 个')}</div><div id="gm-out"></div>
+ <h3>Nim（多堆，每次从一堆里取任意个，取走最后一个者胜）</h3>
+ <label class="ctl"><span class="cl">各堆石子数（2–6 堆，每堆 0–99）${TAG_DEMO}</span><input type="text" id="nm-h" value="3,4,5"></label><div id="nm-out"></div></div>`;
+ function C(n,k){if(k<0||k>n)return 0;let x=1;for(let i=1;i<=k;i++)x=x*(n-k+i)/i;return Math.round(x);}
+ function ie(){const N=+$('#ie-n').value;let ds=$$('.ie:checked').map(x=>+x.value);
+  if(ds.length>5){ds=ds.slice(0,5);}if(!ds.length){$('#ie-out').innerHTML='<p class="err">请至少选择一个除数。</p>';return;}
+  let tot=N,rows='';for(let m=1;m<(1<<ds.length);m++){let l=1,sz=0,nm=[];for(let i=0;i<ds.length;i++)if(m>>i&1){l=lcm(l,ds[i]);sz++;nm.push(ds[i]);}
+   const sg=sz%2?-1:1,c=Math.floor(N/l);tot+=sg*c;rows+=`<tr><td class="mono">{${nm.join(',')}}</td><td class="mono">${l}</td><td>${sg>0?'+':'−'}</td><td class="mono">⌊${N}/${l}⌋ = ${c}</td><td class="mono">${sg*c}</td></tr>`;}
+  let br=0;for(let x=1;x<=N;x++)if(ds.every(d=>x%d))br++;
+  $('#ie-out').innerHTML=`<div class="kpi"><div><span>容斥公式</span><b>${tot}</b></div><div><span>逐个检查（暴力）</span><b>${br}</b></div><div><span>是否一致</span><b class="${tot===br?'ok':'bad'}">${tot===br?'✓ 一致':'✗'}</b></div></div>
+  <details class="fold" open><summary>展开每一项（N + Σ ± ⌊N/lcm⌋）</summary><div class="scroll"><table><tr><th>子集</th><th>最小公倍数</th><th>符号</th><th>被整除的个数</th><th>贡献</th></tr>${rows}</table></div></details>`+
+  note('why','先把「被任一个整除」的数减掉，被两个同时整除的数被减了两次，要加回一次；被三个同时整除的又被加回过头，再减……符号 (−1)^|子集| 正是为了每个数最终恰好被统计一次。同时被几个数整除，等价于被它们的最小公倍数整除，所以用 lcm（如 4 和 6 的 lcm 是 12，不是 24）。')+
+  note('lim','选择个数最多 5 个（子集 2⁵−1=31 项）；公式适合「条件个数少」的场景，条件很多时项数指数增长。这里的 N 是 10–1000，仅为演示。');}
+ function sb(){const k=+$('#sb-k').value,m=+$('#sb-m').value,em=$('#sb-e').checked;
+  const f=em?C(k+m-1,m-1):C(k-1,m-1);
+  const lo=em?0:1;const list=[];(function g(rem,left,cur){if(left===1){if(rem>=lo)list.push(cur.concat(rem));return;}for(let x=lo;x<=rem;x++)g(rem-x,left-1,cur.concat(x));})(k,m,[]);
+  $('#sb-out').innerHTML=`<div class="kpi"><div><span>公式</span><b>${em?`C(${k+m-1}, ${m-1})`:`C(${k-1}, ${m-1})`} = ${f}</b></div><div><span>暴力枚举个数</span><b>${list.length}</b></div><div><span>是否一致</span><b class="${f===list.length?'ok':'bad'}">${f===list.length?'✓ 一致':'✗'}</b></div></div>`+
+  (list.length<=15?`<p>全部方案（各盒球数）：${list.map(a=>`<span class="mono">(${a.join(',')})</span>`).join(' ')}</p>`:'<p class="mute">方案太多，不逐个列出（≤15 种时才列出）。</p>')+
+  note('why',em?`允许空盒：把 ${k} 个球和 ${m-1} 块隔板排成一排，共 ${k+m-1} 个位置，选出 ${m-1} 个位置放隔板，方案数 C(${k+m-1}, ${m-1})。`:`每个盒子至少 1 个：先每盒放 1 个，剩下 ${k-m<0?'（球不够）':k-m} 个自由分配；等价于在 ${k} 个球形成的 ${k-1} 个空隙里选 ${m-1} 个放隔板，C(${k-1}, ${m-1})。`)+
+  note('lim','球相同、盒子不同才适用此公式；球不同或盒子相同是另一类问题（后者涉及整数拆分/斯特林数）。k<m 且要求非空时方案数为 0。');}
+ function gm(){const m=+$('#gm-m').value,n=+$('#gm-n').value,win=[false];for(let i=1;i<=n;i++){let w=false;for(let t=1;t<=Math.min(m,i);t++)if(!win[i-t])w=true;win.push(w);}
+  let h='';win.forEach((w,i)=>{h+=cell(w?'胜':'败',w?'win':'lose',i);});
+  const mod=n%(m+1);
+  $('#gm-out').innerHTML=`<p class="mute">下标=剩余石子数；「胜」=轮到的人必胜，「败」=轮到的人必败（假设双方都最优，取走最后一个者胜）。</p><div>${h}</div><p>n=${n}：${win[n]?`先手必胜，第一步取 <b>${mod}</b> 个，把对手留在 ${n-mod}（${m+1} 的倍数）。`:`<b class="bad">先手必败</b>（n 是 ${m+1} 的倍数）。`}</p>`+
+  note('why','0 个石子时轮到的人输（对手刚取完最后一个）。若某状态能一步走到「必败态」，它就是必胜态；若所有走法都走到必胜态，它就是必败态。从小到大递推，必败态恰好是 (m+1) 的倍数：无论你取 1…m 个，对手都能补成 m+1，把你永远留在倍数上。')+
+  note('lim','只对「每次取 1..m 个、取走最后一个者胜」的规则成立；若规则改成「取走最后一个者负」或每次可取的个数不连续，结论要重新推导。');}
+ function nm(){const h=parseInts($('#nm-h').value);if(h.length<2||h.length>6||h.some(x=>!Number.isInteger(x)||x<0||x>99)){$('#nm-out').innerHTML='<p class="err">请输入 2–6 个 0 到 99 之间的整数。</p>';return;}
+  const X=h.reduce((a,b)=>a^b,0);let mv='';
+  if(X!==0){for(let i=0;i<h.length;i++){const t=h[i]^X;if(t<h[i]){mv=`先手必胜：从第 ${i+1} 堆（${h[i]} 个）取走 ${h[i]-t} 个，剩 ${t} 个，使异或和变成 0。`;break;}}}
+  $('#nm-out').innerHTML=`<p>异或和 = ${h.join(' ⊕ ')} = <b class="mono">${X}</b>（二进制 ${X.toString(2)}）。${X===0?'<b class="bad">异或和为 0 → 先手必败</b>。':mv}</p>`+
+  note('why','异或和为 0 的局面，任取一堆的某些个都会使异或和变成非 0；异或和非 0 的局面，总能找到一堆把异或和调回 0。终局（全 0）异或和为 0，所以异或和为 0 就是必败态。')+
+  note('lim','只适用于标准 Nim（每次只动一堆、数量任意、取走最后一个者胜）。其他变体需要转换成 SG 函数分析（超出 CSP-S 常规范围，了解即可）。');}
+ $('#ie-n').addEventListener('input',ie);$('#ie-d').addEventListener('change',()=>{if($$('.ie:checked').length>5){const last=$$('.ie:checked').pop();last.checked=false;}ie();});
+ ['sb-k','sb-m','sb-e'].forEach(i=>$('#'+i).addEventListener('input',sb));['gm-m','gm-n'].forEach(i=>$('#'+i).addEventListener('input',gm));$('#nm-h').addEventListener('input',nm);
+ ie();sb();gm();nm();
+}
+
+/* ====== ⑧ 知识点手册 ====== */
+const CATS=[['all','全部'],['dp','重复子问题'],['rng','区间信息'],['mx','最值与有序'],['fnd','查找'],['pair','点对与子区间'],['ans','答案范围'],['srch','搜索'],['gr','图论'],['num','数论'],['str','字符串'],['tree','树上操作'],['off','离线'],['misc','其他'],['tool','工具层'],['extra','补充块']];
+const REF=[
+['dp','记忆化搜索','J','递归 O(2ⁿ) → 每个状态只算一次，O(状态数×转移数)','算过的存数组，再遇到直接取。','#st'],
+['dp','线性 DP（LIS / LCS / 编辑距离）','J/S','枚举子序列 O(2ⁿ) → O(n²)（LIS 可再优化到 O(n log n)）','先定义 dp[i] 表示什么，再写转移。'],
+['dp','背包（01 / 完全 / 多重）','J/S','枚举选法 O(2ⁿ) → O(n·V)','01 背包容量倒序，完全背包正序；多重背包用二进制拆分。','#st'],
+['dp','区间 DP（石子合并）','S','枚举合并顺序 → O(n³)','按区间长度从小到大，枚举最后一次合并的分界点。'],
+['dp','树形 DP（没有上司的舞会）','S','树上枚举选点集合 → O(n)','dp[u][选/不选]，DFS 后由孩子合并。'],
+['dp','状压 DP（旅行商，n≤20）','S','全排列 O(n!) → O(n²·2ⁿ)','用整数的二进制位表示「哪些已选」。'],
+['dp','数位 DP','S','逐个数判断 O(N) → O(位数×状态)','记忆化 + 「是否贴着上界」。'],
+['dp','DP 的二次优化','S','转移里再枚举一段区间 → 转移 O(1)','区间求和用前缀和；滑窗最值用单调队列；多重背包用二进制拆分。','#st'],
+['rng','前缀和','J','每问扫区间 O(nq) → 预处理 O(n)，每问 O(1)','区间和 = s[r] − s[l−1]。','#cmp'],
+['rng','差分','J','每次区间加 O(n) → 修改 O(1)，最后一次还原 O(n)','d[l]+=v，d[r+1]−=v；最后对 d 做前缀和。'],
+['rng','二维前缀和','J','每问 O(n²) → O(1)','四项容斥：s[x2][y2] − s[x1−1][y2] − s[x2][y1−1] + s[x1−1][y1−1]。'],
+['rng','ST 表','S','静态区间最值，每问 O(n) → 预处理 O(n log n)，每问 O(1)','用两个可重叠的 2^k 区间覆盖；只适合不修改。'],
+['rng','树状数组','S','单点改 + 区间和 O(n) → 都是 O(log n)','lowbit 管理区间，代码极短。'],
+['rng','线段树（懒标记）','S','区间改 + 区间查 O(n) → O(log n)','数组开 4n；懒标记先记一笔，用到时再下传。'],
+['rng','分块','S','O(n) → O(√n)','整块用标记，零散部分暴力。'],
+['mx','堆 / 优先队列','J/S','每次排序取最值 O(n² log n) → O(n log n)','priority_queue 默认大根堆，小根堆要加 greater。（合并果子、Dijkstra）'],
+['mx','单调队列','S','滑窗最值 O(nk) → O(n)','新数不小于队尾就弹队尾；队首滑出窗口就弹队首。','#st'],
+['mx','单调栈','S','找右边第一个更大 O(n²) → O(n)','栈里放「还在等答案」的下标。'],
+['mx','set / multiset / map','J/S','动态插入删除 + 前驱后继 → O(log n)','lower_bound 找第一个 ≥ x 的元素。'],
+['fnd','排序 + 二分查找','J','线性找 O(n) → O(log n)','要求数组有序。','#cmp'],
+['fnd','哈希表 / map','J','每次线性找 → 平均 O(1)（map 为 O(log n)）','统计次数、判重。'],
+['fnd','桶','J','值域小时直接开数组计数 → O(1)','下标就是值。'],
+['fnd','离散化','S','值域 10⁹ 开不了桶 → 排序去重后用「排名」代替原值','之后配合桶、树状数组等。'],
+['fnd','两数之和（哈希）','J/S','双重循环 O(n²) → O(n)','边扫边查 target − x 是否出现过。'],
+['pair','双指针 / 滑动窗口','J/S','枚举所有区间 O(n²) → O(n)','要求有单调性（如全为正数时，窗口变大和只增）。','#cmp'],
+['pair','前缀和 + 哈希（和为 k 的子数组）','J/S','O(n²) → O(n)','s[r]−s[l]=k ⇒ 查 s[r]−k 出现过几次。'],
+['pair','贪心 + 排序','J/S','枚举顺序 O(n!) → O(n log n)','用「交换相邻两项不会更好」证明贪心正确。'],
+['pair','归并排序求逆序对','S','O(n²) → O(n log n)','合并时右段元素小于左段当前元素，一次加 m−i+1。'],
+['ans','二分答案','J/S','逐个试答案 → O(log 值域 × check)','答案对「可行性」单调：最大值最小 / 最小值最大。','#st'],
+['ans','三分','S','单峰函数求极值 → O(log)','考得少，认出「单峰」即可。'],
+['ans','贪心（活动选择）','J/S','枚举子集 → 局部最优逐步选','按结束时间排序；关键是能证明或举出反例。'],
+['srch','剪枝（N 皇后）','J/S','盲目枚举 → 冲突立刻回头','可行性剪枝、最优性剪枝；记得回溯时恢复现场。'],
+['srch','BFS','J/S','DFS 枚举所有路径 → 每个状态只访问一次，O(状态数)','求最少步数；dist 数组兼作访问标记。','#st'],
+['srch','状压 + 位运算','S','数组复制集合 → 整数一次操作 O(1)','(m>>i&1)、m|(1<<i)、m&~(1<<i)、m&-m、popcount。'],
+['srch','折半搜索（meet in the middle）','S偏难','2ⁿ → 2^(n/2)（n≤40）','两半各自枚举，再排序 + 二分合并。'],
+['srch','迭代加深 / A*','S偏难','深度未知或答案很浅时','逐层加深；估价函数引导搜索。了解即可。'],
+['gr','Dijkstra（堆优化）','J/S','枚举所有路径 → O((n+m) log n)','边权必须非负。'],
+['gr','SPFA','S','Bellman-Ford → 队列优化，最坏 O(nm)','可处理负权，易被卡；非负权优先 Dijkstra。'],
+['gr','Floyd','S','每点跑一次单源 → O(n³)','中转点 k 必须在最外层；n≤500。'],
+['gr','并查集','J/S','每次 DFS 判连通 O(n) → 近似 O(1)','路径压缩 + 按秩合并。'],
+['gr','最小生成树（Kruskal / Prim）','S','枚举边的子集 → O(m log m)','Kruskal：边排序 + 并查集；Prim：类似 Dijkstra。'],
+['gr','拓扑排序','S','处理有依赖的顺序 → O(n+m)','反复取入度为 0 的点；输出不足 n 个说明有环。'],
+['gr','倍增 LCA','S','一步步爬 O(n) → O(log n)','up[u][j] = u 向上走 2^j 步到的点。'],
+['gr','Tarjan（强连通 / 割点 / 桥）','S偏难','→ O(n+m)','dfn/low；缩点后成为 DAG，可接着拓扑 + DP。'],
+['gr','二分图染色','S','判断奇环 → O(n+m)','邻居染相反颜色，冲突即非二分图。'],
+['gr','差分约束','S','不等式组 → 最短路','x_j−x_i≤w 连边 i→j 权 w；负环无解。'],
+['num','试除判质数','J','O(n) → O(√n)','因数成对出现。'],
+['num','筛法（埃氏 / 线性）','J/S','逐个判断 → O(n log log n) / O(n)','线性筛每个合数只被最小质因数筛一次。','#st'],
+['num','快速幂','J/S','连乘 O(b) → O(log b)','指数二进制分解，反复平方。','#st'],
+['num','辗转相除（gcd / lcm）','J','枚举因数 → O(log n)','gcd(a,b)=gcd(b,a%b)；lcm=a/gcd×b（先除后乘防溢出）。'],
+['num','组合数取模','S','每次算阶乘 → 预处理阶乘和逆元，每问 O(1)','除法变为乘逆元（模数为质数）。'],
+['num','扩展欧几里得','S','解 ax+by=gcd','求逆元（模数非质数）、解同余方程。'],
+['num','线性求逆元','S','n 次快速幂 → O(n)','inv[i]=(p−p/i)·inv[p%i]%p。'],
+['str','KMP','S','逐位匹配 O(nm) → O(n+m)','失配时利用「前缀=后缀」信息，主串指针不回退。'],
+['str','字符串哈希','J/S','逐字符比较 → O(1) 比较子串','H[r]−H[l−1]·P^len；防冲突用双模。'],
+['str','Trie（字典树）','S','多串找前缀 → O(串长)','公共前缀共用路径。'],
+['str','AC 自动机','S偏难','每个模式串各跑一遍 KMP → 文本只扫一遍','Trie + fail 指针。'],
+['tree','树上差分','S','路径加值 O(n) → O(1) + 一次 DFS','d[u]++，d[v]++，d[lca]−−，d[fa[lca]]−−。'],
+['tree','DFS 序','S','子树变成连续区间','配合树状数组/线段树做子树修改与查询。'],
+['tree','树的直径与重心','S','→ O(n)','直径：两次 DFS；重心：删掉后最大连通块最小。'],
+['tree','树链剖分','S偏难','路径操作 → O(log² n)','重链编号连续 + 线段树；了解大意即可。'],
+['off','离线 + 排序 + 树状数组','S','区间不同数个数 O(nq) → O((n+q) log n)','询问按右端点排序；每种数只在最后出现的位置留 1。'],
+['off','莫队','S偏难','区间询问 → O(n√n)','端点增删 O(1)；按块排序询问，先扩后缩。'],
+['misc','高精度','J','数超出 long long','竖式模拟，不是优化而是突破范围。'],
+['misc','滚动数组','J/S','DP 只依赖上一层 → 空间降一维','用 i&1 切换，或直接一维倒序。'],
+['misc','输入输出加速','J/S','常数优化','ios::sync_with_stdio(false); cin.tie(nullptr); 用 \'\\n\' 不用 endl；关闭同步后不要混用 cin 与 scanf。'],
+['tool','基础语法与数据类型','J','—','int / long long / double / char / bool；条件循环；数组字符串；函数递归；结构体排序；比赛要用 freopen 读写文件。'],
+['tool','STL 与位运算','S','—','vector / deque / set / map / priority_queue；引用传参；operator<；位运算。'],
+['tool','模拟','J/S','—','约瑟夫环、螺旋矩阵（方向数组）、日期推算、进制；S 级：表达式求值（双栈）。难点是细心。','#tree'],
+['tool','枚举','J/S','—','多重循环、子集（位掩码）、全排列（next_permutation）、DFS 组合。能由别的变量推出的量不要枚举；S 级关键是选对枚举对象。'],
+['tool','建模','J/S','—','亲戚关系→并查集；先修课程→拓扑；迷宫→BFS；不相邻选数→DP；开关灯→状压 BFS；免费走 k 条边→分层图；不等式→最短路。'],
+['tool','数学基础与进阶','J/S','—','J：质因数分解、取模规则、lcm、乘法/加法原理。S：容斥、组合数/逆元、概率与期望。','#mat'],
+['tool','构造 / 思维 / 交互','J/S','—','先暴力打表找规律再证明；交互题每次输出后要 fflush(stdout)。'],
+['tool','正确性与细节','J/S','—','溢出（1LL*n*n）、数组大小、多组清空、边界数据、浮点精度、取模陷阱、INF 取值、递归深度、输出格式、对拍。','#pit'],
+['extra','计算机基础与编码（第一轮笔试）','J/S','—','进制转换、原码/反码/补码、ASCII、布尔运算、存储单位、硬件/操作系统/网络、编译与运行、前/中/后缀表达式、程序阅读与完善。','#bit'],
+['extra','排序算法全家','J/S','—','冒泡/选择/插入 O(n²)；快速排序平均 O(n log n)；归并；堆排序；计数/基数排序；稳定性概念。','#st'],
+['extra','链表','J','—','插入删除时指针操作的顺序（顺序反了链表会断）。'],
+['extra','栈与队列的性质','J','—','后进先出 / 先进先出；入栈序列 1,2,3 时 3,1,2 不可能是出栈序列。'],
+['extra','二叉树遍历与性质','J/S','—','前/中/后序；前序+中序可唯一还原；完全二叉树中 i 的孩子是 2i、2i+1。','#tree'],
+['extra','二叉搜索树（BST）','J/S','—','左 < 根 < 右，中序有序；有序数据依次插入会退化成链；平衡树解决退化。'],
+['extra','哈夫曼树与编码','J/S','—','每次合并最小的两个（同「合并果子」）；频率高的字符编码短。'],
+['extra','二叉堆的结构','J/S','—','数组存完全二叉树，父结点 i/2；插入上浮、删除堆顶后下沉。','#tree'],
+['extra','图的存储','J/S','—','邻接矩阵（点少边多）、邻接表（常用）、链式前向星（数组模拟链表）。'],
+['extra','欧拉路径与回路','S','—','无向图所有点度数为偶数 → 有欧拉回路；恰有 2 个奇度点 → 有欧拉路径（一笔画）。'],
+['extra','二分图匹配 / 2-SAT / 哈密顿路径','S偏难','—','匈牙利算法求最大匹配；2-SAT 判断一组「或」条件；哈密顿路径是 NP 难，数据小时用状压 DP。'],
+['extra','组合数学','J/S','—','排列组合、杨辉三角递推（n≤2000 可直接预处理）、插板法、鸽巢原理、卡特兰数、错排。','#mat'],
+['extra','矩阵快速幂','S','—','线性递推（如斐波那契）n 很大时：用矩阵表示一步，对矩阵做快速幂，O(k³ log n)。'],
+['extra','欧拉定理 / 费马小定理 / CRT / 高斯消元 / 数论分块','S','—','降幂与逆元；联立同余方程；解线性方程组 O(n³)；Σ⌊n/i⌋ 分段 O(√n)。'],
+['extra','博弈论','S','—','必胜态/必败态递推；取石子（m+1 的倍数必败）；Nim 异或和。','#mat'],
+['extra','分治、倍增、递推与复杂度分析','J/S','—','主定理：T(n)=2T(n/2)+O(n) 得 O(n log n)；高精度乘法与除以低精度。'],
+['extra','几何基础','了解','—','两点距离、叉积求面积/方向、点线位置、线段相交；凸包偏 NOI。'],
+['extra','进阶数据结构（后置）','S后段/NOI','—','平衡树（Treap/Splay）、主席树、树套树、后缀数组/自动机、斜率优化、网络流。'],
+['extra','考试工程','J/S','—','编译选项与语言标准、栈空间、内存估算、提交规范（文件名/freopen/不留调试输出）、时间分配。NOI Linux 命令是否考查，请以官方大纲为准（待核对）。','#pit']
+];
+function mod_ref(r){
+ r.innerHTML=head('⑧ 知识点手册（全览）','把之前所有总结的知识点放在一处，可搜索、可按类筛选。每条写明「暴力 → 优化」和要点；有互动页的条目带跳转链接。')+`
+ ${note('asm','级别标注 J / S 是我按常见题目的经验归纳，不是官方划分；「S偏难」表示 CSP-S 偶尔出现或较难。具体考点请以 CCF 官方最新大纲为准。')}
+ <h2>症状 → 先想到什么</h2><div class="scroll"><table>
+ <tr><th>暴力的瓶颈</th><th>首先想到</th></tr>
+ <tr><td>同一子问题重复算</td><td>记忆化 / DP</td></tr><tr><td>反复求区间和</td><td>前缀和、差分、树状数组、线段树</td></tr><tr><td>反复找最值</td><td>堆、单调队列、单调栈、ST 表</td></tr>
+ <tr><td>反复查是否存在</td><td>排序+二分、哈希、桶、离散化</td></tr><tr><td>O(n²) 枚举区间或点对</td><td>双指针、贪心、分治、单调栈</td></tr><tr><td>答案范围大且有单调性</td><td>二分答案</td></tr>
+ <tr><td>搜索状态太多</td><td>剪枝、BFS、状压</td></tr><tr><td>反复求最短路或连通性</td><td>最短路算法、并查集</td></tr><tr><td>反复判质数或求幂</td><td>筛法、快速幂</td></tr><tr><td>字符串反复比较</td><td>KMP、哈希、Trie</td></tr></table></div>
+ <div class="doc"><label class="ctl"><span class="cl">搜索（名称、做法、关键词）</span><input type="text" id="rf-q" placeholder="例如：二分、O(n²)、树状数组"></label>
+ <div class="chips" id="rf-c"></div><p class="mute" id="rf-n"></p><div id="rf-l"></div></div>`;
+ let cat='all';
+ $('#rf-c').innerHTML=CATS.map(c=>`<button class="chip" data-c="${c[0]}" aria-pressed="${c[0]==='all'}">${c[1]}</button>`).join('');
+ function draw(){const q=$('#rf-q').value.trim().toLowerCase();
+  const L=REF.filter(e=>(cat==='all'||e[0]===cat)&&(!q||(e[1]+e[3]+e[4]+e[2]).toLowerCase().includes(q)));
+  $('#rf-n').textContent=`共 ${L.length} 条（总计 ${REF.length} 条）`;
+  $('#rf-l').innerHTML=L.map(e=>`<details class="ent"><summary><b>${esc(e[1])}</b><span class="lv">${esc(e[2])}</span></summary><div class="bd">${e[3]!=='—'?`<p><b>暴力 → 优化：</b>${esc(e[3])}</p>`:''}<p><b>要点：</b>${esc(e[4])}</p>${e[5]?`<p><a href="${e[5]}">到互动页面看看</a></p>`:''}</div></details>`).join('')||'<p class="mute">没有匹配的条目。</p>';}
+ $('#rf-c').onclick=e=>{const b=e.target.closest('button');if(!b)return;cat=b.dataset.c;$$('#rf-c .chip').forEach(x=>x.setAttribute('aria-pressed',x===b));draw();};
+ $('#rf-q').addEventListener('input',draw);draw();
+}
+
+/* ====== ⑨ 路线与检查表 ====== */
+function mod_road(r){
+ const steps=[
+  ['t1','工具层打底：输入输出、循环、数组、字符串、函数递归、结构体排序、freopen'],
+  ['t2','枚举与模拟：多重循环、子集位运算、全排列、方向数组、日期/进制题'],
+  ['t3','复杂度估算：看到数据范围能说出允许的复杂度（页面①）'],
+  ['t4','基础优化：前缀和 / 差分 / 排序 / 二分 / 二分答案 / 双指针'],
+  ['t5','搜索：DFS / BFS / 剪枝 / 记忆化'],
+  ['t6','DP 入门：线性 DP、背包、再到区间 DP / 树形 DP'],
+  ['t7','图论与数据结构：并查集、最短路、堆、拓扑、最小生成树'],
+  ['t8','树状数组 / 线段树 / 单调队列 / 单调栈 / ST 表'],
+  ['t9','数论与计数：质数筛、gcd、快速幂、逆元、组合数、容斥'],
+  ['t10','字符串：哈希、KMP、Trie'],
+  ['t11','第一轮笔试内容：进制补码、排序、二叉树、图的存储、读程序与补全程序'],
+  ['t12','对拍与细节：溢出、清空、边界、精度；每次丢分记入错题本']
+ ];
+ const KEY='csps_notes_progress_v1';let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){saved={};}
+ r.innerHTML=head('⑨ 学习路线与检查表','给辅导者的建议顺序，以及考试当天提交前的检查清单。')+`
+ <h2>建议的学习顺序</h2><div class="doc"><p class="mute">勾选后保存在本浏览器（若浏览器禁用存储则不保存）。这是我按「先打牢工具层，再逐步加效率层」归纳的顺序，仅供参考。</p>
+ ${steps.map(s=>`<label class="chk"><input type="checkbox" data-k="${s[0]}"${saved[s[0]]?' checked':''}><span>${s[1]}</span></label>`).join('')}<p id="rd-p" class="mute"></p></div>
+ <h2>提交前检查表（比赛当天）</h2><div class="doc">
+ ${['文件名、目录与题目要求完全一致，freopen 的文件名也一致','调试用的输出、断点、freopen 已删除或改对','用 1LL*… 避免 int 溢出；求和/乘积/方案数用 long long','数组大小够（最大 n + 余量；线段树 4 倍；倍增表层数足够）','估算过内存：数组总字节数没超限','多组数据：每组开头清空了本组用到的部分，但没有清空整个大数组','边界数据：n=1、全相同、全最大值、无解情况的输出','样例通过，并用暴力对拍过小数据','先估复杂度：最大数据范围下不会超时','没把 cin 与 scanf 混用（关闭同步后）'].map(t=>`<label class="chk"><input type="checkbox"><span>${t}</span></label>`).join('')}</div>
+ <h2>比赛中的时间策略</h2><ol><li>通读所有题，判断每题大致能拿多少分。</li><li>先做有把握的题，做完自测样例。</li><li>难题先写暴力，保证每题都有分。</li><li>时间允许时，顺着暴力的瓶颈逐步优化。</li><li>最后留时间做上面的检查表。</li></ol>
+ ${note('lim','本页所有内容是学习辅助，不代表官方大纲或命题范围。比赛的题型、分值、语言标准、评测环境、时间与内存限制请以 CCF 当年官方通知为准。页面中的示意数据为随机或手工生成；运算次数为简化计数，不等于真实运行时间。')}`;
+ function upd(){const boxes=$$('input[data-k]');const n=boxes.filter(b=>b.checked).length;$('#rd-p').textContent=`已完成 ${n} / ${boxes.length} 项`;}
+ r.addEventListener('change',e=>{const b=e.target;if(b.dataset&&b.dataset.k){saved[b.dataset.k]=b.checked;try{localStorage.setItem(KEY,JSON.stringify(saved));}catch(x){}upd();}});
+ upd();
+}
+
+buildNav();
+addEventListener('hashchange',go);
+go();
+</script>
+</body>
+</html>
