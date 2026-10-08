@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>计算与智能 · 共读地图</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0c1118;
+    --ink-2:#121a24;
+    --panel:#172230;
+    --panel-2:#1d2a3a;
+    --line:#2a3a4e;
+    --ember:#f2a93c;
+    --ember-bright:#ffc766;
+    --ember-deep:#c97d1f;
+    --signal:#56c7d6;
+    --signal-deep:#2a8a98;
+    --text-hi:#eef2f7;
+    --text-mid:#9fadbd;
+    --text-low:#67768a;
+    --paper:#f3eee2;
+    --paper-2:#ebe4d4;
+    --paper-ink:#23262c;
+    --paper-mid:#5c5648;
+    --paper-line:#d8cfba;
+    --serif:"Noto Serif SC",serif;
+    --sans:"Noto Sans SC",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",monospace;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html{scroll-behavior:smooth}
+
+  body{
+    background:var(--ink);
+    color:var(--text-hi);
+    font-family:var(--sans);
+    font-weight:300;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* ambient grain / glow */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(900px 500px at 88% -5%, rgba(242,169,60,.08), transparent 60%),
+      radial-gradient(1000px 700px at -10% 108%, rgba(86,199,214,.07), transparent 55%);
+  }
+
+  .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 24px}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:96px 0 40px;position:relative}
+  .eyebrow{
+    font-family:var(--mono);font-size:12px;letter-spacing:.32em;
+    color:var(--ember);text-transform:uppercase;margin-bottom:26px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .eyebrow::before{content:"";width:34px;height:1px;background:var(--ember)}
+  .hero h1{
+    font-family:var(--serif);font-weight:900;
+    font-size:clamp(40px,7.5vw,82px);line-height:1.04;
+    letter-spacing:-.01em;color:var(--text-hi);
+  }
+  .hero h1 .glow{
+    background:linear-gradient(180deg,var(--ember-bright),var(--ember));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero .sub{
+    margin-top:30px;max-width:640px;font-size:18px;color:var(--text-mid);
+    font-weight:300;line-height:1.9;
+  }
+  .hero .meta{
+    margin-top:36px;font-family:var(--mono);font-size:12.5px;color:var(--text-low);
+    letter-spacing:.04em;display:flex;flex-wrap:wrap;gap:8px 22px;
+  }
+  .hero .meta b{color:var(--text-mid);font-weight:500}
+
+  /* the flashlight thesis line */
+  .thesis{
+    margin-top:54px;padding:26px 30px;border-radius:14px;
+    background:linear-gradient(135deg,rgba(242,169,60,.07),rgba(86,199,214,.05));
+    border:1px solid var(--line);position:relative;overflow:hidden;
+  }
+  .thesis .signal-row{display:flex;gap:9px;margin-bottom:18px}
+  .thesis .bit{width:13px;height:13px;border-radius:3px;background:var(--line)}
+  .thesis .bit.on{background:var(--ember);box-shadow:0 0 14px rgba(242,169,60,.7)}
+  .thesis p{font-size:16px;color:var(--text-mid);line-height:1.9}
+  .thesis p b{color:var(--ember-bright);font-weight:500}
+
+  /* ---------- SECTION HEADERS ---------- */
+  .phase-head{padding:74px 0 8px;display:flex;align-items:baseline;gap:18px;flex-wrap:wrap}
+  .phase-tag{
+    font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.12em;
+    padding:5px 12px;border-radius:6px;white-space:nowrap;
+  }
+  .phase-tag.compute{color:var(--ember);background:rgba(242,169,60,.12);border:1px solid rgba(242,169,60,.3)}
+  .phase-tag.intel{color:var(--signal);background:rgba(86,199,214,.12);border:1px solid rgba(86,199,214,.3)}
+  .phase-head h2{font-family:var(--serif);font-weight:700;font-size:clamp(26px,4vw,38px);color:var(--text-hi)}
+  .phase-head .src{font-family:var(--mono);font-size:12.5px;color:var(--text-low);letter-spacing:.02em;width:100%;margin-top:2px}
+
+  /* ---------- BACKBONE (柯朗) ---------- */
+  .backbone{
+    margin-top:30px;border-radius:16px;border:1px solid var(--line);
+    background:
+      repeating-linear-gradient(90deg,transparent,transparent 7px,rgba(255,255,255,.012) 7px,rgba(255,255,255,.012) 8px),
+      var(--ink-2);
+    padding:30px 32px;display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:start;
+  }
+  .backbone .badge{
+    font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--text-low);
+    writing-mode:vertical-rl;text-orientation:mixed;border-left:2px solid var(--ember-deep);
+    padding-left:10px;align-self:stretch;display:flex;align-items:center;
+  }
+  .backbone h3{font-family:var(--serif);font-size:22px;font-weight:700;margin-bottom:4px}
+  .backbone h3 span{font-family:var(--mono);font-size:12px;color:var(--text-low);font-weight:400;display:block;margin-top:5px;letter-spacing:.02em}
+  .backbone p{font-size:15px;color:var(--text-mid);line-height:1.85;margin-top:12px}
+  .backbone p b{color:var(--ember-bright);font-weight:500}
+  .backbone .note{margin-top:14px;font-size:13.5px;color:var(--text-low);border-top:1px dashed var(--line);padding-top:13px}
+
+  /* ---------- THE ASCENT / SPINE ---------- */
+  .ascent{position:relative;margin-top:30px;padding-left:54px}
+  /* the signal wire */
+  .ascent::before{
+    content:"";position:absolute;left:19px;top:6px;bottom:0;width:2px;
+    background:linear-gradient(180deg,var(--ember) 0%,var(--ember) 52%,var(--signal) 62%,var(--signal) 100%);
+    opacity:.55;
+  }
+  /* travelling pulse */
+  .ascent::after{
+    content:"";position:absolute;left:15px;top:0;width:10px;height:10px;border-radius:50%;
+    background:var(--ember-bright);box-shadow:0 0 16px 5px rgba(255,199,102,.7);
+    animation:travel 7s cubic-bezier(.5,0,.5,1) infinite;
+  }
+  @keyframes travel{
+    0%{top:0;opacity:0}
+    6%{opacity:1}
+    50%{background:var(--ember-bright);box-shadow:0 0 16px 5px rgba(255,199,102,.7)}
+    70%{background:var(--signal);box-shadow:0 0 16px 5px rgba(86,199,214,.7)}
+    94%{opacity:1}
+    100%{top:100%;opacity:0;background:var(--signal);box-shadow:0 0 16px 5px rgba(86,199,214,.7)}
+  }
+
+  .station{position:relative;margin-bottom:26px;opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .station.in{opacity:1;transform:none}
+  /* node */
+  .station .node{
+    position:absolute;left:-43px;top:24px;width:18px;height:18px;border-radius:50%;
+    background:var(--ink);border:2px solid var(--ember);z-index:2;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .station .node::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--ember);box-shadow:0 0 10px var(--ember)}
+  .station.intel .node{border-color:var(--signal)}
+  .station.intel .node::after{background:var(--signal);box-shadow:0 0 10px var(--signal)}
+
+  .card{
+    border-radius:15px;border:1px solid var(--line);background:var(--panel);
+    overflow:hidden;transition:border-color .3s ease, transform .3s ease;
+  }
+  .card:hover{border-color:var(--ember-deep);transform:translateY(-2px)}
+  .station.intel .card:hover{border-color:var(--signal-deep)}
+
+  .card-top{padding:22px 26px 18px;display:flex;gap:18px;align-items:flex-start;border-bottom:1px solid var(--line)}
+  .lv{
+    font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.08em;
+    color:var(--ember);padding-top:5px;white-space:nowrap;min-width:54px;
+  }
+  .station.intel .lv{color:var(--signal)}
+  .card-titles h3{font-family:var(--serif);font-size:21px;font-weight:700;line-height:1.35;color:var(--text-hi)}
+  .card-titles .work{font-size:14.5px;color:var(--text-mid);margin-top:5px;line-height:1.7}
+  .card-titles .resource{
+    display:inline-block;margin-top:12px;font-family:var(--mono);font-size:12px;
+    color:var(--text-low);background:var(--ink-2);border:1px solid var(--line);
+    padding:5px 11px;border-radius:6px;letter-spacing:.01em;
+  }
+  .card-titles .resource b{color:var(--text-mid);font-weight:500}
+
+  .card-body{padding:6px 26px 22px}
+  .row{display:grid;grid-template-columns:84px 1fr;gap:16px;padding:13px 0;border-bottom:1px dashed var(--line)}
+  .row:last-of-type{border-bottom:none}
+  .row .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--text-low);padding-top:3px}
+  .row .v{font-size:14.5px;color:var(--text-mid);line-height:1.8}
+  .row .v b{color:var(--text-hi);font-weight:500}
+
+  /* spark = 点火问题 */
+  .spark{
+    margin:14px 0 2px;border-radius:11px;padding:16px 18px 17px;
+    background:linear-gradient(135deg,rgba(242,169,60,.1),rgba(242,169,60,.03));
+    border:1px solid rgba(242,169,60,.28);position:relative;
+  }
+  .station.intel .spark{
+    background:linear-gradient(135deg,rgba(86,199,214,.1),rgba(86,199,214,.03));
+    border-color:rgba(86,199,214,.28);
+  }
+  .spark .sp-label{
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;font-weight:700;
+    color:var(--ember-bright);display:flex;align-items:center;gap:8px;margin-bottom:9px;
+  }
+  .station.intel .spark .sp-label{color:var(--signal)}
+  .spark .sp-label .flame{
+    width:7px;height:7px;border-radius:50%;background:var(--ember-bright);
+    box-shadow:0 0 9px var(--ember-bright);animation:flick 1.8s ease-in-out infinite;
+  }
+  .station.intel .spark .sp-label .flame{background:var(--signal);box-shadow:0 0 9px var(--signal)}
+  @keyframes flick{0%,100%{opacity:1}50%{opacity:.4}}
+  .spark .q{font-size:15px;color:var(--text-hi);line-height:1.85;font-weight:400}
+  .spark .q em{color:var(--ember-bright);font-style:normal;font-weight:500}
+  .station.intel .spark .q em{color:var(--signal)}
+  .spark .lead{margin-top:9px;font-size:13px;color:var(--text-low);line-height:1.75}
+  .spark code{font-family:var(--mono);font-size:.92em;background:rgba(255,255,255,.07);padding:1px 6px;border-radius:4px;color:var(--ember-bright)}
+  .station.intel .spark code{color:var(--signal)}
+
+  /* connector node between phases */
+  .bridge{position:relative;margin:8px 0 30px}
+  .bridge .node{
+    position:absolute;left:-47px;top:20px;width:26px;height:26px;border-radius:50%;
+    background:var(--ink);border:2px dashed var(--ember-deep);z-index:2;
+  }
+  .bridge .inner{
+    border-radius:13px;border:1px dashed var(--line);padding:18px 24px;
+    background:rgba(255,255,255,.02);
+  }
+  .bridge .inner .t{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--text-low);margin-bottom:8px}
+  .bridge .inner p{font-size:15px;color:var(--text-mid);line-height:1.85}
+  .bridge .inner p b{color:var(--ember-bright);font-weight:500}
+
+  /* ---------- PRINCIPLES ---------- */
+  .principles{margin-top:64px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .pr{border-radius:14px;border:1px solid var(--line);padding:24px 26px;background:var(--ink-2)}
+  .pr.a{border-top:3px solid var(--ember)}
+  .pr.b{border-top:3px solid var(--signal)}
+  .pr h4{font-family:var(--serif);font-size:18px;font-weight:700;margin-bottom:12px}
+  .pr h4 span{font-family:var(--mono);font-size:11px;color:var(--text-low);font-weight:400;display:block;margin-top:4px;letter-spacing:.05em}
+  .pr p{font-size:14.5px;color:var(--text-mid);line-height:1.85}
+  .pr p b{color:var(--text-hi);font-weight:500}
+  .pr.a p b{color:var(--ember-bright)}
+  .pr.b p b{color:var(--signal)}
+
+  /* ---------- APPENDIX ---------- */
+  .appendix{margin-top:84px;padding-bottom:90px}
+  .appendix > .ap-head{margin-bottom:26px}
+  .appendix .ap-head .eyebrow{color:var(--text-low)}
+  .appendix .ap-head .eyebrow::before{background:var(--text-low)}
+  .appendix .ap-head h2{font-family:var(--serif);font-size:clamp(26px,4vw,36px);font-weight:700;color:var(--text-hi)}
+  .appendix .ap-head p{margin-top:12px;color:var(--text-mid);font-size:15px;max-width:620px}
+
+  .ap-controls{margin:6px 0 20px}
+  .ap-controls button{
+    font-family:var(--mono);font-size:12px;letter-spacing:.05em;cursor:pointer;
+    background:transparent;color:var(--text-mid);border:1px solid var(--line);
+    padding:8px 15px;border-radius:7px;transition:all .2s ease;
+  }
+  .ap-controls button:hover{color:var(--ember-bright);border-color:var(--ember-deep)}
+
+  details.qa{
+    background:var(--paper);color:var(--paper-ink);border-radius:12px;
+    margin-bottom:14px;overflow:hidden;border:1px solid var(--paper-line);
+  }
+  details.qa > summary{
+    list-style:none;cursor:pointer;padding:20px 24px;
+    display:flex;gap:16px;align-items:flex-start;
+    font-family:var(--sans);font-weight:500;
+  }
+  details.qa > summary::-webkit-details-marker{display:none}
+  details.qa > summary .num{
+    font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ember-deep);
+    background:var(--paper-2);border-radius:6px;padding:3px 8px;white-space:nowrap;margin-top:1px;
+  }
+  details.qa > summary .q-txt{flex:1;font-size:15.5px;line-height:1.7;color:var(--paper-ink)}
+  details.qa > summary .chev{
+    font-family:var(--mono);color:var(--paper-mid);transition:transform .25s ease;margin-top:2px;font-size:13px;
+  }
+  details.qa[open] > summary{border-bottom:1px solid var(--paper-line);background:var(--paper-2)}
+  details.qa[open] > summary .chev{transform:rotate(90deg)}
+
+  .answer{padding:8px 26px 26px;font-size:14.5px;line-height:1.92;color:#33373e}
+  .answer h5{
+    font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--ember-deep);
+    text-transform:uppercase;margin:22px 0 6px;font-weight:700;
+  }
+  .answer p{margin:13px 0;color:#3a3e46}
+  .answer p:first-child{margin-top:14px}
+  .answer b{color:var(--paper-ink);font-weight:700}
+  .answer em{font-style:normal;background:rgba(242,169,60,.22);padding:1px 4px;border-radius:3px;color:#5a4012;font-weight:500}
+
+  footer{padding:40px 0 60px;border-top:1px solid var(--line);text-align:center}
+  footer p{font-family:var(--mono);font-size:12px;color:var(--text-low);letter-spacing:.04em;line-height:2}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media(max-width:680px){
+    .wrap{padding:0 18px}
+    .hero{padding:64px 0 28px}
+    .thesis{padding:20px 20px}
+    .backbone{grid-template-columns:1fr;padding:24px 22px;gap:16px}
+    .backbone .badge{writing-mode:horizontal-tb;border-left:none;border-top:2px solid var(--ember-deep);padding-left:0;padding-top:8px}
+    .ascent{padding-left:34px}
+    .ascent::before{left:11px}
+    .ascent::after{left:7px}
+    .station .node{left:-31px;width:14px;height:14px}
+    .bridge .node{left:-35px;width:18px;height:18px}
+    .card-top{flex-direction:column;gap:8px;padding:18px 18px 14px}
+    .card-body{padding:4px 18px 18px}
+    .row{grid-template-columns:1fr;gap:4px;padding:11px 0}
+    .principles{grid-template-columns:1fr}
+    .answer{padding:8px 18px 22px}
+    details.qa > summary{padding:16px 16px}
+  }
+
+  @media(prefers-reduced-motion:reduce){
+    .ascent::after{animation:none;display:none}
+    .spark .sp-label .flame{animation:none}
+    .station{opacity:1;transform:none;transition:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="eyebrow">共读地图 · Reading Map</div>
+    <h1>从一个<span class="glow">继电器</span><br>到一个会说话的 GPT</h1>
+    <p class="sub">一条纵贯的共读路线:从《编码》最底层的物理开关出发,亲手把"计算"一层层搭起来,再顺着同一束信号往上,直到造出一个能生成文本的 GPT。中间不留黑箱。柯朗的《什么是数学》作为"数学品味"的并行轨道贯穿全程。</p>
+    <div class="meta">
+      <span><b>给</b> 一位 builder 家长 + 两个孩子(信奥初中生 / 即将入学的小的)</span>
+      <span><b>主轴</b> 《编码》Petzold → AI / LLM</span>
+      <span><b>背骨</b> 《什么是数学》Courant</span>
+    </div>
+
+    <div class="thesis">
+      <div class="signal-row" aria-hidden="true">
+        <span class="bit on"></span><span class="bit"></span><span class="bit on"></span>
+        <span class="bit on"></span><span class="bit"></span><span class="bit on"></span>
+        <span class="bit"></span><span class="bit on"></span>
+      </div>
+      <p>整张地图只有一个隐喻:<b>信号</b>。它从一只隔窗闪烁的手电筒(开 / 关 = 0 / 1)出发,沿着抽象的塔层一路向上——继电器、逻辑门、加法器、CPU,再到神经元、注意力、GPT。沿途每一处发光的"火花",就是一个<b>饭桌点火问题</b>:不是讲给孩子听,是抛出去、让他自己推出来的那一下。</p>
+    </div>
+  </header>
+
+  <!-- ============ BACKBONE 柯朗 ============ -->
+  <section>
+    <div class="phase-head">
+      <span class="phase-tag compute" style="background:rgba(159,173,189,.1);border-color:var(--line);color:var(--text-mid)">背骨 · 贯穿全程</span>
+      <h2>数学品味的内核</h2>
+      <span class="src">不是阶段,是一条始终在旁边运行的并行轨道</span>
+    </div>
+
+    <div class="backbone">
+      <div class="badge">PARALLEL RAIL</div>
+      <div>
+        <h3>《什么是数学》<span>What Is Mathematics? — Courant &amp; Robbins, 1941 / 1996 修订</span></h3>
+        <p>它跟教材的根本区别在于<b>问题驱动而非课程驱动</b>:围绕"素数有多少个""哪些图形能尺规作出来""什么是无穷大"这样的真问题展开,展示数学家怎么想、怎么解,而不是教你怎么算。它补的是<b>品味和"为什么"</b>,不是技能。</p>
+        <p>真正的门槛不在知识,在<b>耐受度</b>:每页都有推导,要拿笔跟着算,一天三五页;越往后越陡。读完前半本已很有收获,卡在某章、放半年再回来,是这本书的正常用法。</p>
+        <div class="note">用法:你和孩子各读同一章,再互相讲——谁讲不清楚,说明谁没读懂。从跟竞赛有交集的数论、组合章节切入,不必从第一页线性推进。同时建议配一本"地图书"查现代数学版图:《普林斯顿数学指南》或亚历山大洛夫《数学:它的内容、方法和意义》。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PHASE I : 计算 ============ -->
+  <section>
+    <div class="phase-head">
+      <span class="phase-tag compute">PHASE I · 计算</span>
+      <h2>从一个继电器开始</h2>
+      <span class="src">《编码:隐匿在计算机软硬件背后的语言》— Charles Petzold(尽量找第二版译本)</span>
+    </div>
+
+    <div class="ascent">
+
+      <!-- LV01 -->
+      <div class="station">
+        <div class="node"></div>
+        <div class="card">
+          <div class="card-top">
+            <div class="lv">LV.01</div>
+            <div class="card-titles">
+              <h3>编码的本质</h3>
+              <div class="work">手电筒打信号 · 莫尔斯码 · 盲文 · 二进制 —— 用有限符号表达无限信息</div>
+              <span class="resource"><b>起点</b> · 零前置</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row"><div class="k">何时介入</div><div class="v">随时可起,<b>最佳起点</b>。孩子在信奥里碰过二进制 / 位运算后(几乎一入门就会),代入感最强。</div></div>
+            <div class="row"><div class="k">配合什么</div><div class="v">几乎不依赖任何进度,任何时候都能开读。</div></div>
+            <div class="spark">
+              <div class="sp-label"><span class="flame"></span>饭桌点火问题</div>
+              <div class="q">"只能用<em>开和关</em>两种状态,你要怎么表示 26 个字母?最少要几位?"</div>
+              <div class="lead">→ 引他自己推出 log₂26,推出"为什么是二进制"。追问:"莫尔斯码为什么 E 最短、Q 很长?" → 哈夫曼编码的直觉(信奥正经考点)。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LV02 -->
+      <div class="station">
+        <div class="node"></div>
+        <div class="card">
+          <div class="card-top">
+            <div class="lv">LV.02</div>
+            <div class="card-titles">
+              <h3>从电路到逻辑</h3>
+              <div class="work">电 · 继电器 · 布尔代数 · 逻辑门 —— 抽象逻辑与物理开关第一次合体</div>
+              <span class="resource"><b>关键一跳</b> · 信奥孩子最缺的地基</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row"><div class="k">何时介入</div><div class="v">孩子熟练写条件判断、<b>&amp;&amp; || !</b> 之后。他会突然发现代码里的逻辑运算,物理上就是开关的串联和并联。</div></div>
+            <div class="row"><div class="k">配合什么</div><div class="v"><b>强烈建议动手。</b>由轻到重:Minecraft 红石 → 网页逻辑门模拟器 → 面包板 + 开关 LED。点火效果翻倍。</div></div>
+            <div class="spark">
+              <div class="sp-label"><span class="flame"></span>饭桌点火问题</div>
+              <div class="q">"只用<em>串联</em>和<em>并联</em>,搭一个'两个开关都按下灯才亮'的电路?那'任一按下就亮'呢?"</div>
+              <div class="lead">→ 他答出的瞬间,就独立发明了"与门"和"或门"。再揭穿:这就是你代码里的 &amp;&amp; 和 ||,Petzold 后面拿它盖出整台计算机。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LV03 -->
+      <div class="station">
+        <div class="node"></div>
+        <div class="card">
+          <div class="card-top">
+            <div class="lv">LV.03</div>
+            <div class="card-titles">
+              <h3>运算与记忆</h3>
+              <div class="work">加法器(运算)· 锁存器 / 触发器(记忆)—— 计算机的两个核心能力被一层层盖出来</div>
+              <span class="resource"><b>连接点</b> · 进位 ≈ 高精度加法</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row"><div class="k">何时介入</div><div class="v">孩子开始接触数据结构、理解"<b>变量是怎么存住的</b>""数组在内存里长什么样"的阶段。</div></div>
+            <div class="row"><div class="k">配合什么</div><div class="v">加法器里"进位怎么从低位传到高位",跟他写<b>高精度加法</b>(信奥常考)手动处理进位是一模一样的逻辑。</div></div>
+            <div class="spark">
+              <div class="sp-label"><span class="flame"></span>饭桌点火问题</div>
+              <div class="q">"两个一位二进制数相加,结果可能是 0、1、<em>10</em>。用前面的逻辑门,搭一个电路:输入两位,输出'本位'和'进位'两个结果?"</div>
+              <div class="lead">→ 这就是半加器,他能自己推出来。再问"连续加很多位,进位怎么一位一位往上传?" → 行波进位 + 高精度加法的核心直觉。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LV04 -->
+      <div class="station">
+        <div class="node"></div>
+        <div class="card">
+          <div class="card-top">
+            <div class="lv">LV.04</div>
+            <div class="card-titles">
+              <h3>组装成计算机</h3>
+              <div class="work">指令 · CPU · 内存 · 总线 —— 把亲手搭的组件拼成一台能跑程序的机器(全书高潮)</div>
+              <span class="resource"><b>纵深感</b> · 大多数刷题选手没有</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row"><div class="k">何时介入</div><div class="v">孩子写过不少程序、对"<b>程序是一条条执行的</b>"有切身体会之后。</div></div>
+            <div class="row"><div class="k">配合什么</div><div class="v">卡住时回看锁存器那块:"记住一个数的那个电路,现在变成了内存里的一格。"</div></div>
+            <div class="spark">
+              <div class="sp-label"><span class="flame"></span>饭桌点火问题</div>
+              <div class="q">"你写的 <em>a = b + c</em> 这一行,在 CPU 眼里要拆成几步?它怎么知道 b 和 c 存在哪、算完放回哪?"</div>
+              <div class="lead">→ 引他理解指令、寄存器、内存地址——他写的每一行代码,最终被分解成一条条指令,在他亲眼看着搭起来的机器上跑。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LV05 -->
+      <div class="station">
+        <div class="node"></div>
+        <div class="card">
+          <div class="card-top">
+            <div class="lv">LV.05</div>
+            <div class="card-titles">
+              <h3>接回现代</h3>
+              <div class="work">ASCII · 操作系统 · 浮点数 · 图形 —— 把"原始机器"和孩子手上的真电脑接起来</div>
+              <span class="resource"><b>收尾</b> · 可快读,浮点那段值得停</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row"><div class="k">何时介入</div><div class="v">作为收尾,不必精读。但<b>浮点数</b>那段值得停一下。</div></div>
+            <div class="row"><div class="k">配合什么</div><div class="v">信奥里浮点精度坑很多(不能直接用 == 比较浮点数),读完会从底层理解"为什么 0.1 + 0.2 ≠ 0.3"。</div></div>
+            <div class="spark">
+              <div class="sp-label"><span class="flame"></span>饭桌点火问题</div>
+              <div class="q">"计算机用有限的位数存小数,你觉得它能<em>精确</em>存下 0.1 吗?"</div>
+              <div class="lead">→ 让他先猜,再让他打开电脑敲 <code>0.1 + 0.2</code> 看结果。这个反直觉的瞬间,比任何讲解都管用。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BRIDGE -->
+      <div class="bridge">
+        <div class="node"></div>
+        <div class="inner">
+          <div class="t">— 衔接节点 / 从计算到智能 —</div>
+          <p>到这里,孩子已经亲手搭出一台能跑程序的计算机。但它只会<b>"按规则算"</b>:给定输入,有唯一正确答案——这正是信奥训练的世界观。下一程是完全不同的范式:不写规则,让机器从大量例子里<b>自己学出规律</b>。同一束信号,继续往上爬。</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ PHASE II : 智能 ============ -->
+  <section>
+    <div class="phase-head">
+      <span class="phase-tag intel">PHASE II · 智能</span>
+      <h2>让机器自己学</h2>
+      <span class="src">AI / LLM 路径 —— 视频点火,代码定真。没动手跑过的部分,默认没学会。</span>
+    </div>
+
+    <div class="ascent">
+
+      <!-- LV06 -->
+      <div class="station intel">
+        <div class="node"></div>
+        <div class="card">
+          <div class="card-top">
+            <div class="lv">LV.06</div>
+            <div class="card-titles">
+              <h3>点火:看见它在干什么</h3>
+              <div class="work">建立"数据怎么流过网络、参数怎么被一点点调整"的动态画面感</div>
+              <span class="resource"><b>3Blue1Brown</b> 神经网络系列 · B站官方中字 · 零门槛</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row"><div class="k">何时介入</div><div class="v"><b>现在就能开始</b>,你俩一起看。先看神经网络基础几集,再看讲 Transformer / 注意力的几集。</div></div>
+            <div class="row"><div class="k">配合什么</div><div class="v">只求画面感,不要求懂代码或推导。⚠ 看完<b>不算学会</b>——这步是点火,不是学习本身。</div></div>
+            <div class="spark">
+              <div class="sp-label"><span class="flame"></span>饭桌点火问题(看视频前就抛出)</div>
+              <div class="q">"写个程序区分猫和狗的照片,但<em>不准写任何 if、不准定义任何规则</em>——'猫有尖耳朵'都不能写进去。你会怎么办?"</div>
+              <div class="lead">→ 整条 AI 线的灵魂。让他用信奥那套"我来设计规则"去解,越卡越好;等他看到"喂数据让它自己学"时,冲击越大。这是理解 AI 和算法是两种世界观的起点。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LV07 -->
+      <div class="station intel">
+        <div class="node"></div>
+        <div class="card">
+          <div class="card-top">
+            <div class="lv">LV.07</div>
+            <div class="card-titles">
+              <h3>第一次动手:造一个会自己学习的东西</h3>
+              <div class="work">~100 行 Python 实现一个自动求导引擎,再用它训练一个小神经网络</div>
+              <span class="resource"><b>Karpathy · micrograd</b> · Neural Networks: Zero to Hero(YouTube 免费 + GitHub)</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row"><div class="k">何时介入</div><div class="v">看完 3B1B、有画面感后。<b>整条路径的核心</b>,我最想让孩子做的一步。</div></div>
+            <div class="row"><div class="k">为何绝配</div><div class="v">自动求导 = 计算图(<b>图结构</b>)+ 反向传播(<b>图上递归</b>)= 信奥舒适区。把最被神秘化的反向传播,翻译成他会的"图 + 递归"。数学只需"导数 = 变化率" + 链式法则——一个补微积分的绝佳真实动机。</div></div>
+            <div class="row"><div class="k">怎么做</div><div class="v">跟着视频<b>一行行自己敲,不要复制粘贴</b>。跑通后改参数、加一层,看会发生什么。</div></div>
+            <div class="spark">
+              <div class="sp-label"><span class="flame"></span>饭桌点火问题</div>
+              <div class="q">"假设网络这次猜错了——把猫认成了狗。它怎么知道<em>该调整哪个参数、往哪个方向调、调多少</em>?"</div>
+              <div class="lead">→ 梯度的本质:告诉每个参数"你对这次错误负多大责任、该往哪动"。卡住就提示链式法则——错误怎么一层层"怪罪"回前面每个参数。答清楚了,反向传播就真懂了。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LV08 -->
+      <div class="station intel">
+        <div class="node"></div>
+        <div class="card">
+          <div class="card-top">
+            <div class="lv">LV.08</div>
+            <div class="card-titles">
+              <h3>补地基(可选)</h3>
+              <div class="work">更系统、更慢、带更多推导的神经网络基础(还没到 Transformer)</div>
+              <span class="resource"><b>Michael Nielsen</b> 《Neural Networks and Deep Learning》· 免费在线 · 网页交互好</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row"><div class="k">何时介入</div><div class="v">走完 micrograd 后,对"为什么这样就能学"还有没踏实的地方时。</div></div>
+            <div class="row"><div class="k">角色</div><div class="v">不是必读的一本,而是"<b>哪里虚了就去查哪章</b>"的参考。问题驱动 + 自包含,柯朗气质很浓。</div></div>
+            <div class="spark" style="opacity:.85">
+              <div class="sp-label"><span class="flame"></span>饭桌点火问题</div>
+              <div class="q">无固定问题——它的角色是<em>补漏</em>,缺什么补什么。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LV09 -->
+      <div class="station intel">
+        <div class="node"></div>
+        <div class="card">
+          <div class="card-top">
+            <div class="lv">LV.09</div>
+            <div class="card-titles">
+              <h3>造一个真的 GPT</h3>
+              <div class="work">从零写一个能生成文本的 GPT,代码极其精简 —— 全程高潮</div>
+              <span class="resource"><b>Karpathy · nanoGPT</b> / "Let's build GPT"(视频 + 项目)</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row"><div class="k">何时介入</div><div class="v">micrograd <b>彻底搞懂</b>之后。GPT 里每一块,本质都是 micrograd 那套自动求导和神经网络的放大与组合。</div></div>
+            <div class="row"><div class="k">配合什么</div><div class="v">数学会上来:注意力机制是矩阵运算,需要对"<b>矩阵乘法在信息流动上意味着什么</b>"有感觉(3B1B 铺垫过就会顺)。走到这步,他会亲眼看到那个跟他聊天的 AI,剥到底就是注意力 + 矩阵 + 反向传播,没有魔法。</div></div>
+            <div class="spark">
+              <div class="sp-label"><span class="flame"></span>饭桌点火问题</div>
+              <div class="q">"写一句话写到一半要决定下个字,你的大脑是只看刚写的那一个字,还是会<em>回头看前面整句、甚至更早的内容</em>?机器要怎么做到'回看前面所有内容、还能分清哪些更重要'?"</div>
+              <div class="lead">→ 直指注意力机制核心:一个词在预测下一个词时,要能"回望"前文所有词,并给每个词分配不同的重要性权重。他描述出的需求,已经很接近 attention 的设计动机。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LV10 -->
+      <div class="station intel">
+        <div class="node"></div>
+        <div class="card">
+          <div class="card-top">
+            <div class="lv">LV.10</div>
+            <div class="card-titles">
+              <h3>进阶:正式的从零搭建</h3>
+              <div class="work">用 PyTorch 把分词 · 嵌入 · 注意力 · Transformer 块 · 预训练 · 微调一整套工业流程亲手走一遍</div>
+              <span class="resource"><b>Sebastian Raschka</b> 《Build a LLM (From Scratch)》· 代码全开源 · 终点站</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row"><div class="k">何时介入</div><div class="v">到这步还意犹未尽再上。门槛最高,需要 Python、线性代数、PyTorch 都到位——<b>可能等他再大一两岁、数学补得差不多</b>再上。</div></div>
+            <div class="row"><div class="k">角色</div><div class="v">"想真正吃透就啃这本"的终点站。比 Karpathy 的项目更完整、更接近真实工程。</div></div>
+            <div class="spark" style="opacity:.85">
+              <div class="sp-label"><span class="flame"></span>饭桌点火问题</div>
+              <div class="q">无 —— 系统工程,门槛最高,靠的是前面所有积累的<em>水到渠成</em>。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ PRINCIPLES ============ -->
+  <section>
+    <div class="phase-head" style="padding-bottom:0">
+      <span class="phase-tag compute" style="background:rgba(159,173,189,.1);border-color:var(--line);color:var(--text-mid)">两条总提醒</span>
+      <h2>用法,比书单本身更重要</h2>
+    </div>
+    <div class="principles">
+      <div class="pr a">
+        <h4>《编码》线 · 计算<span>READ &amp; PAUSE</span></h4>
+        <p>别追求"读完",追求<b>每个块都停下来自己复现一遍</b>。价值全在停顿处。读完继电器,让他在纸上画"与门";读完加法器,让他讲讲进位怎么传。一周一块、配一次饭桌聊天,半年读完很正常。<b>计划是地图,不是闹钟</b>——某块来劲就多待,没感觉就快过。</p>
+      </div>
+      <div class="pr b">
+        <h4>AI 线 · 智能<span>WATCH but BUILD</span></h4>
+        <p>最大的敌人是<b>"看视频的爽感"</b>:可视化太好,看完容易以为懂了,其实是错觉。底线是每个 Karpathy 项目都<b>自己从头敲一遍、跑通、能改动看到不同结果</b>。数学是唯一真门槛,但对一个想亲手造出 AI 的孩子,这是<b>无比真实的学习动机</b>——卡住就陪他停下来补,别催着往前赶。</p>
+      </div>
+    </div>
+    <div class="thesis" style="margin-top:22px;background:linear-gradient(135deg,rgba(242,169,60,.06),rgba(86,199,214,.05))">
+      <p style="font-size:15.5px">贯穿两条线的同一个总原则——也是你一贯的思路:<b>让真实的问题来拉动学习,而不是反过来</b>。上面每个点火问题都设计成"孩子能自己推出来"的难度,推出来的那点成就感,才是兴趣的真正来源。你忍住不要急着给答案,哪怕他卡十分钟,那十分钟比你讲十分钟值钱得多。还有最重要的一条:孩子对数学和计算的态度,是从你<b>自己读、自己卡、自己想通后很高兴</b>的样子里读出来的,不是从你买了什么书。</p>
+    </div>
+  </section>
+
+  <!-- ============ APPENDIX ============ -->
+  <section class="appendix">
+    <div class="ap-head">
+      <div class="eyebrow">附录 · Appendix</div>
+      <h2>对话全文</h2>
+      <p>这张地图生长自下面这段完整对话。点击每一条展开,可读到当时的原始讨论——地图是结论,这里是它的来路。</p>
+    </div>
+
+    <div class="ap-controls">
+      <button id="toggleAll" type="button">▸ 全部展开</button>
+    </div>
+
+    <!-- Q1 -->
+    <details class="qa">
+      <summary><span class="num">01</span><span class="q-txt">你知道有本书叫做 what is mathematics 吗?</span><span class="chev">▶</span></summary>
+      <div class="answer">
+        <p>知道,这是数学科普里的经典名著——《什么是数学》(What Is Mathematics?),作者是 Richard Courant(理查德·柯朗)和 Herbert Robbins(赫伯特·罗宾斯),1941 年初版。1996 年由 Ian Stewart 修订再版,加了一章讲费马大定理、四色定理等后来被解决的著名问题。中译本副标题是"对思想和方法的基本研究",在国内口碑也很好。</p>
+        <p>这本书的特点是不走"科普段子"路线,而是真刀真枪地带读者做数学:自然数、数论、几何作图、拓扑、微积分都有覆盖,有定义、有证明,但写法比教材友好得多。爱因斯坦评价过它,说它把数学的精髓讲清楚了。</p>
+        <p>不过要提醒一点:它对读者是有门槛的,适合有一定数学基础、愿意拿笔跟着推导的人,大概是学有余力的高中生到大学低年级水平往上。如果是给走竞赛路线的孩子看,它更多是补"数学品味"和思想深度的,跟信奥的算法训练不是一个路子,但对培养数学直觉很有价值。</p>
+        <p>你是想自己读,还是在考虑给孩子看?</p>
+      </div>
+    </details>
+
+    <!-- Q2 -->
+    <details class="qa">
+      <summary><span class="num">02</span><span class="q-txt">我自己和孩子都看,这本书门槛有多高呢?</span><span class="chev">▶</span></summary>
+      <div class="answer">
+        <p>说实话,这本书的门槛比很多人想象的高,但又不是高在"知识"上,而是高在"耐受度"上。我分开说。</p>
+        <p>知识门槛本身不算夸张。前几章(自然数、数论入门、数系)初中数学基础就能进场,不需要会微积分才能翻开。柯朗写作的原则就是尽量自包含,从头建起来。所以一个学有余力的初中生,理论上是能读前三分之一的。</p>
+        <p>真正的门槛在三个地方。第一是<b>密度</b>:它不是读着玩的书,几乎每一页都有推导,你跳过一段证明,后面就接不上了。正确打开方式是一天读三五页,拿纸笔跟着算,而不是像读《数学之美》那样一晚上翻五十页。第二是<b>抽象耐受力</b>:比如它讲数学归纳法、讲无理数的构造,要求读者对"为什么要这么严格地定义"这件事本身有兴趣。很多孩子卡住不是因为看不懂步骤,而是不理解"这有什么好证的"。第三是<b>越往后越陡</b>:前面数论、几何作图部分相对平缓,到射影几何、拓扑、微积分那几章,难度上升明显,微积分那章如果完全没接触过极限思想,会比较吃力。</p>
+        <p>对你家正在搞 CSP/NOIP 的孩子,我的判断是:数论、组合那些章节跟竞赛内容有交集,读起来会有"原来背后是这样"的快感,可以从这些章入手,不必从第一页线性推进。但要有心理预期——这本书读完前半本就已经很有收获,卡在某章很正常,放一放过半年再回来是这本书的正常用法。</p>
+        <p>对你自己,十年商业分析的底子,逻辑推理能力是够的,主要是要接受"读得慢"这件事。如果你高中数学还记得大半,前面四五章问题不大。</p>
+        <p>一个实操建议:你们俩可以读同一章然后互相讲,谁讲不清楚说明谁没读懂。这本书特别适合这种用法,因为它的每个论证都是可以复述的。</p>
+      </div>
+    </details>
+
+    <!-- Q3 -->
+    <details class="qa">
+      <summary><span class="num">03</span><span class="q-txt">这本书的组织方式跟普通的教材和教育的组织方式是不是有很大的不同?是最有利于从全面了解数学的科研都有哪些领域的一本书呢?</span><span class="chev">▶</span></summary>
+      <div class="answer">
+        <p>这两个问题的答案不太一样,我分开说。</p>
+        <h5>组织方式</h5>
+        <p>确实跟教材有本质区别。教材的组织逻辑是课程进度——按照"先学什么才能学什么"的依赖关系铺设阶梯,目标是让你通过考试、掌握运算技能。《什么是数学》的组织逻辑是<b>问题驱动</b>:每一章围绕几个真正的数学问题展开,比如"素数有多少个""哪些图形能用尺规作出来""什么是无穷大",然后展示数学家是怎么思考和解决这些问题的。教材教你"怎么算",这本书让你看"数学家为什么关心这个、怎么想出来的"。所以同样讲数论,教材给你一堆同余运算练习,柯朗带你直接看欧几里得对素数无穷的证明,看哥德巴赫猜想为什么难。这是它最大的价值,也是它读起来慢的原因。</p>
+        <h5>但它不是了解科研版图的最佳地图</h5>
+        <p>第二个问题我要泼点冷水:它不是了解数学科研版图的最佳地图,甚至可以说不太胜任这个任务。原因有两个。一是<b>年代</b>——主体写于 1941 年,即便算上 1996 年修订加的那一章,二十世纪后半叶数学的爆发式发展基本不在里面:没有现代概率论、没有统计、抽象代数只有零星影子,泛函分析、数理逻辑、计算理论、动力系统这些当代大领域几乎缺席。二是<b>定位</b>——柯朗本来就不想写一本"数学领域巡礼",他想写的是"数学的精神是什么",所以选材偏经典核心(数、几何、分析),深挖而不求全。</p>
+        <p>如果你的目标是看清数学研究都有哪些领域,更对口的有这么几本。一是《数学:它的内容、方法和意义》,亚历山大洛夫等苏联数学家合写,三卷本,按领域分章巡礼,每章由该领域一流学者执笔,覆盖面比柯朗宽得多,中译本是经典老译本。二是《普林斯顿数学指南》(The Princeton Companion to Mathematics),Gowers 主编,目前最接近"现代数学全景地图"的一本,连研究前沿的分支划分都有,中译本三卷,体量很大,适合当工具书查阅。轻量一点的还有 Gårding 的《数学概观》。</p>
+        <p>所以我的建议是组合使用:用柯朗建立"数学是怎么思考的"这个内核,用《普林斯顿数学指南》或亚历山大洛夫那套当地图查"数学界都在研究什么"。前者精读,后者翻阅。单靠柯朗一本,你会得到很深的数学品味,但版图认知会停在二十世纪上半叶。</p>
+      </div>
+    </details>
+
+    <!-- Q4 -->
+    <details class="qa">
+      <summary><span class="num">04</span><span class="q-txt">如果站在启发孩子数学兴趣的角度,你有什么建议?</span><span class="chev">▶</span></summary>
+      <div class="answer">
+        <p>站在兴趣启发的角度,我先说一个核心判断:<b>兴趣不是被"好书"点燃的,是被"我自己想明白了一个东西"的瞬间点燃的。</b>书只是制造这种瞬间的工具。所以选书和用书的方式,比书单本身重要。你家两个孩子年龄段不同,路径也完全不同,我分开说。</p>
+        <h5>对初中搞信奥的孩子:做嫁接</h5>
+        <p>有一个现成的、被大多数家长浪费掉的优势:竞赛已经替你制造了真实的问题场景。他在赛场上遇到的数论、组合、图论,背后全是真数学。最有效的做法不是另开一条"数学兴趣"线,而是做<b>嫁接</b>——当他用完一个算法,找机会让他看到这个东西的数学出身。比如他用了快速幂和取模,这时候柯朗书里的数论章节就不是"课外阅读"了,是"原来我每天在用的东西,欧拉两百多年前就想清楚了"。这种"我已经会用、现在看懂了为什么"的体验,是兴趣最可靠的来源。</p>
+        <p>具体操作上,别把整本书递给他说"这本很经典你看看"——这是最容易失败的方式。更好的做法是你自己先读到某个跟他竞赛内容相关的段落,饭桌上聊起来,聊到他好奇了,再说"书里有,你自己去看"。让书成为他主动去取的东西,而不是你布置的任务。</p>
+        <p>另外对这个年龄段,视频有时比书更适合做"点火"的角色。3Blue1Brown(B站有官方账号)是目前数学可视化做得最好的,他讲线性代数、微积分本质的系列,对一个有竞赛思维的初中生来说是降维享受。视频点火,书负责深入,这个分工比较符合实际。</p>
+        <h5>对刚上小学的小的:反着来,保护"为什么"</h5>
+        <p>这个阶段碰任何"书"都为时过早,包括所谓的数学绘本启蒙,效果都远不如动手。六七岁孩子的数学兴趣藏在实物里——扑克牌、骰子、七巧板、乐高、折纸、跟你下的每一盘棋。这个阶段你能做的最有价值的事,是<b>保护他的"为什么"</b>。他问"为什么 1 后面是 2"这种看起来很傻的问题时,认真跟他玩这个问题,而不是给标准答案。</p>
+        <p>小学低年级唯一值得警惕的是反向操作:过早上奥数班、刷计算题,把数学变成"又快又对"的竞技,这是杀死兴趣最高效的方式,而且伤害在几年后才显现。你已经有一个走竞赛的老大,更要留意别把老大的路径直接平移给老二——等他自己表现出对规律、对策略游戏的兴趣再说。</p>
+        <h5>最后:你自己的角色</h5>
+        <p>这可能是最重要的一条:孩子对数学的态度,很大程度上是从父母对数学的真实态度里读出来的,不是从你买了什么书里。你自己读柯朗、在纸上推导、卡住了挠头然后想通了很高兴——孩子看到这个场景的教育效果,大于十次"你应该多看数学书"。你本来就要自己读这本书,这件事做在明处,就已经是最好的兴趣教育了。</p>
+      </div>
+    </details>
+
+    <!-- Q5 -->
+    <details class="qa">
+      <summary><span class="num">05</span><span class="q-txt">信息学或者说计算机科学领域有没有类似 What Is Mathematics 的书?注意,我指的是内容,而非书名</span><span class="chev">▶</span></summary>
+      <div class="answer">
+        <p>这是个好问题,而且答案有点微妙——计算机科学领域确实有"精神气质类似"的书,但要找到完全对位的,得先想清楚柯朗那本书到底"类似"在哪。我理解你说的"内容类似"指三条:<b>问题驱动而非课程驱动</b>;<b>深挖核心、讲思想和方法</b>;<b>自包含、带真证明,不回避难度</b>。按这个标准筛,计算机科学比数学更"分叉",很难有一本书像柯朗那样统摄全局。</p>
+        <h5>最对位:SICP《计算机程序的构造和解释》</h5>
+        <p>它跟柯朗的气质几乎是一个模子:不教某门语言的语法,而是带你从最基本的东西出发,亲手把"计算"这个概念一层层构造出来——求值、抽象、状态、解释器、甚至自己实现一个会算的机器。它问的是"什么是计算、什么是过程、什么是抽象",跟柯朗问"什么是数、什么是无穷"是同一类问题。读完不是"会写代码"而是"理解了计算的内核"。如果只能选一本作为"计算机科学版的柯朗",我选它。但它偏"编程与计算的哲学"。</p>
+        <h5>更低门槛、气质更纯正:Petzold《编码》(Code)</h5>
+        <p>如果想要的是回答"计算的能力与极限是什么"这一脉的、可读性更好的入口,Charles Petzold 的《编码:隐匿在计算机软硬件背后的语言》从"两个小孩用手电筒打信号"出发,一步步把计算机怎么从继电器、逻辑门搭起来的讲透,极度自包含,几乎不需要前置知识,但讲的是真东西。"柯朗气质"很纯正,门槛比 SICP 低不少,可能更适合作为你和孩子的共读起点。</p>
+        <h5>往理论深处:GEB 等</h5>
+        <p>将来孩子对"为什么有些问题计算机永远算不出来""P vs NP 是什么"感兴趣,可以记下侯世达的《哥德尔、艾舍尔、巴赫》(GEB)——用哥德尔不完备、递归、自指把数学逻辑和计算的本质串起来的奇书,获过普利策奖,更像柯朗的"加强版变体",更野、更哲学。再往直接走是 Hopcroft 那套自动机理论,但偏教材了。</p>
+        <h5>回到你的实际场景</h5>
+        <p>信奥训练的本质是算法和数据结构,解决"怎么又快又对地算出来",有个隐藏代价:容易让孩子把计算机科学等同于"刷题和优化",看不到底下那层"计算到底是什么"的风景。这几本书对你孩子的价值,跟柯朗对竞赛数学的价值一模一样:补"品味"和"为什么",不是"怎么做"。</p>
+        <p>具体建议:Petzold《编码》作为共读首选,门槛低、自包含、点火效果好;SICP 留到高中、编程功底扎实后再啃;GEB 当种子放书架上,哪天孩子自己抽出来翻是缘分,别推。</p>
+      </div>
+    </details>
+
+    <!-- Q6 -->
+    <details class="qa">
+      <summary><span class="num">06</span><span class="q-txt">把《编码》展开讲讲</span><span class="chev">▶</span></summary>
+      <div class="answer">
+        <p>展开讲《编码》(Code: The Hidden Language of Computer Hardware and Software),Charles Petzold 著。</p>
+        <h5>它最特别的地方</h5>
+        <p>这本书的真正主题不是"计算机",而是"信息怎么被编码,以及机器怎么被一步步搭出来理解这些编码"。书名里的 Code 是双关——既是"代码",更是"编码/密码"。Petzold 的野心是从最原始的人类需求出发(我想隔着距离传递信息),不借助任何现成的计算机概念,纯靠逻辑和物理,把一台真正能运算的计算机从零造出来。读完你会有一种很奇特的感受:计算机不再是一个魔法黑箱,而是一个"我好像也能想出来"的东西。这正是它的柯朗气质——<b>祛魅</b>,把神秘变成可理解。</p>
+        <h5>它的组织方式:一条克制的因果链</h5>
+        <p>开篇不谈计算机,谈沟通。从隔着窗户用手电筒打信号讲起,然后是莫尔斯电码、盲文——核心问题是:怎么用少数几种符号表达复杂信息?这一步埋下全书的种子:编码的本质是用有限表达无限。接着自然引出二进制为什么是最朴素的选择。</p>
+        <p>然后转向物理实现。讲电、电路、继电器。这是全书最关键的一跳:继电器可以组合成"逻辑"。两个继电器串联是"与",并联是"或"。抽象的逻辑和物理的电路第一次合体,孩子会看到布尔代数不是凭空的符号游戏,而是能用开关搭出来的真东西。</p>
+        <p>再往上,用逻辑门搭出加法器,搭出能记住一个状态的电路(锁存器、触发器,存储器的雏形)。"运算"和"记忆"这两个核心能力,从几个继电器一路盖楼盖出来。然后组装成一台简单的、有指令、能执行程序的计算机,讲清楚 CPU、内存、总线怎么协作。最后几章延伸到 ASCII、操作系统、图形显示、浮点数,把"原始机器"和今天的电脑接上。新版(第二版,2022 年)这部分更新和扩充了不少。</p>
+        <p>这个组织方式的厉害之处:没有任何一步是"你先记住,后面会讲"。每一层都建立在你上一页刚刚亲眼看着搭好的东西上,中间没有断层、没有黑箱。这跟教材完全相反。</p>
+        <h5>对你家场景</h5>
+        <p>门槛:这是几本书里最低的,几乎零前置。对搞信奥的初中孩子完全够得着,甚至会觉得前半本偏简单——但别跳,前半本在帮他打"计算的物理直觉"这个大多数刷题选手没有的地基。切入价值:信奥让孩子站在很高的抽象层,底下"一条指令在电路里发生了什么""为什么是二进制""内存为什么能记住东西"刷题不会碰,《编码》正好补这一层。</p>
+        <p>怎么共读:它天然适合一起读,每一步都可复述、可提问。按"组件"分段——读完继电器停下来问"能用继电器搭个'与'吗",让他纸上画;读完加法器,让他讲进位怎么传。最忌一口气读完。继电器/逻辑门那几章配合一点动手(Minecraft 红石、逻辑门模拟器、面包板),点火效果翻倍。</p>
+        <p>提醒:中译本质量不错,尽量找第二版(对应 2022 新版)的译本,内容更全;第一版也完全能读,只是现代部分略旧。</p>
+      </div>
+    </details>
+
+    <!-- Q7 -->
+    <details class="qa">
+      <summary><span class="num">07</span><span class="q-txt">有没有类似思路,但是主题是一步一步构建一个 LLM 或 AI 的书或教程?</span><span class="chev">▶</span></summary>
+      <div class="answer">
+        <p>有,而且这个方向最近几年正好出了几个质量很高、思路高度对位的东西。"从零、自包含、亲手一层层搭出来"这条线,在 LLM/深度学习领域反而比传统 CS 还成熟。</p>
+        <h5>最对位:Raschka《Build a Large Language Model (From Scratch)》</h5>
+        <p>整本书就是一件事:用 PyTorch,从一张白纸开始,把一个 GPT 类的大语言模型亲手搭出来——分词、嵌入、注意力机制、Transformer 块、预训练、再到微调,每一层都是自己写代码堆起来,没有调包黑箱。柯朗气质非常纯正。门槛要说清楚:比《编码》高不少,需要会 Python、懂一点线性代数和最基本的微积分直觉,还要接受 PyTorch。更适合孩子再大一两岁、或你陪着一起啃。</p>
+        <h5>更"赤手空拳":Karpathy 系列</h5>
+        <p>如果连"神经网络/反向传播本身"都想从零造一遍,Andrej Karpathy 的免费教程是这个星球上最对位的东西。一个是 micrograd:大概一百行 Python 从零实现一个能自动求导的微型引擎,再用它训练一个小神经网络——看完彻底理解反向传播其实就是链式法则在一张计算图上的自动应用,祛魅效果跟 Petzold 用继电器搭加法器一模一样。另一个是 "Let's build GPT" 和 nanoGPT:从零写一个能生成文本的 GPT。整个 "Neural Networks: Zero to Hero" 系列就是从单个神经元一路造到 GPT。视频形式,点火属性强。</p>
+        <h5>更轻的点火读物</h5>
+        <p>3Blue1Brown 的神经网络系列(B站官方中字)——把神经网络、梯度下降、Transformer/注意力都做成可视化,建立直觉的最佳起点,几乎零门槛。Michael Nielsen《Neural Networks and Deep Learning》(免费在线书)——更基础(还没到 Transformer),写法自包含、带推导、问题驱动,很柯朗,适合正式读 Raschka 前的台阶。</p>
+        <h5>给你的路径建议</h5>
+        <p>结合孩子情况(信奥底子强、Python 没问题、数学待补、年龄还小):先用 3Blue1Brown 点火,建立画面感;接着上 Karpathy 的 micrograd——对编程能力的要求正好落在信奥孩子舒适区(图 + 递归),对数学要求压到最低,是从"会编程"通往"懂 AI"的最佳桥梁;走完还有劲、数学跟上,再上 Raschka 或 nanoGPT。Nielsen 作为中间补基础的参考。</p>
+        <p>一个判断:信奥本质是"用算法解决确定性问题",有唯一正确答案;AI 是另一种范式——"从数据里学出近似的、概率性的规律",没有唯一答案,讲究泛化。两种思维不冲突,但是两套世界观。让他接触 AI 这条线,价值在于早点见到"计算"还有这样一种和刷题完全不同的玩法——跟给他看柯朗、看《编码》是同一个用意:拓宽他对"计算到底是什么"的想象边界。</p>
+      </div>
+    </details>
+
+    <!-- Q8 -->
+    <details class="qa">
+      <summary><span class="num">08</span><span class="q-txt">好(为 AI 路径排一份带"点火问题"的分阶段共读计划)</span><span class="chev">▶</span></summary>
+      <div class="answer">
+        <p>这条线有个特殊的坑:极其容易"看懂了视频,以为自己懂了,其实啥也不会"。深度学习可视化做得太好,看 3Blue1Brown 会有"我全懂了"的爽感,但那是错觉。所以总原则跟《编码》相反——<b>看完必须自己写一遍代码,跑通才算数</b>。视频负责点火,代码负责把画面感变成真懂。没动手跑过的部分,默认没学会。另外这条线对数学要求比《编码》高,允许在某阶段卡很久去补数学,这是正常的。</p>
+        <h5>第一阶段 · 点火:看见它在干什么(3Blue1Brown)</h5>
+        <p>现在就能开始,零门槛,一起看。B站官方中字。先看神经网络基础几集,再看讲 Transformer 和注意力的几集。唯一目的是建立画面感。看完不算学会。<em>饭桌点火问题(看视频前就抛出):"如果我让你写个程序区分猫和狗的照片,但不准你写任何 if 语句、不准定义任何规则——你连'猫有尖耳朵'都不能写进去,你会怎么办?"</em> 这一问是整条 AI 线的灵魂,让他先卡在这个问题上,卡得越久越好。</p>
+        <h5>第二阶段 · 第一次动手:micrograd</h5>
+        <p>整条路径的核心。安排在看完 3B1B 后。用约一百行 Python 实现一个自动求导引擎,再训练一个小神经网络。"自动求导"本质是在一张计算图上做反向传播——计算图是图结构,反向传播是图上的递归遍历,信奥孩子太熟了。把最被神秘化的反向传播翻译成他舒适区里的"图 + 递归"。数学只需理解"导数是变化率"加链式法则——一个补微积分的绝佳真实契机。跟着视频一行行自己敲,不要复制粘贴。<em>饭桌点火问题:"假设你的网络这次猜错了——把猫认成了狗。它怎么知道该调整哪个参数、往哪个方向调、调多少?"</em> 引他理解梯度的本质。</p>
+        <h5>第三阶段 · 补地基(可选):Nielsen</h5>
+        <p>走完 micrograd 还有没踏实的地方,Nielsen 这本免费在线书是最好的补课材料。比 Karpathy 更系统、更慢、带更多推导。角色是"哪里虚了就去查哪章"的参考,不是必读完。</p>
+        <h5>第四阶段 · 造一个真的 GPT:nanoGPT</h5>
+        <p>高潮。还是 Karpathy 的 "Let's build GPT" 和 nanoGPT。安排在 micrograd 彻底搞懂之后,因为 GPT 里每一块都是 micrograd 那套的放大和组合。数学要求会上来:注意力是矩阵运算。走到这步,他会亲眼看到那个跟他聊天的 AI,剥到底就是注意力 + 矩阵运算 + 反向传播,没有魔法。<em>饭桌点火问题:"你在写一句话,写到一半要决定下个字。你的大脑是只看刚写的那一个字,还是会回头看前面整句话、甚至更早的内容?那机器要怎么做到'回头看前面所有内容、还能分清哪些更重要'?"</em> 直指注意力机制核心。</p>
+        <h5>第五阶段 · 进阶:Raschka</h5>
+        <p>意犹未尽再上。用 PyTorch 把分词、嵌入、注意力、Transformer 块、预训练、微调一整套工业流程亲手走一遍,代码全开源。门槛最高,需要 Python、线性代数、PyTorch 都到位,放在最后,可能等他再大一两岁、数学补够再上。</p>
+        <h5>两条用法提醒</h5>
+        <p>第一,最大的敌人是"看视频的爽感"。底线是每个 Karpathy 项目都必须自己从头敲一遍、跑通、能改动看到不同结果。能改代码、能解释自己改的那行为什么有效,才算真学会。第二,数学是这条路上唯一真正的门槛,而它正好是孩子要补的——但这是好事,比起"为考试学求导和矩阵",一个想亲手造出 AI 的孩子有了无比真实的学习动机。卡住就陪他停下来补扎实,比单纯刷数学题有效十倍。让真实的问题来拉动学习,而不是反过来。</p>
+      </div>
+    </details>
+
+  </section>
+
+  <footer>
+    <p>计算与智能 · 共读地图　|　从一个继电器到一个会说话的 GPT</p>
+    <p>《什么是数学》· 《编码》· SICP · 3Blue1Brown · micrograd · nanoGPT · Build a LLM from Scratch</p>
+  </footer>
+
+</div>
+
+<script>
+  // scroll reveal for stations
+  (function(){
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var stations = document.querySelectorAll('.station');
+    if(prefersReduced || !('IntersectionObserver' in window)){
+      stations.forEach(function(s){s.classList.add('in')});
+    } else {
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+        });
+      },{threshold:0.12});
+      stations.forEach(function(s){io.observe(s)});
+    }
+  })();
+
+  // expand / collapse all transcript
+  (function(){
+    var btn = document.getElementById('toggleAll');
+    var items = document.querySelectorAll('details.qa');
+    var open = false;
+    btn.addEventListener('click', function(){
+      open = !open;
+      items.forEach(function(d){ d.open = open; });
+      btn.textContent = open ? '▾ 全部收起' : '▸ 全部展开';
+    });
+  })();
+</script>
+</body>
+</html>
