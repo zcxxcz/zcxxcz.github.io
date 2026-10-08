@@ -1,0 +1,11 @@
+{
+  "id": "learning-time-map",
+  "title": "学习与时间指引地图 · 通往 FDE",
+  "type": "资料",
+  "format": "html",
+  "status": "published",
+  "summary": "把三篇 Tw93 的技术文章与各自对应的动手项目，按「通往 FDE（Forward Deployed Engineer）」这个目标重排成三层架构：Harness/Agent 层是主战场（约 55% 时间）、应用交付层是变现层（约 28%）、模型层只作背景（约 17%）。给出「理论只在同层配动手」的接线规则、一周 10 小时的分阶段时间计划，以及已有资产的折算与空档盘点，附录保留本轮完整对话原文。",
+  "tags": ["学习路线", "Agent 工程", "时间分配"],
+  "updated": "2026-10-08",
+  "featured": false
+}
