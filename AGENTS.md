@@ -5,6 +5,8 @@
 - 每个任务使用独立分支/独立 worktree，从最新 main 开始；不得强制推送。只提交本任务文件，不自动提交用户或其他 agent 的改动。
 - 内容默认 draft；正文、附件和元信息齐全后才设 published。不要复制整个个人知识库或任何私人数据。
 - 不手动修改 dist、Pagefind 索引或汇总 catalog。每个内容独立元信息，目录自动生成。
+- 列表筛选只认受控主题词（`scripts/build.mjs` 的 `TOPICS`：信奥 / 文章与资料 / 家庭游戏 / 英语）。每条内容的 `tags` 必须包含其中一个，其余 tags 视为自由关键词；要加新主题先改 `TOPICS`，否则内容点不到。
+- 首页卡片分组、同系列合并（`cardGroups` / `seriesDefs`）与资料库折叠分组（`listGroups`）同样写在 `scripts/build.mjs`。卡片 id 缺失或未标 featured 时只跳过并告警，不中断构建。
 - 发布前运行 npm test、npm run build；涉及页面/搜索变化时运行 npm run test:browser。Windows 与 macOS 均使用 Node 脚本。
 - 提交后运行 npm run publish；检查成功即自动合并和上线，不要求重复人工确认。脚本要求 gh 已登录。
 - 报告真实线上链接和发布状态。创建的 PR 应用当前 agent 提供的附件工具关联到聊天。

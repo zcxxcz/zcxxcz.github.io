@@ -35,6 +35,7 @@ npm run publish
 ## 内容约定
 
 - `content/<slug>/meta.json`：`id` 必须等于目录名；标题、简介、类型、标签、更新日期必填。`featured: true` 才出现在首页作品卡片。
+- `tags` 里必须包含一个受控主题词（信奥 / 文章与资料 / 家庭游戏 / 英语），列表上方的筛选按钮由它自动生成并显示条数；其余 tags 作为自由关键词。新增主题需同时改 `scripts/build.mjs` 的 `TOPICS`。
 - `status: draft` 不复制到公开产物；`status: published` 才上线。
 - `format: markdown` 使用 `body.md`；`format: html` 使用原样发布的 `index.html`；`format: pdf` 使用 `file` 指定同目录附件。
 - `search.txt` 可补充 PDF、图像演示的正文。无文字稿的 PDF 只索引简介，并在构建报告提示。

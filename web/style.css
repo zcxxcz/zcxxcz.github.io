@@ -288,6 +288,58 @@ h2 {
 .card:first-child {
   background: #e9efdf;
 }
+/* 只高亮第一组的第一张卡，避免每个分组都冒出一张绿卡。 */
+.card-group:not(:first-child) .cards .card:first-child {
+  background: #fffefb;
+}
+.card-group + .card-group {
+  margin-top: 38px;
+}
+.card-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.card-group-head h3 {
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  margin: 0;
+  color: #55634f;
+}
+.card-group-head p {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 0;
+}
+.card-series {
+  cursor: default;
+}
+.card-series:hover {
+  transform: none;
+  border-color: var(--line);
+}
+.series-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.series-links a {
+  font-size: 11px;
+  color: #4d6b45;
+  background: #fff;
+  border: 1px solid #d8ddd5;
+  border-radius: 5px;
+  padding: 4px 9px;
+  text-decoration: none;
+}
+.series-links a:hover {
+  border-color: #7b9770;
+  color: #3c5c33;
+}
 .card-top {
   display: flex;
   justify-content: space-between;
@@ -366,6 +418,66 @@ select {
   background: var(--ink);
   border-color: var(--ink);
   color: #fff;
+}
+.filter-bar button b {
+  font-weight: 400;
+  font-size: 10px;
+  margin-left: 7px;
+  opacity: 0.55;
+  font-variant-numeric: tabular-nums;
+}
+.filter-bar button.active b {
+  opacity: 0.75;
+}
+/* 资料库：同源内容折叠成一组，避免单个仓库的子页面淹没列表。 */
+.rows-flat {
+  display: block;
+}
+details.series {
+  border-top: 1px solid var(--line);
+}
+details.series[hidden] {
+  display: none;
+}
+.series-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 14px;
+  align-items: center;
+  padding: 19px 4px;
+  cursor: pointer;
+  list-style: none;
+}
+.series-head::-webkit-details-marker {
+  display: none;
+}
+.series-head:hover .series-name {
+  color: #518344;
+}
+.series-name {
+  font-size: 14px;
+  font-weight: 550;
+}
+.series-name::before {
+  content: "▸ ";
+  color: #90a184;
+}
+details[open] .series-name::before {
+  content: "▾ ";
+}
+.series-note {
+  font-size: 11px;
+  color: #869081;
+}
+.series-count {
+  font-size: 10px;
+  color: #8c978a;
+  font-variant-numeric: tabular-nums;
+}
+.series-body {
+  margin: 0 0 8px 4px;
+  padding-left: 14px;
+  border-left: 2px solid #eef1e8;
 }
 .library-row {
   display: grid;
@@ -573,6 +685,16 @@ footer {
   }
   .cards {
     grid-template-columns: 1fr;
+  }
+  .card-group-head p {
+    display: none;
+  }
+  .series-head {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+  .series-note {
+    display: none;
   }
   .card {
     min-height: 200px;
