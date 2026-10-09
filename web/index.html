@@ -70,7 +70,7 @@
           </div>
           <a href="#library">查看完整目录 ↓</a>
         </div>
-        <div class="cards">{{CARDS}}</div>
+        <div class="card-groups">{{CARDS}}</div>
       </section>
       <section id="library" class="library">
         <div class="section-heading">
@@ -87,14 +87,7 @@
           >
         </div>
         <div class="filter-bar" role="group" aria-label="按主题筛选">
-          <button class="active" aria-pressed="true" data-filter="全部">
-            全部</button
-          ><button aria-pressed="false" data-filter="信奥">信奥</button
-          ><button aria-pressed="false" data-filter="英语">英语</button
-          ><button aria-pressed="false" data-filter="家庭游戏">家庭游戏</button
-          ><button aria-pressed="false" data-filter="文章与资料">
-            文章与资料
-          </button>
+          {{FILTERS}}
         </div>
         <p id="filter-status" class="muted" role="status"></p>
         <div id="rows">{{ROWS}}</div>

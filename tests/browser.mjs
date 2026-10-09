@@ -45,10 +45,23 @@ try {
       ?.textContent.includes("检查"),
   );
   await page.locator("#search input[type=text]").fill("");
+  // 筛选按钮由主题词表自动生成，且必须覆盖到全部主题。
+  assert.ok((await page.locator(".filter-bar button").count()) >= 4);
   await page.getByRole("button", { name: "家庭游戏", exact: true }).click();
   assert.equal(await page.locator(".library-row:visible").count(), 3);
+  // 关键回归：点「信奥」必须能筛出 hub 里那些自建内容，而不是只剩课程章节。
+  await page.getByRole("button", { name: "信奥", exact: true }).click();
+  const xinaoRows = await page.locator(".library-row:visible").allInnerTexts();
+  assert.ok(xinaoRows.some((t) => t.includes("信奥知识图谱")));
+  assert.ok(xinaoRows.some((t) => t.includes("优化算法")));
+  assert.ok(xinaoRows.some((t) => t.includes("CSP-S")));
   await page.getByRole("button", { name: "全部", exact: true }).click();
-  assert.ok((await page.locator(".library-row:visible").count()) >= 47);
+  assert.ok((await page.locator(".library-row").count()) >= 47);
+  // 同源内容折叠成组：默认收起，展开后才可见。
+  assert.ok((await page.locator("details.series").count()) >= 1);
+  assert.equal(await page.locator(".library-row:visible").count(), 16);
+  await page.locator("details.series > summary").first().click();
+  assert.ok((await page.locator(".library-row:visible").count()) >= 50);
   await mkdir("work/screenshots", { recursive: true });
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
   await page.screenshot({
