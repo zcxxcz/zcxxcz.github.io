@@ -56,12 +56,18 @@ try {
   assert.ok(xinaoRows.some((t) => t.includes("优化算法")));
   assert.ok(xinaoRows.some((t) => t.includes("CSP-S")));
   await page.getByRole("button", { name: "全部", exact: true }).click();
-  assert.ok((await page.locator(".library-row").count()) >= 47);
-  // 同源内容折叠成组：默认收起，展开后才可见。
+  // 同源内容折叠成组：默认收起，展开后才可见。行数不写死，按总量推导。
+  const totalRows = await page.locator(".library-row").count();
+  const groupedRows = await page.locator("details.series .library-row").count();
+  assert.ok(totalRows >= 47);
   assert.ok((await page.locator("details.series").count()) >= 1);
-  assert.equal(await page.locator(".library-row:visible").count(), 16);
+  assert.ok(groupedRows >= 1);
+  assert.equal(
+    await page.locator(".library-row:visible").count(),
+    totalRows - groupedRows,
+  );
   await page.locator("details.series > summary").first().click();
-  assert.ok((await page.locator(".library-row:visible").count()) >= 50);
+  assert.equal(await page.locator(".library-row:visible").count(), totalRows);
   await mkdir("work/screenshots", { recursive: true });
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
   await page.screenshot({
