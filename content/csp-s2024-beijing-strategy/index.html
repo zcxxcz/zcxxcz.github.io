@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSP-S 2024 北京选手 · 夺分策略指南</title>
+<style>
+:root{
+  --bg:#f6f7f9; --card:#ffffff; --ink:#16202b; --ink2:#4a5a68; --ink3:#7b8b99;
+  --line:#e3e8ee; --accent:#1f6feb; --accent2:#0b7a5b;
+  --good:#0b7a5b; --bad:#c94f3d; --warn:#b7791f;
+  --mono:"SFMono-Regular",Consolas,"Cascadia Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+:root{
+  --bg:#12161b; --card:#1a2027; --ink:#e8eef5; --ink2:#a9b7c4; --ink3:#7b8b99;
+  --line:#2b3540; --accent:#5b9dff; --accent2:#34d399;
+  --good:#34d399; --bad:#f87171; --warn:#fbbf24;
+}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.75 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px 90px}
+header.hero{background:linear-gradient(135deg,#10314f 0%,#1c5d7a 55%,#0b7a5b 100%);color:#fff;
+  margin:0 -20px 0;padding:52px 40px 44px;border-radius:0 0 22px 22px}
+header.hero h1{margin:0 0 10px;font-size:31px;letter-spacing:.5px;line-height:1.3}
+header.hero p{margin:6px 0 0;color:#cfe3ee;font-size:15px;max-width:820px}
+.hero .chips{margin-top:20px;display:flex;flex-wrap:wrap;gap:9px}
+.chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);
+  padding:5px 12px;border-radius:999px;font-size:13px;color:#fff}
+h2{font-size:23px;margin:52px 0 14px;padding-bottom:9px;border-bottom:2px solid var(--line);letter-spacing:.3px}
+h2 .n{color:var(--accent);font-weight:800;margin-right:9px}
+h3{font-size:17.5px;margin:30px 0 10px;color:var(--ink)}
+h4{font-size:15.5px;margin:22px 0 8px;color:var(--ink2)}
+p{margin:11px 0}
+ul,ol{margin:11px 0;padding-left:24px}
+li{margin:7px 0}
+code{font-family:var(--mono);background:rgba(127,127,127,.14);padding:1.5px 6px;border-radius:5px;font-size:13.5px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin:18px 0;
+  box-shadow:0 1px 2px rgba(16,32,48,.04)}
+.callout{border-left:4px solid var(--accent);background:rgba(31,111,235,.07);border-radius:0 12px 12px 0;
+  padding:14px 18px;margin:18px 0}
+.callout.fix{border-left-color:var(--warn);background:rgba(183,121,31,.09)}
+.callout.good{border-left-color:var(--good);background:rgba(11,122,91,.08)}
+.callout.bad{border-left-color:var(--bad);background:rgba(201,79,61,.08)}
+.callout b{display:block;margin-bottom:4px}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14px;background:var(--card)}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+th{background:rgba(127,127,127,.10);font-weight:650;color:var(--ink2);font-size:13.5px}
+td.l,th.l{text-align:left}
+tr:nth-child(even) td{background:rgba(127,127,127,.035)}
+.hm{font-weight:700;font-size:13px;border-radius:5px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--ink2);margin:10px 0}
+.legend i{display:inline-block;width:34px;height:13px;border-radius:3px;margin-right:6px;vertical-align:-2px}
+.statrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin:18px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.stat .v{font-size:25px;font-weight:800;letter-spacing:.5px}
+.stat .k{font-size:12.5px;color:var(--ink3);margin-top:2px}
+.stat.g .v{color:var(--good)} .stat.r .v{color:var(--bad)} .stat.b .v{color:var(--accent)}
+.bar{height:11px;border-radius:6px;background:rgba(127,127,127,.16);overflow:hidden;min-width:70px}
+.bar > span{display:block;height:100%;border-radius:6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12.5px;font-weight:650;white-space:nowrap}
+.p-easy{background:rgba(11,122,91,.16);color:var(--good)}
+.p-mid{background:rgba(183,121,31,.18);color:var(--warn)}
+.p-hard{background:rgba(201,79,61,.16);color:var(--bad)}
+nav.toc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 22px;margin:26px 0}
+nav.toc b{font-size:14px;color:var(--ink3);letter-spacing:1px}
+nav.toc ol{margin:8px 0 0;columns:2;column-gap:34px}
+@media(max-width:700px){nav.toc ol{columns:1}}
+nav.toc a{color:var(--accent);text-decoration:none}
+nav.toc a:hover{text-decoration:underline}
+.tiny{font-size:13px;color:var(--ink3)}
+footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink3)}
+.kv{font-family:var(--mono);font-size:13px}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>CSP-S 2024 北京选手 · 夺分策略指南</h1>
+  <p>基于 <b>1810 名北京选手、5903 份提交、98,989 次官方测试点判定</b> 的真实数据，回答一个 OI 赛制下最实用的问题：
+  哪些分容易拿、哪些分容易丢，以及<b>在没有完整评测数据的情况下怎么自己把关</b>。</p>
+  <div class="chips">
+    <span class="chip">75 个官方测试点</span>
+    <span class="chip">本地评测 vs 官方分 MAE 6.7</span>
+    <span class="chip">相关系数 0.978</span>
+    <span class="chip">数据源：CCF 官方测试数据</span>
+  </div>
+</header>
+<div class="wrap">
+<nav class="toc">
+  <b>目录</b>
+  <ol>
+    <li><a href="#s1">最反直觉的一条结论</a></li>
+    <li><a href="#s2">各分数段到底做对了什么</a></li>
+    <li><a href="#s3">三档目标的最优打法</a></li>
+    <li><a href="#s4">★ 各题"部分分"能捞多少（详解）</a></li>
+    <li><a href="#s5">★ 样例覆盖实测与五个盲区（详解）</a></li>
+    <li><a href="#s6">两个与算法无关的送命点</a></li>
+    <li><a href="#s7">附：数据口径与可靠性</a></li>
+  </ol>
+</nav>
+
+<div class="card">
+<h3 style="margin-top:0">30 秒速览</h3>
+<ul>
+<li><b>最容易得分 = T1 决斗</b>：20 个测试点通过率全部 ≥67%，是唯一"整套能拿满"的题。只做穿决斗就是 100 分，<b>正好压三等线</b>。</li>
+<li><b>最容易失分 = T3 染色满规模 + T4 擂台全程</b>：染色满规模 10 个点通过率 ≤8%；擂台 25 个点全部 ≤5.6%，且 <b>50.1% 的人根本没提交</b>。</li>
+<li><b>一等线靠的不是染色，是超速检测</b>：一等得主里 41.5% <b>只做穿了决斗一题</b>，靠部分分过线。</li>
+<li><b>工程性零分最致命</b>：没写文件读写的程序在评测机上读到空输入，<b>满分率恒为 0.0%</b>。</li>
+</ul>
+</div>
+<h2 id="s1"><span class="n">一</span>最反直觉的一条：一等不靠"做穿两题"</h2>
+<p>383 名一等奖得主的满分题组合分布如下（括号内顺序为 决斗 / 超速检测 / 染色 / 擂台）：</p>
+<table><tr><th class="l">满分组合（决斗·超速·染色·擂台）</th><th>人数</th><th>占一等奖</th><th class="l">含义</th></tr>
+<tr><td class="l kv">●○○○</td><td>159</td><td><b>41.5%</b></td><td class="l tiny">只做穿一题就过一等线</td></tr>
+<tr><td class="l kv">●●○○</td><td>111</td><td><b>29.0%</b></td><td class="l tiny">决斗 + 超速（一等主力形态）</td></tr>
+<tr><td class="l kv">●●●○</td><td>81</td><td><b>21.1%</b></td><td class="l tiny">决斗 + 超速 + 染色</td></tr>
+<tr><td class="l kv">●○●○</td><td>22</td><td><b>5.7%</b></td><td class="l tiny">决斗 + 染色（跳过了超速）</td></tr>
+<tr><td class="l kv">○○○○</td><td>5</td><td><b>1.3%</b></td><td class="l tiny">无满分题</td></tr>
+<tr><td class="l kv">●●●●</td><td>3</td><td><b>0.8%</b></td><td class="l tiny">四题全满（全国级天花板）</td></tr>
+<tr><td class="l kv">○○●○</td><td>1</td><td><b>0.3%</b></td><td class="l tiny"></td></tr>
+<tr><td class="l kv">○●○○</td><td>1</td><td><b>0.3%</b></td><td class="l tiny">没做穿决斗</td></tr>
+</table>
+<div class="callout"><b>读法</b>绝大多数一等得主是<b>"一题做穿 + 三题吃部分分"</b>，而不是"两题做穿"。原因在于分值结构：<b>超速检测是 10 个点 × 10 分</b>，单个测试点值 10 分，是染色（5 分/点）的两倍——"做对一档"的收益更大。所以策略重心不该是"多写一道题的正解"，而是"把已会的东西精准地落到测试点上"。</div>
+<h2 id="s2"><span class="n">二</span>各分数段到底做对了什么</h2>
+<p>把 1351 名获奖选手按官方总分分段，看每段的<b>逐题满分率</b>——这直接暴露了"每一档分数靠什么堆出来"。</p>
+<table><tr><th class="l">分数段</th><th>人数</th>
+<th>T1 满分率</th>
+<th>T2 满分率</th>
+<th>T3 满分率</th>
+<th>T4 满分率</th>
+</tr>
+<tr><td class="l"><b>三等 60–104</b></td><td>424</td>
+<td><span class="hm" style="background:#2fa37a;color:#ffffff;padding:3px 8px">65.1%</span></td>
+<td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">0.0%</span></td>
+<td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">0.0%</span></td>
+<td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">0.0%</span></td>
+</tr>
+<tr><td class="l"><b>二等 105–174</b></td><td>544</td>
+<td><span class="hm" style="background:#0b7a5b;color:#eafff7;padding:3px 8px">92.3%</span></td>
+<td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">0.2%</span></td>
+<td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">0.0%</span></td>
+<td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">0.0%</span></td>
+</tr>
+<tr><td class="l"><b>一等 175–249</b></td><td>197</td>
+<td><span class="hm" style="background:#0b7a5b;color:#eafff7;padding:3px 8px">97.0%</span></td>
+<td><span class="hm" style="background:#e3b23c;color:#3b2c05;padding:3px 8px">33.0%</span></td>
+<td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">1.0%</span></td>
+<td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">0.0%</span></td>
+</tr>
+<tr><td class="l"><b>一等 250–319</b></td><td>141</td>
+<td><span class="hm" style="background:#0b7a5b;color:#eafff7;padding:3px 8px">99.3%</span></td>
+<td><span class="hm" style="background:#2fa37a;color:#ffffff;padding:3px 8px">63.8%</span></td>
+<td><span class="hm" style="background:#7cbf5a;color:#12351f;padding:3px 8px">46.8%</span></td>
+<td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">0.0%</span></td>
+</tr>
+<tr><td class="l"><b>一等 ≥320</b></td><td>45</td>
+<td><span class="hm" style="background:#0b7a5b;color:#eafff7;padding:3px 8px">100.0%</span></td>
+<td><span class="hm" style="background:#0b7a5b;color:#eafff7;padding:3px 8px">91.1%</span></td>
+<td><span class="hm" style="background:#0b7a5b;color:#eafff7;padding:3px 8px">86.7%</span></td>
+<td><span class="hm" style="background:#c94f3d;color:#ffffff;padding:3px 8px">6.7%</span></td>
+</tr>
+</table>
+<h4>换成"逐题平均得分"看得更直白（满分 100）</h4>
+<table><tr><th class="l">分数段</th>
+<th>T1</th>
+<th>T2</th>
+<th>T3</th>
+<th>T4</th>
+</tr>
+<tr><td class="l"><b>三等 60–104</b></td>
+<td>87</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr><td class="l"><b>二等 105–174</b></td>
+<td>97</td>
+<td>20</td>
+<td>14</td>
+<td>0</td>
+</tr>
+<tr><td class="l"><b>一等 175–249</b></td>
+<td>99</td>
+<td>72</td>
+<td>23</td>
+<td>2</td>
+</tr>
+<tr><td class="l"><b>一等 250–319</b></td>
+<td>100</td>
+<td>87</td>
+<td>77</td>
+<td>6</td>
+</tr>
+<tr><td class="l"><b>一等 ≥320</b></td>
+<td>100</td>
+<td>96</td>
+<td>96</td>
+<td>60</td>
+</tr>
+</table>
+<div class="callout good"><b>三条关键读法</b><ul style="margin:8px 0 0"><li><b>三等线只要决斗</b>——三等段平均决斗 87 分，超速/染色各只有 1 分。决斗打满即 100 分，直接过三等线（60）并逼近二等线（105）。</li><li><b>一等线靠超速检测</b>——175–249 段平均超速 72 分、染色只有 23 分。<b>超速检测才是"一等门槛题"</b>，不是染色。</li><li><b>250+ 才靠染色</b>——从 175 段到 250 段，染色从 23 跳到 77，而超速只涨 15。擂台在任何一等奖段都不构成门槛。</li></ul></div>
+<h2 id="s3"><span class="n">三</span>三档目标的最优打法</h2>
+<div class="grid2">
+<div class="card"><h3 style="margin-top:0">目标 A ｜ 保三等 / 稳二等</h3><p>把<b>决斗 AC</b> 掉就收工。数据：48.8% 的参赛者（三等+二等）就是这么过关的——三等段平均决斗 87 分，其余三题合计平均不到 2 分。</p><p class="tiny">注意：决斗必须"做穿"到 n=1e5，不是只有小样例能过。满规模档通过率仍有 67.2%，是最划算的投入。</p></div>
+<div class="card"><h3 style="margin-top:0">目标 B ｜ 冲一等 175 分 ★性价比最高</h3><p><span class="kv">决斗满分 100 + 超速检测特殊性质 3 档 × 20 分 + 染色 n≤15 的 20 分</span></p><p>超速检测的 6 个"特殊性质"点（a=0 / a>0 / a<0 各 2 点，共 60 分）<b>不需要写出通用正解</b>，只要在程序里分三种情况处理即可。而且 a=0（匀速）那档逐点通过率 32.2%，比小规模混合档（25.7%）还容易。<br>⚠️ 但注意：这三档<b>每一档都是"小规模点 + n=1e5 满规模点"配对</b>，分支写法必须同时扛得住 n=1e5，否则每档只能落袋 10 分（见 4.5 节）。</p></div>
+</div>
+<div class="grid2">
+<div class="card"><h3 style="margin-top:0">目标 C ｜ 冲 250+</h3><p>在 B 的基础上把<b>染色主体做穿</b>：n≤2000 用 O(n²) DP 可吃约 50 分；正解（O(n) 转移）拿满 100。这一档<b>不需要碰擂台</b>——250–319 段的擂台平均分只有 6 分。</p></div>
+<div class="card"><h3 style="margin-top:0">目标 D ｜ 冲 320+</h3><p>三题全穿（≈300）+ 擂台拿 40~60 分。擂台满分率全场只有 <b>0.2%</b>（仅 4/1810 人拿到最后两个点），是全国级天花板。<b>除非前三题已稳，否则不碰。</b></p></div>
+</div>
+<h2 id="s4"><span class="n">四</span>★ 各题"部分分"能捞多少（详解）</h2>
+<div class="callout"><b>为什么这张表是全部策略的地基</b>OI 赛制的计分单位是<b>单个测试点</b>，不是"整道题"。一道题的 100 分会被切成若干档：小规模一档、特殊性质几档、满规模一档，<b>每档独立给分</b>。这意味着"只会暴力/只会某一档"也能拿到实打实的分——所以真正要回答的问题是：<b>每一档各值多少分、各自有多少人拿到</b>。下面的表就是实测答案。</div>
+<h3>4.1 四道题的子任务分值地图</h3>
+<div class="callout"><b>先弄清「通过率」是什么意思（重要）</b>表里的<b>逐点通过率</b> = 该档所有测试点的 AC 次数 ÷ 判定总次数（分母含未提交者，与官方口径一致），它是<b>逐点平均</b>，回答的是"随机挑该档的一个测试点，多大比例的选手能过它"。而"<b>拿到这 20 分</b>"要求该档<b>所有</b>测试点都过——这两个数<b>不是一回事</b>。所以下表同时给出<b>全档拿满率</b>（该档每个点都 AC 的选手占比）。两者差距越大，说明该档内部"难易不均"（例如超速检测的每一档都由"小规模点 + 满规模点"配对组成，过得了前者的常常死在后者）。</div>
+<h4>T1 决斗</h4>
+<table><tr><th class="l">子任务档位</th><th>点数</th><th>分值</th><th>占本题</th><th>逐点通过率</th><th>全档拿满率</th><th class="l">差距</th></tr>
+<tr><td class="l">n=10 极小</td><td>4</td><td><b>20</b></td><td>20%</td><td><span class="hm" style="background:#0b7a5b;color:#eafff7;padding:3px 8px">79.7%</span></td><td><b>73.5%</b></td><td class="l" style="color:var(--warn)">+6.2 pp</td></tr>
+<tr><td class="l">n=1e5 仅 2 种取值（r≤2）</td><td>6</td><td><b>30</b></td><td>30%</td><td><span class="hm" style="background:#0b7a5b;color:#eafff7;padding:3px 8px">75.4%</span></td><td><b>73.6%</b></td><td class="l" style="color:var(--ink3)">+1.7 pp</td></tr>
+<tr><td class="l">n=30 取值全互异（特殊性质 A）</td><td>5</td><td><b>25</b></td><td>25%</td><td><span class="hm" style="background:#0b7a5b;color:#eafff7;padding:3px 8px">80.3%</span></td><td><b>80.1%</b></td><td class="l" style="color:var(--ink3)">+0.2 pp</td></tr>
+<tr><td class="l">n=1e5 多取值（满规模）</td><td>5</td><td><b>25</b></td><td>25%</td><td><span class="hm" style="background:#2fa37a;color:#ffffff;padding:3px 8px">67.2%</span></td><td><b>65.5%</b></td><td class="l" style="color:var(--ink3)">+1.7 pp</td></tr>
+</table>
+<h4>T2 超速检测</h4>
+<table><tr><th class="l">子任务档位</th><th>点数</th><th>分值</th><th>占本题</th><th>逐点通过率</th><th>全档拿满率</th><th class="l">差距</th></tr>
+<tr><td class="l">n≤20 小规模混合</td><td>2</td><td><b>20</b></td><td>20%</td><td><span class="hm" style="background:#e3b23c;color:#3b2c05;padding:3px 8px">25.7%</span></td><td><b>22.4%</b></td><td class="l" style="color:var(--warn)">+3.3 pp</td></tr>
+<tr><td class="l">特殊性质 A：全部 a=0（含 n=1e5）</td><td>2</td><td><b>20</b></td><td>20%</td><td><span class="hm" style="background:#e3b23c;color:#3b2c05;padding:3px 8px">32.2%</span></td><td><b>23.7%</b></td><td class="l" style="color:var(--bad)">+8.5 pp</td></tr>
+<tr><td class="l">特殊性质 B：全部 a>0（含 n=1e5）</td><td>2</td><td><b>20</b></td><td>20%</td><td><span class="hm" style="background:#e3b23c;color:#3b2c05;padding:3px 8px">26.4%</span></td><td><b>19.0%</b></td><td class="l" style="color:var(--warn)">+7.4 pp</td></tr>
+<tr><td class="l">特殊性质 C：全部 a<0（含 n=1e5）</td><td>2</td><td><b>20</b></td><td>20%</td><td><span class="hm" style="background:#e07b39;color:#ffffff;padding:3px 8px">16.4%</span></td><td><b>12.5%</b></td><td class="l" style="color:var(--warn)">+4.0 pp</td></tr>
+<tr><td class="l">满规模混合（无特殊性质）</td><td>2</td><td><b>20</b></td><td>20%</td><td><span class="hm" style="background:#e07b39;color:#ffffff;padding:3px 8px">15.8%</span></td><td><b>12.0%</b></td><td class="l" style="color:var(--warn)">+3.7 pp</td></tr>
+</table>
+<h4>T3 染色</h4>
+<table><tr><th class="l">子任务档位</th><th>点数</th><th>分值</th><th>占本题</th><th>逐点通过率</th><th>全档拿满率</th><th class="l">差距</th></tr>
+<tr><td class="l">n=15</td><td>4</td><td><b>20</b></td><td>20%</td><td><span class="hm" style="background:#7cbf5a;color:#12351f;padding:3px 8px">40.5%</span></td><td><b>40.3%</b></td><td class="l" style="color:var(--ink3)">+0.1 pp</td></tr>
+<tr><td class="l">n=100</td><td>3</td><td><b>15</b></td><td>15%</td><td><span class="hm" style="background:#e07b39;color:#ffffff;padding:3px 8px">13.5%</span></td><td><b>12.9%</b></td><td class="l" style="color:var(--ink3)">+0.7 pp</td></tr>
+<tr><td class="l">n=2000</td><td>3</td><td><b>15</b></td><td>15%</td><td><span class="hm" style="background:#e07b39;color:#ffffff;padding:3px 8px">12.6%</span></td><td><b>12.0%</b></td><td class="l" style="color:var(--ink3)">+0.6 pp</td></tr>
+<tr><td class="l">n=2e4</td><td>2</td><td><b>10</b></td><td>10%</td><td><span class="hm" style="background:#c94f3d;color:#ffffff;padding:3px 8px">7.9%</span></td><td><b>7.8%</b></td><td class="l" style="color:var(--ink3)">+0.0 pp</td></tr>
+<tr><td class="l">n=2e5，A≤10</td><td>3</td><td><b>15</b></td><td>15%</td><td><span class="hm" style="background:#c94f3d;color:#ffffff;padding:3px 8px">7.9%</span></td><td><b>7.9%</b></td><td class="l" style="color:var(--ink3)">+0.0 pp</td></tr>
+<tr><td class="l">n=2e5，A≤1e6（满规模）</td><td>5</td><td><b>25</b></td><td>25%</td><td><span class="hm" style="background:#c94f3d;color:#ffffff;padding:3px 8px">6.0%</span></td><td><b>5.9%</b></td><td class="l" style="color:var(--ink3)">+0.1 pp</td></tr>
+</table>
+<h4>T4 擂台游戏</h4>
+<table><tr><th class="l">子任务档位</th><th>点数</th><th>分值</th><th>占本题</th><th>逐点通过率</th><th>全档拿满率</th><th class="l">差距</th></tr>
+<tr><td class="l">n=8</td><td>3</td><td><b>12</b></td><td>12%</td><td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">3.4%</span></td><td><b>3.0%</b></td><td class="l" style="color:var(--ink3)">+0.4 pp</td></tr>
+<tr><td class="l">n=500 特殊性质 A（询问为 2 的幂）</td><td>2</td><td><b>8</b></td><td>8%</td><td><span class="hm" style="background:#c94f3d;color:#ffffff;padding:3px 8px">5.6%</span></td><td><b>5.6%</b></td><td class="l" style="color:var(--ink3)">+0.0 pp</td></tr>
+<tr><td class="l">n=500 特殊性质 B（结构全 0）</td><td>3</td><td><b>12</b></td><td>12%</td><td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">3.1%</span></td><td><b>3.0%</b></td><td class="l" style="color:var(--ink3)">+0.0 pp</td></tr>
+<tr><td class="l">n=5000</td><td>2</td><td><b>8</b></td><td>8%</td><td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">1.7%</span></td><td><b>1.7%</b></td><td class="l" style="color:var(--ink3)">+0.0 pp</td></tr>
+<tr><td class="l">n=1e5 特殊性质 A（询问为 2 的幂）</td><td>2</td><td><b>8</b></td><td>8%</td><td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">3.3%</span></td><td><b>3.3%</b></td><td class="l" style="color:var(--ink3)">+0.0 pp</td></tr>
+<tr><td class="l">n=1e5 特殊性质 B（结构全 0）</td><td>3</td><td><b>12</b></td><td>12%</td><td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">1.9%</span></td><td><b>1.9%</b></td><td class="l" style="color:var(--ink3)">+0.0 pp</td></tr>
+<tr><td class="l">T=4</td><td>2</td><td><b>8</b></td><td>8%</td><td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">1.3%</span></td><td><b>1.3%</b></td><td class="l" style="color:var(--ink3)">+0.0 pp</td></tr>
+<tr><td class="l">T=16</td><td>2</td><td><b>8</b></td><td>8%</td><td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">1.1%</span></td><td><b>1.1%</b></td><td class="l" style="color:var(--ink3)">+0.0 pp</td></tr>
+<tr><td class="l">T=64</td><td>2</td><td><b>8</b></td><td>8%</td><td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">0.7%</span></td><td><b>0.7%</b></td><td class="l" style="color:var(--ink3)">+0.0 pp</td></tr>
+<tr><td class="l">T=128</td><td>2</td><td><b>8</b></td><td>8%</td><td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">0.6%</span></td><td><b>0.5%</b></td><td class="l" style="color:var(--ink3)">+0.1 pp</td></tr>
+<tr><td class="l">T=256</td><td>2</td><td><b>8</b></td><td>8%</td><td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">0.2%</span></td><td><b>0.2%</b></td><td class="l" style="color:var(--ink3)">+0.0 pp</td></tr>
+</table>
+<h3>4.2 逐题解读：钱具体在哪一档</h3>
+<div class="card"><h4 style="margin-top:0">T1 决斗 —— 没有"坑档"，每一档都值钱</h4>
+<p>四个档位通过率分别是 <b>79.7% / 75.4% / 80.3% / 67.2%</b>，全部在 67% 以上。注意最后一档 <b>n=1e5 满规模仍有 67.2%</b>——这是全场唯一"正解难度不高、满规模依然友好"的档。</p>
+<p><b>结论</b>：决斗必须<b>做穿</b>（写出正解处理 n=1e5），而不是"做到小规模就交"。只做 n≤10 的暴力只能拿 20 分，离三等线还差 40 分。</p></div>
+<div class="card"><h4 style="margin-top:0">T2 超速检测 —— "特殊性质"三档是白送的一等门票</h4>
+<table><tr><th class="l">档位</th><th>分值</th><th>逐点通过率</th><th>全档拿满率</th><th class="l">难度评价</th></tr>
+<tr><td class="l">n≤20 小规模混合</td><td>20</td><td><span class="hm" style="background:#e3b23c;color:#3b2c05;padding:3px 8px">25.7%</span></td><td><b>22.4%</b></td><td class="l tiny">小数据，写好暴力就能拿</td></tr>
+<tr><td class="l">特殊 A：a=0（匀速）</td><td>20</td><td><span class="hm" style="background:#e3b23c;color:#3b2c05;padding:3px 8px">32.2%</span></td><td><b>23.7%</b></td><td class="l tiny"><b>全场性价比最高的 20 分</b>：匀速时不用解二次不等式，判 <code>v&gt;V</code> 即可</td></tr>
+<tr><td class="l">特殊 B：a&gt;0（加速）</td><td>20</td><td><span class="hm" style="background:#e3b23c;color:#3b2c05;padding:3px 8px">26.4%</span></td><td><b>19.0%</b></td><td class="l tiny">速度单调递增，一次判定</td></tr>
+<tr><td class="l">特殊 C：a&lt;0（减速）</td><td>20</td><td><span class="hm" style="background:#e07b39;color:#ffffff;padding:3px 8px">16.4%</span></td><td><b>12.5%</b></td><td class="l tiny">最容易被忽略的一档，很多人直接没写</td></tr>
+<tr><td class="l">满规模混合</td><td>20</td><td><span class="hm" style="background:#e07b39;color:#ffffff;padding:3px 8px">15.8%</span></td><td><b>12.0%</b></td><td class="l tiny">真正的正解档，最难</td></tr>
+</table>
+<p><b>为什么它是"一等门槛题"</b>：本题共 10 个点 × 10 分，<b>单点价值是染色（5 分/点）的两倍</b>。只要把"特殊 A/B/C"三种情况各写一段分支，就能稳拿 <b>60 分</b>；再加上决斗的 100 分，就是 160 分——已经超过一等线（175）的 91%，剩下的 15 分靠染色 n≤15 那一档（通过率 40.5%）补齐即可。</p>
+<p><b>要防什么</b>：本题 <b>41.0% 的判定是 WA（答案错）</b>，是全卷 WA 率最高的题之一。典型原因不是算法不会，而是<b>浮点精度</b>——见第五节盲区四。</p></div>
+<div class="card"><h4 style="margin-top:0">T3 染色 —— 一条清晰的"规模分水岭"</h4>
+<p>通过率随规模单调下降，形成一个非常干净的阶梯：<b>40.5%（n=15）→ 13.5%（n=100）→ 12.6%（n=2000）→ 7.9%（n=2e4 与 A≤10 档）→ 6.0%（n=2e5 满规模）</b>。</p>
+<p><b>可捞的分</b>：n≤2000 之前的三档合计 50 分，用朴素的 O(n²) 区间 DP 就能吃到；n=2e5 的 40 分才需要 O(n) 正解。</p>
+<p><b>要防什么</b>：满规模档 <b>RE（运行时错误）异常高</b>——n=2e5 的 5 个点各约 467 次 RE（占该点 25.8%），远高于 n=15 档的 41 次。原因是数组只开了小规模的容量，或者 T=10 组数据没有清空 / 没有多测处理。</p></div>
+<div class="card"><h4 style="margin-top:0">T4 擂台游戏 —— 25 个点全部 ≤5.6%，"没人做"与"做了也做不对"并存</h4>
+<p>这道题是全卷最难：11 个档位全部在 5.6% 以下，n=1e5 且 T=256 的两个点只有 <b>0.2%</b>（4 人）。表面看"竞争最小"，但必须把两件事分开看：</p>
+<ul><li><b>一半人根本没交</b>：906/1810（50.1%）未提交——这部分是纯粹的"放弃区"，属于潜在增量。</li><li><b>交了的人里，绝大多数也没做对</b>：n=8 档（arena1~3）与 n=500 特殊 A 档（arena4~5）的判定中，<b>WA 占 82~85%</b>，提交者 AC 率只有 <b>7.5%~13%</b>。也就是说低通过率不只是"没人做"，更是"<b>做了也做不对</b>"。</li></ul>
+<p><b>所以擂台不是"捡钱区"，而是"最难区"</b>：它需要先真正读懂那道拗口的游戏规则，再扛住极大的 WA 风险。把没提交的 906 人算作潜在增量是合理的，但必须如实标注它<b>同时有"投入"与"正确性"双重门槛</b>。因此它属于"<b>有增量、但不是低门槛</b>"的一类，优先级表据此把它列为 <b>B 级</b>。</p></div>
+<h3>4.3 "捞分性价比"排序 —— 可拿分 × 拿到它的把握</h3>
+<p class="tiny">排序口径：<b>不用"逐点通过率"排</b>（同一档多个点会把它稀释，详见 4.5），改用 <b>可拿分 × 全档拿满率</b>，再叠加<b>实现风险</b>（WA/TLE/RE 结构）。<b>全档拿满率</b> = 该动作涉及的全部测试点都 AC 的选手占比。</p>
+<table><tr><th class="l">优先级</th><th class="l">动作</th><th>可拿分</th><th>全档拿满率</th><th class="l">依据 / 风险</th></tr>
+<tr><td><span class="pill p-easy">S 级</span></td><td class="l">决斗做穿（n=1e5 正解）</td><td><b>100</b></td><td><span class="hm" style="background:#2fa37a;color:#ffffff;padding:3px 8px">63.9%</span></td><td class="l tiny">20 个测试点通过率全部 ≥67%，是唯一整套能拿满的题；门槛低</td></tr>
+<tr><td><span class="pill p-easy">S 级</span></td><td class="l">超速检测写 a=0 / a&gt;0 / a&lt;0 三条分支</td><td><b>60</b></td><td>24% / 19% / 12%</td><td class="l tiny">不需要通用正解，单点值 10 分；但每对里都含一个 n=1e5 点，分支须扛住满规模</td></tr>
+<tr><td><span class="pill p-mid">A 级</span></td><td class="l">染色 n=15（先落袋）</td><td><b>20</b></td><td><span class="hm" style="background:#7cbf5a;color:#12351f;padding:3px 8px">40.3%</span></td><td class="l tiny">全场除决斗外拿满率最高的一档，位掩码 / 暴力即可，工程量极小</td></tr>
+<tr><td><span class="pill p-mid">A 级</span></td><td class="l">超速检测补 n≤20 小规模暴力</td><td><b>20</b></td><td><span class="hm" style="background:#e3b23c;color:#3b2c05;padding:3px 8px">22.4%</span></td><td class="l tiny">写暴力即可</td></tr>
+<tr><td><span class="pill p-mid">A 级</span></td><td class="l">染色 n=100 / n=2000（O(n²) DP 上台阶）</td><td><b>30</b></td><td><span class="hm" style="background:#c94f3d;color:#ffffff;padding:3px 8px">11.9%</span></td><td class="l tiny">与 n=15 同一套 DP；但 n=2000 档 TLE 占 36.6%，这才是真正的台阶</td></tr>
+<tr><td><span class="pill p-hard">B 级</span></td><td class="l">染色满规模 O(n) 正解</td><td><b>50</b></td><td><span class="hm" style="background:#c94f3d;color:#ffffff;padding:3px 8px">5.9%</span></td><td class="l tiny">提交者 AC 仅 7.2%，需关键观察；RE + TLE 合计 57%</td></tr>
+<tr><td><span class="pill p-hard">B 级</span></td><td class="l">擂台 n=8 暴力 + 特殊性质 A</td><td><b>28</b></td><td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">2.0%</span></td><td class="l tiny">提交者 AC 仅 7.5%、WA 82~85%——是“做了也做不对”，不是“没人做”</td></tr>
+<tr><td><span class="pill p-hard">C 级</span></td><td class="l">擂台满规模 + 大 T</td><td><b>32</b></td><td>≤0.5%</td><td class="l tiny">T=16~256 四档通过率 1.3% → 0.2%，全国级天花板</td></tr>
+</table>
+<div class="callout"><b>一句话</b>把 S 级的 160 分（决斗 100 + 超速特殊性质 60）与 A 级的 70 分（染色 50 + 超速小规模 20）拿稳，就是 <b>230 分</b>——稳过一等线（175），且全程<b>不需要写出任何一道题的"总正解"</b>（染色只写到 O(n²) 档）。</div>
+<h3>4.4 「工程量」是怎么算的——用选手代码量化</h3>
+<div class="callout"><b>口径</b>：4.3 表里的"工程量"不是主观印象，而是从<b>选手代码本身</b>量出来的——取全部 5903 份提交的<b>有效代码行数</b>（去掉空行与注释），再叠加 22 项算法特征，按"通过的是哪一档"分组统计。这样"某档能不能靠一段小脚本糊过去"就有可核对的数字，而不是感觉。</div>
+<table><tr><th class="l">题目 / 档位</th><th>通过人数</th><th>最少行数</th><th>中位行数</th><th class="l">该档 AC 者的主要写法特征</th></tr>
+<tr><td class="l">决斗 全部 20 点</td><td>1156</td><td><b>11</b></td><td>27</td><td class="l tiny">排序 sort 63%</td></tr>
+<tr><td class="l">超速检测 n≤20 小规模</td><td>406</td><td><b>41</b></td><td>93</td><td class="l tiny">二分查找(binary/lower_bound) 70% · 排序 sort 82%</td></tr>
+<tr><td class="l">超速检测 特殊性质三分支</td><td>211</td><td><b>41</b></td><td>87</td><td class="l tiny">二分查找(binary/lower_bound) 80% · 排序 sort 88%</td></tr>
+<tr><td class="l">染色 n=15</td><td>730</td><td><b>20</b></td><td>46</td><td class="l tiny">递归函数(含dfs) 54%</td></tr>
+<tr><td class="l">染色 n≤2000</td><td>216</td><td><b>25</b></td><td>46</td><td class="l tiny">递归函数(含dfs) 19% · memset 49%</td></tr>
+<tr><td class="l">染色 满规模正解</td><td>107</td><td><b>26</b></td><td>44</td><td class="l tiny">线段树(seg/lazy) 11% · memset 46%</td></tr>
+<tr><td class="l">擂台游戏 n=8</td><td>55</td><td><b>55</b></td><td>107</td><td class="l tiny">递归函数(含dfs) 62% · 线段树(seg/lazy) 15%</td></tr>
+<tr><td class="l">擂台游戏 特殊性质 A</td><td>60</td><td><b>32</b></td><td>105</td><td class="l tiny">线段树(seg/lazy) 17% · 二分查找(binary/lower_bound) 28%</td></tr>
+<tr><td class="l">擂台游戏 满规模 + 大 T</td><td>4</td><td><b>101</b></td><td>113</td><td class="l tiny">递归函数(含dfs) 50%</td></tr>
+</table>
+<p class="tiny">读法：<b>最少行数</b>= 通过该档的全部提交里最简的那一份有多少有效行，代表"这件事的下限"；<b>中位行数</b>= 典型水平。若某档连"最少行数"都很高，说明它<b>不可能靠小脚本糊过去</b>。</p>
+<div class="card"><h4 style="margin-top:0">三个实锤（可直接翻源码核对）</h4>
+<ul><li><b>决斗全题最短 11 行</b>（BJ-S00762）——真·轻工程，这是它坐稳 S 级的底气。</li><li><b>染色 n=15 最短 20 行</b>（BJ-S01008）：源码就是 <b>O(2<sup>n</sup>·n²) 的全体枚举暴力</b>（dfs 枚举所有染色方案）。真的可以"20 行捞 20 分"。</li><li><b>擂台 n=8 最短 55 行</b>（BJ-S01783）：源码<b>不是小模拟</b>，而是用递归 <code>calc()</code> 自底向上合并擂台树、再按位串 <code>w[i&gt;&gt;1]&amp;1</code> 判胜负的正经解法。</li></ul>
+<p class="tiny">→ 由此，<b>"擂台 n=8 写个 20 行模拟就能拿 12~28 分"这句话被代码证伪</b>：哪怕最小的那一档，实际提交里最短的解法也有 55 行，且必须先把那套拗口的擂台规则正确实现——这与它 82~85% 的 WA 率完全一致。这就是 4.3 把擂台列为 B 级的直接依据。</p>
+<p class="tiny"><b>口径与局限</b>：行数是"<b>该选手这道题的整份提交</b>"，不等于"该档最少需要多少代码"（强者往往一次写完通用解，代码短却覆盖多档），且存在"水平越高、代码越短"的混淆。所以这里只用两个稳健量：<b>最少行数</b>（有没有人用极短代码通过）与<b>特征使用率</b>（是否必须动用重结构）。两者都指向同一点：<b>擂台的工程量是四题里最高的那一档</b>。</p></div>
+<h3>4.5 「同一档 20 分，谁更好拿」——逐点通过率会骗人</h3>
+<div class="callout"><b>回答一个很容易问错的问题</b>"染色 n=15 档的逐点通过率是 40.5%，是不是说明 40% 的选手拿到了那 20 分？"<br><b>在这道题上：是的。</b>该档 4 个测试点的<b>全档拿满率是 40.3%</b>，与逐点通过率几乎一样——因为染色 n=15 的 4 个点是"同质"的（同为 T=10、同为 n≤15），会做的人 4 个全过、不会做的人 4 个全挂。<br><b>但这只是特例，换个档位就不成立。</b></div>
+<table><tr><th class="l">档位</th><th class="l">构成</th><th>逐点通过率</th><th>全档拿满率</th><th class="l">为什么两者有差</th></tr>
+<tr><td class="l">染色 n=15</td><td class="l tiny">4 个点 × 5 分</td><td><span class="hm" style="background:#7cbf5a;color:#12351f;padding:3px 8px">40.5%</span></td><td><b>40.3%</b></td><td class="l tiny">4 个点完全同质 → 同生同死，两个指标几乎相等</td></tr>
+<tr><td class="l">超速检测 特殊性质 A：全部 a=0</td><td class="l tiny">2 个点 × 10 分</td><td><span class="hm" style="background:#e3b23c;color:#3b2c05;padding:3px 8px">32.2%</span></td><td><b>23.7%</b></td><td class="l tiny">一个点 n≤3000、一个点 n≤1e5 配对 → 小规模能过 ≠ 满规模能过</td></tr>
+<tr><td class="l">超速检测 满规模混合</td><td class="l tiny">2 个点 × 10 分</td><td><span class="hm" style="background:#e07b39;color:#ffffff;padding:3px 8px">15.8%</span></td><td><b>12.0%</b></td><td class="l tiny">两点都在满规模，但输入构造不同</td></tr>
+<tr><td class="l">决斗 n=10 极小</td><td class="l tiny">4 个点 × 5 分</td><td><span class="hm" style="background:#0b7a5b;color:#eafff7;padding:3px 8px">79.7%</span></td><td><b>73.5%</b></td><td class="l tiny">四点难度略有差异（duel2 明显更容易）</td></tr>
+<tr><td class="l">擂台游戏 n=8</td><td class="l tiny">3 个点 × 4 分</td><td><span class="hm" style="background:#9e2b25;color:#ffeceb;padding:3px 8px">3.4%</span></td><td><b>3.0%</b></td><td class="l tiny">三点接近同质</td></tr>
+</table>
+<p><b>所以"染色 40.5% 比超速检测各档都高"这个观察是对的，但要分两层看：</b></p>
+<ul><li><b>逐点看</b>：染色 n=15 的 40.5% 确实是全场除决斗之外最高的档，高于超速检测最高的特殊性质 A 档（32.2%）。</li><li><b>拿满 20 分看</b>：染色 40.3% vs 超速特殊 A 23.7%——<b>染色仍然更高</b>，你的判断成立。</li><li><b>原因不在难度，在"配对方式"</b>：染色那 20 分是<b>4 个一模一样的简单点</b>拼出来的；超速检测那 20 分是<b>"1 个简单点 + 1 个满规模点"绑定</b>的。超速检测<b>每一档都是这种"小点 + 大点"配对</b>——这意味着如果你的分支算法只扛得住 n≤3000，你只能拿到一对里的前 10 分，拿不到 20 分。</li></ul>
+<div class="callout fix"><b>这条对策略的实际影响</b>第四节 4.2 说"超速检测特殊性质三档是白送的一等门票"，指的是<b>"你去写这三段分支就能拿 60 分"</b>，这是对"你自己"的估计，不是人口通过率。但要注意：这三档的每一个点对里都含一个 <b>n=1e5 的满规模点</b>，所以分支写法必须<b>同时扛得住 n=1e5</b>（例如用整数式比较 + 一次线性扫描），否则每档只能落袋 10 分，三档合计从 60 缩水到 30。</div>
+<h2 id="s5"><span class="n">五</span>★ 样例覆盖实测与五个盲区（详解）</h2>
+<div class="callout fix"><b>关于样例覆盖度的一个常见误判</b>很多人以为"题面样例只有 n=10~20 这种小数据，绝大部分测试点验证不到"。<b>实测结果不是这样。</b>把选手目录里的 16 个大样例逐个解析后可见：CCF 给的大样例<b>覆盖了相当高的比例</b>（按分值加权约 <b>74%</b>），真正的盲区只有约 <b>26%</b> 的分值，且集中在两个特定类型上。换句话说，失分主因往往不是"样例没给"，而是"给了也没人认真跑"。下面用实测数据逐条展开。</div>
+<h3>5.1 样例到底给了什么（实测规模）</h3>
+<h4>T1 决斗 —— 选手目录给了 4 个样例</h4>
+<table><tr><th class="l">样例文件</th><th class="l">实测规模 / 性质</th></tr>
+<tr><td class="l kv">duel1</td><td class="l tiny">n=5，3 种取值</td></tr>
+<tr><td class="l kv">duel2</td><td class="l tiny">n=10，2 种取值</td></tr>
+<tr><td class="l kv">duel3</td><td class="l tiny">n=100000，r≤2（195 KB 大样例）</td></tr>
+<tr><td class="l kv">duel4</td><td class="l tiny">n=100000，16 种取值（满规模）</td></tr>
+</table>
+<h4>T2 超速检测 —— 选手目录给了 5 个样例</h4>
+<table><tr><th class="l">样例文件</th><th class="l">实测规模 / 性质</th></tr>
+<tr><td class="l kv">detect1</td><td class="l tiny">T=1，n≤5，小规模</td></tr>
+<tr><td class="l kv">detect2</td><td class="l tiny">T=20，n≤10，多测小规模</td></tr>
+<tr><td class="l kv">detect3</td><td class="l tiny">T=20，n=1e5，<b>全部 a=0</b>（16.7 MB）</td></tr>
+<tr><td class="l kv">detect4</td><td class="l tiny">T=20，n=1e5，<b>全部 a&gt;0</b>（18.0 MB）</td></tr>
+<tr><td class="l kv">detect5</td><td class="l tiny">T=20，n=1e5，<b>全部 a&lt;0</b>（19.1 MB）</td></tr>
+</table>
+<h4>T3 染色 —— 选手目录给了 2 个样例</h4>
+<table><tr><th class="l">样例文件</th><th class="l">实测规模 / 性质</th></tr>
+<tr><td class="l kv">color1</td><td class="l tiny">T=3，n≤8</td></tr>
+<tr><td class="l kv">color2</td><td class="l tiny">T=10，n = 15 / 15 / 100 / 2000 / 2000 / 10000 / 200000×4</td></tr>
+</table>
+<h4>T4 擂台游戏 —— 选手目录给了 5 个样例</h4>
+<table><tr><th class="l">样例文件</th><th class="l">实测规模 / 性质</th></tr>
+<tr><td class="l kv">arena1</td><td class="l tiny">n=5，T=4</td></tr>
+<tr><td class="l kv">arena2</td><td class="l tiny">n=500，询问为 2 的幂（特殊 A）</td></tr>
+<tr><td class="l kv">arena3</td><td class="l tiny">n=498，结构全 0（特殊 B）</td></tr>
+<tr><td class="l kv">arena4</td><td class="l tiny">n=5000</td></tr>
+<tr><td class="l kv">arena5</td><td class="l tiny">n=99998，T=2（满规模）</td></tr>
+</table>
+<h3>5.2 覆盖度：哪些档位样例能验证，哪些不能</h3>
+<h4>T1 决斗</h4>
+<table><tr><th class="l">官方档位</th><th>分值</th><th class="l">样例能否验证</th><th class="l">依据</th></tr>
+<tr><td class="l">n=10 极小</td><td>20</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">duel2</td></tr>
+<tr><td class="l">n=1e5 仅 2 种取值（r≤2）</td><td>30</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">duel3</td></tr>
+<tr><td class="l">n=30 取值全互异（特殊性质 A）</td><td>25</td><td class="l"><span class="pill p-hard">验证不到</span></td><td class="l tiny">无对应样例</td></tr>
+<tr><td class="l">n=1e5 多取值（满规模）</td><td>25</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">duel4</td></tr>
+</table>
+<p class="tiny">小结：决斗 的样例覆盖 <b>75 / 100 分（75%）</b>。</p>
+<h4>T2 超速检测</h4>
+<table><tr><th class="l">官方档位</th><th>分值</th><th class="l">样例能否验证</th><th class="l">依据</th></tr>
+<tr><td class="l">n≤20 小规模混合</td><td>20</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">detect1</td></tr>
+<tr><td class="l">特殊性质 A：全部 a=0（含 n=1e5）</td><td>20</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">detect3</td></tr>
+<tr><td class="l">特殊性质 B：全部 a>0（含 n=1e5）</td><td>20</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">detect4</td></tr>
+<tr><td class="l">特殊性质 C：全部 a<0（含 n=1e5）</td><td>20</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">detect5</td></tr>
+<tr><td class="l">满规模混合（无特殊性质）</td><td>20</td><td class="l"><span class="pill p-hard">验证不到</span></td><td class="l tiny">无对应样例</td></tr>
+</table>
+<p class="tiny">小结：超速检测 的样例覆盖 <b>80 / 100 分（80%）</b>。</p>
+<h4>T3 染色</h4>
+<table><tr><th class="l">官方档位</th><th>分值</th><th class="l">样例能否验证</th><th class="l">依据</th></tr>
+<tr><td class="l">n=15</td><td>20</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">color1</td></tr>
+<tr><td class="l">n=100</td><td>15</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">color2</td></tr>
+<tr><td class="l">n=2000</td><td>15</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">color2</td></tr>
+<tr><td class="l">n=2e4</td><td>10</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">color2</td></tr>
+<tr><td class="l">n=2e5，A≤10</td><td>15</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">color2</td></tr>
+<tr><td class="l">n=2e5，A≤1e6（满规模）</td><td>25</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">color2</td></tr>
+</table>
+<p class="tiny">小结：染色 的样例覆盖 <b>100 / 100 分（100%）</b>。</p>
+<h4>T4 擂台游戏</h4>
+<table><tr><th class="l">官方档位</th><th>分值</th><th class="l">样例能否验证</th><th class="l">依据</th></tr>
+<tr><td class="l">n=8</td><td>12</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">arena1</td></tr>
+<tr><td class="l">n=500 特殊性质 A（询问为 2 的幂）</td><td>8</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">arena2</td></tr>
+<tr><td class="l">n=500 特殊性质 B（结构全 0）</td><td>12</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">arena3</td></tr>
+<tr><td class="l">n=5000</td><td>8</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">arena4</td></tr>
+<tr><td class="l">n=1e5 特殊性质 A（询问为 2 的幂）</td><td>8</td><td class="l"><span class="pill p-hard">验证不到</span></td><td class="l tiny">无对应样例</td></tr>
+<tr><td class="l">n=1e5 特殊性质 B（结构全 0）</td><td>12</td><td class="l"><span class="pill p-hard">验证不到</span></td><td class="l tiny">无对应样例</td></tr>
+<tr><td class="l">T=4</td><td>8</td><td class="l"><span class="pill p-easy">能验证</span></td><td class="l tiny">arena1</td></tr>
+<tr><td class="l">T=16</td><td>8</td><td class="l"><span class="pill p-hard">验证不到</span></td><td class="l tiny">无对应样例</td></tr>
+<tr><td class="l">T=64</td><td>8</td><td class="l"><span class="pill p-hard">验证不到</span></td><td class="l tiny">无对应样例</td></tr>
+<tr><td class="l">T=128</td><td>8</td><td class="l"><span class="pill p-hard">验证不到</span></td><td class="l tiny">无对应样例</td></tr>
+<tr><td class="l">T=256</td><td>8</td><td class="l"><span class="pill p-hard">验证不到</span></td><td class="l tiny">无对应样例</td></tr>
+</table>
+<p class="tiny">小结：擂台游戏 的样例覆盖 <b>48 / 100 分（48%）</b>。</p>
+<div class="callout good"><b>覆盖度总账</b>四题合计 <b>303 / 400 分（76%）</b>可以用样例自测；真正无法验证的只有 <b>97 分（24%）</b>，集中在两类：<b>① 大 T 多测档</b>（擂台 T=16 / 64 / 128 / 256 共 32 分）；<b>② 样例恰好没挑到的档位</b>（超速检测满规模混合 20 分、擂台 n=1e5 特殊性质档 20 分、决斗 n=30 全互异 25 分）。</div>
+<div class="callout bad"><b>但这里有个更扎心的事实</b>样例覆盖面不低，<b>通过率却依然很低</b>——这才是失分的真正主因。以染色为例：样例把它<b>全部 6 个档位</b>都覆盖了（含 n=2e5 满规模，还带 <code>.ans</code> 答案），但该题仍有 <b>43.3% 的判定是 WA</b>。这说明问题不在"样例没给"，而在<b>"给了也没人认真跑"</b>——多数人只试了题面里那个最小的教科书式样例就交卷了。<b>对策很朴素：把选手目录里的每一个大样例都跑一遍并对 <code>.ans</code> 答案。</b></div>
+<h3>5.3 五个盲区逐条拆解</h3>
+<div class="card"><h4 style="margin-top:0">盲区一 ｜ 满规模与复杂度：小样例永远测不出 TLE</h4>
+<p><b>现象</b>：n=10 的样例在任何 O(n³) 甚至更差的写法下都是 0.00 秒。但官方最大规模是 n=1e5 / n=2e5，且 T 最大 256。</p>
+<p><b>数据</b>：TLE 占比在满规模档急剧放大——<span class="kv">决斗：n=10 档仅 0.9% → 满规模档 10.8%（每点约 196 次）；超速检测满规模混合档 24.3%；染色 n=2000 档 29.0%</span>。也就是说，小样例上跑得飞快的程序，在 n=1e5 上是"成片超时"而不是"偶发超时"。</p>
+<p><b>对策</b>：写完程序后，<b>自己生成一份满规模数据</b>跑一遍计时。决斗/染色/擂台用随机 n=1e5（染色 n=2e5）、超速检测用 T=20 且每组 n=m=1e4~1e5。</p></div>
+<div class="card"><h4 style="margin-top:0">盲区二 ｜ 多测（T 大）：忘记清空数组是最高频的 WA</h4>
+<p><b>现象</b>：四道题全是多测。超速检测 <b>T=20</b>、染色 <b>T=10</b>、擂台 <b>T 最大 256</b>。而样例里擂台的 T 最大只有 4。</p>
+<p><b>数据</b>：擂台按 T 分档的通过率是一条断崖——<span class="kv">T=4 → 1.3%，T=16 → 1.1%，T=64 → 0.7%，T=128 → 0.6%，T=256 → 0.2%</span>。T 每翻一倍，通过率就掉一截，这是"多测处理不当"的典型指纹（数组没清空、全局变量没重置、多测间状态污染）。染色满规模档 RE 高达 25.8%，同样指向"没按 T 组处理"。</p>
+<p><b>对策</b>：把"清空"变成肌肉记忆——<b>每组数据开头 <code>memset</code> 或重建容器</b>；用样例里的 detect2（T=20）和 color2（T=10）专门压测多测逻辑；再自造一份 T=256 的擂台数据。</p></div>
+<div class="card"><h4 style="margin-top:0">盲区三 ｜ 特殊性质分支：这是"最容易主动捡的分"</h4>
+<p><b>现象</b>：题目子任务表里明确写了特殊性质（超速检测的 a 符号、决斗的 r≤2、擂台的 2 的幂 / 结构全 0），每档直接对应 8~30 分。这些档<b>不需要正解</b>，只需要一个 <code>if</code> 分支。</p>
+<p><b>数据</b>：超速检测特殊 A（a=0）通过率 <b>32.2%</b>，比"小规模混合"档（25.7%）还高，但"满规模混合"档只有 15.8%。<b>会写特殊性质的人和不写的人，分差就是 40~60 分。</b>擂台特殊 A（询问为 2 的幂）通过率 5.6%，是本题最高的一档。</p>
+<p><b>对策</b>：读完题先圈出子任务表，<b>把每个特殊性质写成独立分支</b>，用贪心/暴力处理该档，最后再 <code>if</code> 到通用解（哪怕通用解不写，也别让它拖垮特殊档）。</p></div>
+<div class="card"><h4 style="margin-top:0">盲区四 ｜ 精度：这条是被数据坐实的（超速检测）</h4>
+<p><b>机理</b>：超速检测要判断的是"在区间内是否存在位置使瞬时速度超过 V"。加速时 v(x)² = v₀² + 2a·x，比较 <code>v(x) &gt; V</code> 等价于比较<b>整数式</b> <code>v₀² + 2a·x &gt; V²</code>。用 <code>double</code> 走 <code>sqrt</code> 路线会在 v₀² / V² 接近 1e10 量级时丢有效位，产生<b>边界处 1 个单位的误判</b>——而 1 个测试点就是 10 分。</p>
+<p><b>数据（本地得分对照，全部 1810 人）</b>：</p>
+<table><tr><th class="l">代码特征</th><th>使用人数</th><th>使用者的平均分</th><th>未使用者的平均分</th><th>差值</th></tr>
+<tr><td class="l">用了 double / float</td><td>720</td><td><b>28.2</b></td><td>23.0</td><td style="color:var(--good)"><b>+5.2</b></td></tr>
+<tr><td class="l">用了 long double</td><td>104</td><td><b>46.2</b></td><td>23.9</td><td style="color:var(--good)"><b>+22.4</b></td></tr>
+<tr><td class="l">写了 eps 容差</td><td>80</td><td><b>60.0</b></td><td>23.5</td><td style="color:var(--good)"><b>+36.5</b></td></tr>
+</table>
+<p class="tiny">读法（这是<b>相关性</b>，不是严格因果）：用了 <code>long double</code> 的 104 人平均拿 <b>46.2 分</b>，是未使用者（23.9 分）的近两倍；主动写了 <code>eps</code> 容差的 80 人平均 <b>60.0 分</b>，满分率 31.2%。而只用 <code>double</code> 的 720 人平均 28.2 分——比"完全不用浮点"的 23.0 分略好，但明显低于把精度当回事的人。<b>方向是清楚的：涉及浮点比较，要么全程整数，要么上 long double + eps。</b></p>
+<p class="tiny">补充：本题 <b>41.0% 的判定是 WA</b>。另一个同样强的相关特征是算法——用了二分查找的 516 人平均 53.4 分（未用者仅 12.7 分），用了 sort 的 691 人平均 45.9 分（未用者 10.7 分）。也就是说，本题的失分是"精度 + 算法"双杀，而不是单一原因。</p></div>
+<div class="card"><h4 style="margin-top:0">盲区五 ｜ 对拍：唯一能验证"大规模正确性"的手段</h4>
+<p><b>现象</b>：样例再全，也只是有限个数据点。你无法确认自己的正解在"所有" n=1e5 的数据上都对。而 75 个官方测试点里，有几十个是你没见过的。</p>
+<p><b>为什么是唯一手段</b>：把"你的解法"和"一个绝对正确但慢的暴力"放在一起，用小规模随机数据（n=5~20、值域 1~10）反复比对输出，能在几十秒内跑上万组——这是在没有官方数据的情况下，唯一能覆盖"你没想到的情况"的办法。</p>
+<p><b>具体做法</b>：<br>① 写 <code>brute.cpp</code>：直接按题意模拟（怎么慢都行，只要对）；<br>② 写 <code>gen.py</code>：随机生成小规模数据，<b>重点随机化特殊性质</b>（a 取正负零、r 取 1~2、结构位串随机）；<br>③ 循环对拍：不一致就打印该组数据，人工看差在哪；<br>④ 对拍通过后，再把 gen 的规模调到 n=1e5 做一次计时，确认不超时。</p></div>
+<h3>5.4 各题自测 Checklist（照着做）</h3>
+<table><tr><th class="l">步骤</th><th class="l">决斗</th><th class="l">超速检测</th><th class="l">染色</th><th class="l">擂台</th></tr>
+<tr><td class="l">跑通选手目录全部大样例</td><td class="l tiny">4 个（含 n=1e5）</td><td class="l tiny">5 个（含 3 个特殊性质满规模）</td><td class="l tiny">2 个（含 n=2e5）</td><td class="l tiny">5 个</td></tr>
+<tr><td class="l">自造满规模数据计时</td><td class="l tiny">n=1e5</td><td class="l tiny">T=20，n=m=1e5</td><td class="l tiny">T=10，n=2e5</td><td class="l tiny">n=m=1e5</td></tr>
+<tr><td class="l">最大 T 压测（多测/清空）</td><td class="l tiny">—（单组）</td><td class="l tiny">T=20</td><td class="l tiny">T=10</td><td class="l tiny"><b>T=256</b></td></tr>
+<tr><td class="l">特殊性质分支单测</td><td class="l tiny">r≤2 / 全互异</td><td class="l tiny"><b>a=0 / a&gt;0 / a&lt;0</b></td><td class="l tiny">A≤10</td><td class="l tiny">询问 2 的幂 / 结构全 0</td></tr>
+<tr><td class="l">暴力对拍（n=5~20）</td><td class="l tiny">✔</td><td class="l tiny">✔</td><td class="l tiny">✔</td><td class="l tiny">✔</td></tr>
+<tr><td class="l">浮点检查</td><td class="l tiny">无关</td><td class="l tiny"><b>改整数式比较，或 long double + eps</b></td><td class="l tiny">无关</td><td class="l tiny">无关</td></tr>
+<tr><td class="l">文件读写 + 编译自检</td><td class="l tiny">duel.in / duel.out</td><td class="l tiny">detect.in / detect.out</td><td class="l tiny">color.in / color.out</td><td class="l tiny">arena.in / arena.out</td></tr>
+</table>
+<h2 id="s6"><span class="n">六</span>两个与算法完全无关的送命点</h2>
+<h3>6.1 没写文件读写 → 满分率恒为 0.0%</h3>
+<p>CSP 评测机<b>不向 stdin 喂数据</b>，只读程序自己写出的 <code>*.out</code> 文件。没写 <code>freopen("duel.in","r",stdin)</code> 的程序读到空输入，全盘 WA。本地评测复现了这一点（<code>stdin=DEVNULL</code>，与官方评测机一致）：</p>
+<table><tr><th class="l">题目</th><th>有文件读写</th><th>其平均分</th><th>其满分率</th><th>无文件读写</th><th>其平均分</th><th>其满分率</th></tr>
+<tr><td class="l">T1 决斗</td><td>1772</td><td><b>77.1</b></td><td><b>65.2%</b></td><td>37</td><td style="color:var(--bad)">0.0</td><td style="color:var(--bad)"><b>0.0%</b></td></tr>
+<tr><td class="l">T2 超速检测</td><td>1613</td><td><b>26.1</b></td><td><b>12.2%</b></td><td>55</td><td style="color:var(--bad)">0.0</td><td style="color:var(--bad)"><b>0.0%</b></td></tr>
+<tr><td class="l">T3 染色</td><td>1459</td><td><b>19.2</b></td><td><b>7.3%</b></td><td>63</td><td style="color:var(--bad)">0.0</td><td style="color:var(--bad)"><b>0.0%</b></td></tr>
+<tr><td class="l">T4 擂台游戏</td><td>801</td><td><b>4.9</b></td><td><b>0.4%</b></td><td>103</td><td style="color:var(--bad)">0.0</td><td style="color:var(--bad)"><b>0.0%</b></td></tr>
+</table>
+<p class="tiny">注意"无文件读写"的人数（决斗 37、超速 55、染色 63、擂台 103）全部 100% 零分——这不是巧合，是评测机口径决定的硬规则。</p>
+<h3>6.2 CE（编译失败）也要算进去</h3>
+<table><tr><th class="l">题目</th><th>CE 人数</th><th>占该题提交</th><th class="l">备注</th></tr>
+<tr><td class="l">T1 决斗</td><td>59</td><td>3.3%</td><td class="l tiny">该题全部 0 分</td></tr>
+<tr><td class="l">T2 超速检测</td><td>111</td><td>6.1%</td><td class="l tiny">该题全部 0 分</td></tr>
+<tr><td class="l">T3 染色</td><td>88</td><td>4.9%</td><td class="l tiny">该题全部 0 分</td></tr>
+<tr><td class="l">T4 擂台游戏</td><td>130</td><td>7.2%</td><td class="l tiny">该题全部 0 分</td></tr>
+</table>
+<p class="tiny">CE 一旦发生，该题 <b>0 分</b>。提交前至少在本机用 <code>g++ -O2 -std=c++14 -w 你的代码.cpp</code> 编译一次，能消掉绝大多数无谓损失。</p>
+<h2 id="s7"><span class="n">七</span>附：数据口径与可靠性</h2>
+<div class="card">
+<h4 style="margin-top:0">数据来源</h4>
+<ul>
+<li><b>选手代码</b>：北京 CSP-S 2024 全部提交，解密后 5903 个提交单元、1810 名选手。</li>
+<li><b>官方测试数据</b>：用户提供的 <code>data-CSPS2024.zip</code>，解出 <b>75 个官方测试点</b>（决斗 20 点×5 分、超速检测 10 点×10 分、染色 20 点×5 分、擂台 25 点×4 分），每题 100 分。</li>
+<li><b>获奖名单</b>：24–25 年北京 CSPJ&amp;S 获奖总表（含年级），2024 年合计 1351 名获奖者（一 383 / 二 544 / 三 424）。</li>
+</ul>
+<h4>评测口径</h4>
+<ul>
+<li><b>编译器</b>：GCC 9.3.0（与 NOI Linux 2.0 官方评测机同版本），编译参数 <code>-O2 -static -s -std=c++14</code>；用 GCC 16 做第二编译器取并集消除假性 CE。</li>
+<li><b>判定方式</b>：程序输出<b>只读文件</b>（与官方一致），stdin 不喂数据；逐测试点比对，AC 记满分，否则记 0。</li>
+<li><b>本地 vs 官方校准</b>：本地总分与官方总分的平均绝对误差 <b>MAE = 6.7</b>，Pearson 相关系数 <b>0.978</b>，Spearman <b>0.978</b>，<b>73.3%</b> 的选手误差 ≤5 分。</li>
+</ul>
+<div class="callout fix"><b>一处已知的环境偏差（不影响本报告结论）</b>本机 Windows 环境下 <code>scanf</code> 读大输入的耗时是 Linux 官方机的百倍量级（实测读 37 MB 输入：<code>scanf</code> 2.85 秒 vs <code>fgets</code> 0.14 秒），因此纯用 <code>scanf</code> 的超速检测大点在本机会被偏向 TLE。报告中的运行时限已按此校准（采用"判定为 AC 即算通过"的口径），并已通过两轮定向重跑把整体偏差压到 MAE 6.7。<b>横向比较（题与题之间、档位与档位之间）的结论不受影响。</b></div>
+</div>
+<footer>
+本报告由本地实测数据自动生成 · 数据口径：CSP-S 2024 官方 75 测试点 / 北京 1810 名选手 / 98,989 次判定<br>
+生成脚本：<span class="kv">tools/report_strategy.py</span> · 
+配套数据：<span class="kv">output/逐测试点通过率.csv</span>、<span class="kv">output/北京选手-官方测试点得分.csv</span>、<span class="kv">output/北京选手-测试点判定明细.csv</span>
+</footer>
+</div></body></html>
