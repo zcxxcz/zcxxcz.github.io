@@ -1,0 +1,18 @@
+{
+  "id": "p8820-deepseek-video",
+  "title": "P8820 数据传输：DeepSeek 动画讲解版",
+  "type": "视频",
+  "format": "html",
+  "status": "published",
+  "summary": "7 分 19 秒 DeepSeek 版动画，含配音与中文字幕。从 k=1、k=2 的部分分出发，用链外反例引入 f/g 状态，再讲解五状态 min-plus 矩阵、倍增与 LCA 拼接。",
+  "tags": [
+    "信奥",
+    "CSP-S",
+    "P8820",
+    "DeepSeek",
+    "数学动画",
+    "动态规划"
+  ],
+  "updated": "2026-10-18",
+  "featured": true
+}
