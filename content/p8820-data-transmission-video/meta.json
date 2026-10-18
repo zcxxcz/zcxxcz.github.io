@@ -1,0 +1,18 @@
+{
+  "id": "p8820-data-transmission-video",
+  "title": "P8820 数据传输：从部分分到正解的动画讲解",
+  "type": "视频",
+  "format": "html",
+  "status": "published",
+  "summary": "17 分 37 秒数学动画，小宝音色配音、中文字幕。从小图最短路与路径 DP 拿部分分，用 k=3 的旁枝反例修正状态，再推导 min-plus 矩阵与树链剖分的完整解法。",
+  "tags": [
+    "信奥",
+    "CSP-S",
+    "题解",
+    "数学动画",
+    "P8820",
+    "动态规划"
+  ],
+  "updated": "2026-10-18",
+  "featured": true
+}
