@@ -150,6 +150,19 @@ const seriesDefs = [
       { id: "csp-s2023-solutions", label: "CSP-S 2023" },
     ],
   },
+  {
+    id: "p8820-videos",
+    title: "P8820 数据传输：三个版本的动画讲解",
+    summary:
+      "同一道题，三种拆法。12 分钟版把部分分当台阶，从 4 分一路爬到 25 分；17 分钟版走树链剖分；7 分钟版压成五状态 min-plus 矩阵。挑一条思路跟到底。",
+    type: "视频",
+    tags: ["信奥", "CSP-S", "P8820", "数学动画"],
+    members: [
+      { id: "p8820-3b1b-video", label: "12:20 · 分数爬坡版" },
+      { id: "p8820-data-transmission-video", label: "17:37 · 树链剖分版" },
+      { id: "p8820-deepseek-video", label: "07:19 · 五状态 min-plus 版" },
+    ],
+  },
 ];
 const seriesIds = new Set(seriesDefs.map((s) => s.id));
 const seriesOfMember = new Map();
@@ -174,6 +187,7 @@ const cardGroups = [
     items: [
       "xinao-knowledge-graph",
       "csp-s-solutions",
+      "p8820-videos",
       "xinao-optimization-handbook",
       "csps-interactive-notes",
       "kazike-prompt-toolkit",
