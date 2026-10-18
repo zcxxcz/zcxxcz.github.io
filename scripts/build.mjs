@@ -141,13 +141,14 @@ const seriesDefs = [
     id: "csp-s-solutions",
     title: "CSP-S 历年题解：从部分分到 AC",
     summary:
-      "2023–2025 三届 CSP-S 复赛真题的完整档位拆解——每道题从暴力部分分一路推到 AC，附可编译代码与本地对拍。",
+      "2021、2023–2025 四届 CSP-S 复赛真题的完整档位拆解——每道题从暴力部分分一路推到 AC，附可编译代码与本地对拍。",
     type: "文章",
     tags: ["信奥", "CSP-S", "题解"],
     members: [
       { id: "csp-s2025-solutions", label: "CSP-S 2025" },
       { id: "csp-s2024-solutions", label: "CSP-S 2024" },
       { id: "csp-s2023-solutions", label: "CSP-S 2023" },
+      { id: "csp-s2021-solutions", label: "CSP-S 2021" },
     ],
   },
   {
