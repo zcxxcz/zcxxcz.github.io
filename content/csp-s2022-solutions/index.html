@@ -1428,6 +1428,7 @@ footer{max-width:1240px;margin:0 auto;padding:22px 40px 36px;border-top:1px soli
 </tr>
 </tbody></table></div>
 <h2 id="4-transmit">4. 数据传输 transmit</h2>
+<blockquote><p>先看直观推导：<a href="../p8820-data-transmission-video/">P8820 数据传输动画讲解 · 小宝配音 · 17 分 37 秒</a>。从小图最短路、部分分与旁枝反例，逐步走到三状态 DP 和矩阵正解。</p></blockquote>
 <h3 id="4-1">4.1 题意</h3>
 <p>n 台主机由 n−1 根网线连成一棵树。主机 a 能直接把信息发给 b，当且仅当两者在树上的距离不超过 k。第 i 台主机处理信息需要 v_i 时间。</p>
 <p>一次从 s 发到 t 的传输要选一串主机 c_1 = s, c_2, …, c_m = t，要求相邻两台距离 ≤ k，花费 Σ v_{c_i}。q 次询问，每次求最小花费。</p>
