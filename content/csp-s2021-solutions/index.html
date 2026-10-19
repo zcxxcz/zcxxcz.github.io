@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CSP-S 2021 四题详解：从部分分到 AC</title>
-<meta name="description" content="廊桥分配 / 括号序列 / 回文 / 交通规划四题，一档一档拆开：每题先给官方子任务表与各档分值，再从暴力逐级推到满分，每一档都说明「为什么它只能拿这一分、差在哪一步」，并附易错点清单（块分解漏掉星结尾、回文按段记 L/R、多询问残留边、__int128 与重置范围等）；配 12 份在本机 g++-15 编译、逐档随机对拍验证过的完整代码，T4 从 Dinic 最小割一路推到对偶图最短路 + 区间 DP。">
+<meta name="description" content="廊桥分配 / 括号序列 / 回文 / 交通规划四题，一档一档拆开：每题先给官方子任务表与各档分值，再从暴力逐级推到满分，每一档都说明「为什么它只能拿这一分、差在哪一步」，并附易错点清单（块分解漏掉星结尾、回文按段记 L/R、多询问残留边、Dinic 数组开小、f1+f2 不能三分等）；配 15 份在本机 g++-15 编译、逐档随机对拍验证过的完整代码，覆盖 20/40/100、15/65/75/100、28/40/60/100、40/60/80/100 四组梯度，T4 从 Dinic 最小割一路推到对偶图最短路 + 区间 DP。">
 <style>
 :root{
   --paper:#f6f5f0;--panel:#fffefb;--ink:#242c2a;--ink-2:#4a5450;--muted:#738079;--line:#d8ddd5;
@@ -184,7 +184,8 @@ footer{max-width:1240px;margin:0 auto;padding:22px 40px 36px;border-top:1px soli
 <a class="toc-l1" href="#sec-12">四个数组</a>
 <a class="toc-l1" href="#15-13-n-15">第一档：15 分（测试点 1~3，n ≤ 15）</a>
 <a class="toc-l1" href="#65-113-n-100">第二档：65 分（测试点 1~13，n ≤ 100）</a>
-<a class="toc-l1" href="#100-n-500">第三档：100 分（n ≤ 500）</a>
+<a class="toc-l1" href="#75-113-1415">第三档：75 分（测试点 1~13 + 14~15 的特殊性质）</a>
+<a class="toc-l1" href="#100-n-500">第四档：100 分（n ≤ 500）</a>
 <a class="toc-l1" href="#sec-13">易错点</a>
 <a class="toc-l0" href="#t3">T3 · 回文</a>
 <a class="toc-l1" href="#sec-14">题意</a>
@@ -192,18 +193,20 @@ footer{max-width:1240px;margin:0 auto;padding:22px 40px 36px;border-top:1px soli
 <a class="toc-l1" href="#sec-16">三个观察</a>
 <a class="toc-l1" href="#sec-17">为什么按字典序贪心是对的</a>
 <a class="toc-l1" href="#28-17-n-10">第一档：28 分（测试点 1~7，n ≤ 10）</a>
-<a class="toc-l1" href="#60-815-n-1000">第二档：60 分（测试点 8~15，n ≤ 1000）</a>
-<a class="toc-l1" href="#100-n-5-105">第三档：100 分（n ≤ 5×10<sup>5</sup>）</a>
+<a class="toc-l1" href="#40-810-n-20">第二档：40 分（测试点 8~10，n ≤ 20）</a>
+<a class="toc-l1" href="#60-815-n-1000">第三档：60 分（测试点 8~15，n ≤ 1000）</a>
+<a class="toc-l1" href="#100-n-5-105">第四档：100 分（n ≤ 5×10<sup>5</sup>）</a>
 <a class="toc-l1" href="#sec-18">易错点</a>
 <a class="toc-l0" href="#t4">T4 · 交通规划</a>
 <a class="toc-l1" href="#sec-19">题意</a>
 <a class="toc-l1" href="#sec-20">数据范围与子任务</a>
 <a class="toc-l1" href="#sec-21">第一步：先把它看成一个最小割</a>
 <a class="toc-l1" href="#40-18-n-m-18">第一档：40 分（测试点 1~8，n,m ≤ 18）</a>
+<a class="toc-l1" href="#60-112-n-m-100">第二档：60 分（测试点 1~12，n,m ≤ 100）</a>
 <a class="toc-l1" href="#sec-22">第二步：平面图最小割 = 对偶图最短路</a>
 <a class="toc-l1" href="#sec-23">位置映射（本题最容易写错的地方）</a>
-<a class="toc-l1" href="#70-k-2-7-40">第二档：70 分（k ≤ 2 的 7 个测试点 + 40 分的暴力部分）</a>
-<a class="toc-l1" href="#100-dp">第三档：100 分（+ 区间 DP）</a>
+<a class="toc-l1" href="#80-dinic-60-k-2-20">第三档：80 分（Dinic 的 60 + 对偶图处理 k ≤ 2 的 20）</a>
+<a class="toc-l1" href="#100-dp">第四档：100 分（+ 区间 DP）</a>
 <a class="toc-l1" href="#sec-24">易错点（每一条我都踩过）</a>
 <a class="toc-l0" href="#sec-25">考场取舍表</a>
 <a class="toc-l0" href="#sec-26">附：代码与测试清单</a>
@@ -213,7 +216,7 @@ footer{max-width:1240px;margin:0 auto;padding:22px 40px 36px;border-top:1px soli
   </aside>
 
   <main class="doc">
-    <p class="eyebrow">文章 / 2026-10-18</p>
+    <p class="eyebrow">文章 / 2026-10-19</p>
     <h1>CSP-S 2021 四题详解：从部分分到 AC</h1>
     <div class="chips">
       <a href="#sec">总览</a><a href="#t1">T1 廊桥分配</a><a href="#t2">T2 括号序列</a><a href="#t3">T3 回文</a><a href="#t4">T4 交通规划</a><a href="#sec-25">考场取舍</a><a href="#sec-26">附 代码清单</a>
@@ -224,6 +227,7 @@ footer{max-width:1240px;margin:0 auto;padding:22px 40px 36px;border-top:1px soli
 <blockquote>
 <p>配套代码全部在随文附带的 <code>code.zip</code> 里（<code>code/</code> 为各档代码，<code>test/</code> 为对拍与生成器），均已用 <code>g++ -O2 -std=c++14</code> 编译通过，并做过样例、随机对拍（与独立暴力比较）、边界用例和大规模计时。
 文中所有"实测"数据来自 Apple M 系列芯片本机（比 CCF 评测机快 2~3 倍，看时间时请自行打个折扣）。</p>
+<p><strong>关于可信度，先把话说清楚</strong>：每一档标的分是<strong>数测试点算出来的（理论得分），我没有把代码提交到官方评测机</strong>；"能过/不能过"的依据是本机对拍 + 计时 + 复杂度分析。贪心的正确性说明是我的推导，不是官方证明；特殊性质只按题面写的用，不自己编。</p>
 </blockquote>
 <h2 id="sec">总览</h2>
 <div class="table-wrap"><table>
@@ -276,15 +280,15 @@ footer{max-width:1240px;margin:0 auto;padding:22px 40px 36px;border-top:1px soli
 </thead>
 <tbody><tr>
 <td align="center">200 分（省一底线）</td>
-<td align="left">T1 100 + T2 65 + T3 28 = 193，再抢 T4 的 10 分暴力</td>
+<td align="left">T1 100 + T2 65 + T3 40 = 205</td>
 </tr>
 <tr>
-<td align="center">300 分</td>
-<td align="left">T1 100 + T2 100 + T3 60 + T4 40</td>
+<td align="center">275 分</td>
+<td align="left">T1 100 + T2 75 + T3 60 + T4 40 = 275</td>
 </tr>
 <tr>
 <td align="center">350+ 分</td>
-<td align="left">四题都要动，T4 必须拿下 k≤2 的 45 分</td>
+<td align="left">四题都要动，T4 必须拿下对偶图那 45 分（40 → 80 档），再往上才是区间 DP</td>
 </tr>
 </tbody></table></div>
 <hr>
@@ -531,6 +535,7 @@ footer{max-width:1240px;margin:0 auto;padding:22px 40px 36px;border-top:1px soli
 <li><code>cnt</code> 数组是<strong>边算边增长</strong>的，不要一开始开成 n+1 就以为够了 —— 编号最大只到"实际用到的桥数"，可能比 n 小得多，也可能（在 40 分写法里）需要判断 <code>x &gt; mx</code>。</li>
 <li>判"桥空了"用 <code>离开时刻 &lt; 抵达时刻</code>。题目保证所有时刻互不相同，所以 <code>&lt;</code> 和 <code>≤</code> 等价；但如果你自己造数据时出现了相等，语义上应该是"离开时刻 ≤ 抵达时刻"才算空。</li>
 <li>答案最大是 m<sub>1</sub>+m<sub>2</sub> ≤ 10<sup>5</sup>，int 够；但用 long long 不会有任何代价。</li>
+<li><strong>不要想三分。</strong> f<sub>1</sub>(x) 确实是"先急后缓"的凹函数，但 f<sub>1</sub>(x) + f<sub>2</sub>(n−x) <strong>不是单峰的</strong>：一边饱和得快、另一边饱和得慢时，中间会冒出平坦段甚至双峰，三分会稳定地取到错的点。老实 O(n) 枚举 <code>x = 0..n</code>，本来就只有 10<sup>5</sup> 个取值，比三分还便宜。</li>
 </ol>
 <hr>
 <h2 id="t2">T2 · 括号序列</h2>
@@ -744,8 +749,8 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
   for b in [a, j-1]:
      E[i][j] += L[i][a] · (b==a ? 1 : Sg[a+1][b]) · E[b+1][j]
 </code></pre></div>
-<p>复杂度 O(n⁴)。n ≤ 100 时约 4 × 10<sup>6</sup>，实测 0.01s；n = 500 时理论 2.6 × 10<sup>9</sup>，实测 1.73s —— 超过 1s 时限，所以这份代码只能拿 65 分。</p>
-<p>（顺带说：为什么 14~15 这两个"全是 <code>?</code>"的点也过不了？因为它们的 n 也是 500，和最后 5 个点一样被卡在复杂度上。）</p>
+<p>复杂度 O(n⁴)。n ≤ 100 时约 4 × 10<sup>6</sup>，实测 0.01s；n = 500 时理论 2.6 × 10<sup>9</sup>。</p>
+<p>（<strong>这里要纠正一个我第一版写错的判断</strong>：14~15 这两个"全是 <code>?</code>"的点看起来和 16~20 一样卡在复杂度上，其实完全不是 —— 它们的特殊性质让"按长度计数"成为可能，见下一档。另外 16~20 虽然也是 n = 500，但随机串上绝大多数 <code>L</code> 都是 0，<code>if (!L[i][a]) continue</code> 会跳过大部分枚举，实测只要 0.1~0.2s；真正跑不动的是<strong>稠密</strong>数据，全 <code>?</code> 实测 1.73s，已经超时。）</p>
 <div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2021 T2 括号序列 —— 65 分档（测试点 1~13，n &lt;= 100）</span>
 <span class="co">// 状态定义与正解完全相同，只是 E 的转移写成"第一块 [i,a] + 中间星串 [a+1,b] + 剩余 [b+1,j]"的三层枚举，</span>
 <span class="co">// 复杂度 O(n^4)。n &lt;= 100 时约 4e6 次，n = 500 时约 2.6e9 次，会超时。</span>
@@ -814,7 +819,136 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
     <span class="k">return</span> <span class="nu">0</span>;
 }
 </code></pre></div>
-<h3 id="100-n-500">第三档：100 分（n ≤ 500）</h3>
+<h3 id="75-113-1415">第三档：75 分（测试点 1~13 + 14~15 的特殊性质）</h3>
+<p>测试点 14~15 的特殊性质是"整串只由 <code>?</code> 组成"，n 同样是 500。</p>
+<p>关键点：<strong>串里没有任何具体字符时，"是不是合法串"只跟长度有关，跟位置无关</strong>。四维的区间 DP 于是退化成一维的"按长度计数"：</p>
+<div class="code" data-lang="文本"><div class="code-bar"><span class="code-lang">文本</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code>f[i] : 长度 i 的合法串个数
+h[i] : 长度 i 的单个块 (X) 的个数
+q[i] : 长度 i 的"块 + 非空星尾" (X)S 的个数
+
+记 c = i-2（最外层括号内部的长度）：
+h[i] = [c == 0] + [1 ≤ c ≤ k] + f[c] + 2 · Σ_{t=1..min(k, c-2)} f[c-t]
+        ()       (S)            (A)        (SA) / (AS)
+q[i] = Σ_{j=2..i-1, 1 ≤ i-j ≤ k} h[j]
+f[i] = h[i] + Σ_{j=2..i-2} (h[j] + q[j]) · f[i-j]
+</code></pre></div>
+<p>两个细节：</p>
+<ul>
+<li><strong>f[0] 必须是 0</strong>。空串不是合法串（<code>(A)</code> 里的 A 非空）。我第一版把 f[0] 写成 1 图省事，结果 <code>()</code> 被算了两次。</li>
+<li><code>(SA)</code> 与 <code>(AS)</code> 两项系数是 2，但 <code>t ≤ c-2</code> 才合法（A 至少 2 个字符）。</li>
+</ul>
+<p>复杂度 O(n²)，n = 500 实测 0.04s —— 而 65 分那版在同一个输入上要 1.73s。<strong>三十行换 10 分，这是本题最划算的一笔</strong>。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2021 T2 括号序列 —— 75 分档</span>
+<span class="co">//   覆盖：测试点 1~13（n &lt;= 100，O(n^4) 区间 DP）</span>
+<span class="co">//      + 测试点 14~15（n = 500，但整串只由 '?' 组成）</span>
+<span class="co">// 关键：14~15 的 n 同样是 500，用 O(n^4) 必超时；但"整串都是 '?'"时，</span>
+<span class="co">//   填法数量只跟长度 n 和 k 有关，跟具体字符无关 —— 一维的"按长度计数"DP 就够，</span>
+<span class="co">//   O(n^2) 跑完，30 行代码换 10 分。</span>
+<span class="co">//   提交策略：读入后判断是否全是 '?'，是就走一维 DP（分支一），否则走 O(n^4)（分支二）。</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+
+<span class="k">const</span> <span class="ty">int</span> MOD = <span class="nu">1000000007</span>;
+<span class="ty">int</span> n, K;
+<span class="ty">char</span> s[<span class="nu">505</span>];
+
+<span class="co">// ===================== 分支一：整串只由 '?' 组成 =====================</span>
+<span class="co">// 沿用块分解的思路，但因为没有具体字符，"是不是合法串"只取决于长度。</span>
+<span class="co">//   f[i] : 长度 i 的合法串个数</span>
+<span class="co">//   h[i] : 长度 i 的"单个括号块" (X) 的个数</span>
+<span class="co">//   q[i] : 长度 i 的"块 + 非空星尾" (X)S 的个数</span>
+<span class="ty">long</span> <span class="ty">long</span> f[<span class="nu">505</span>], h[<span class="nu">505</span>], q[<span class="nu">505</span>];
+
+<span class="ty">void</span> <span class="fn">solveAllQ</span>() {
+    f[<span class="nu">0</span>] = f[<span class="nu">1</span>] = <span class="nu">0</span>;                 <span class="co">// 空串不算合法串（只在 (A) 里用，而 A 非空）</span>
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">2</span>; i &lt;= n; i++) {
+        <span class="ty">int</span> c = i - <span class="nu">2</span>;                              <span class="co">// 最外层括号内部的长度</span>
+        <span class="ty">long</span> <span class="ty">long</span> hv = <span class="nu">0</span>;
+        <span class="k">if</span> (c == <span class="nu">0</span>) hv += <span class="nu">1</span>;                        <span class="co">// ()</span>
+        <span class="k">if</span> (c &gt;= <span class="nu">1</span> &amp;&amp; c &lt;= K) hv += <span class="nu">1</span>;              <span class="co">// (S)，S 非空且长度 &lt;= k</span>
+        <span class="k">if</span> (c &gt;= <span class="nu">2</span>) hv += f[c];                     <span class="co">// (A)</span>
+        <span class="ty">int</span> lim = <span class="fn">min</span>(K, c - <span class="nu">2</span>);                    <span class="co">// (SA) 与 (AS)</span>
+        <span class="k">for</span> (<span class="ty">int</span> t = <span class="nu">1</span>; t &lt;= lim; t++) hv += <span class="nu">2</span> * f[c - t] % MOD;
+        h[i] = hv % MOD;
+
+        <span class="ty">long</span> <span class="ty">long</span> qv = <span class="nu">0</span>;                           <span class="co">// (X) 后面接长度 1..k 的星串</span>
+        <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">2</span>; j &lt;= i - <span class="nu">1</span>; j++)
+            <span class="k">if</span> (i - j &gt;= <span class="nu">1</span> &amp;&amp; i - j &lt;= K) qv += h[j];
+        q[i] = qv % MOD;
+
+        <span class="ty">long</span> <span class="ty">long</span> fv = h[i];                        <span class="co">// 整串就是一块（不能以星结尾）</span>
+        <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">2</span>; j &lt;= i - <span class="nu">2</span>; j++)            <span class="co">// 第一块（可带星尾）+ 剩下的合法串</span>
+            fv += (h[j] + q[j]) % MOD * f[i - j] % MOD;
+        f[i] = fv % MOD;
+    }
+    <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, f[n] % MOD);
+}
+
+<span class="co">// ===================== 分支二：普通串，O(n^4) =====================</span>
+<span class="ty">long</span> <span class="ty">long</span> E[<span class="nu">505</span>][<span class="nu">505</span>], L[<span class="nu">505</span>][<span class="nu">505</span>];
+<span class="ty">bool</span> Sg[<span class="nu">505</span>][<span class="nu">505</span>];
+
+<span class="k">inline</span> <span class="ty">bool</span> <span class="fn">cOpen</span>(<span class="ty">char</span> c) { <span class="k">return</span> c == <span class="st">'('</span> || c == <span class="st">'?'</span>; }
+<span class="k">inline</span> <span class="ty">bool</span> <span class="fn">cClose</span>(<span class="ty">char</span> c) { <span class="k">return</span> c == <span class="st">')'</span> || c == <span class="st">'?'</span>; }
+<span class="k">inline</span> <span class="ty">bool</span> <span class="fn">cStar</span>(<span class="ty">char</span> c) { <span class="k">return</span> c == <span class="st">'*'</span> || c == <span class="st">'?'</span>; }
+
+<span class="ty">void</span> <span class="fn">solveGeneral</span>() {
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) {
+        <span class="ty">bool</span> all = <span class="k">true</span>;
+        <span class="k">for</span> (<span class="ty">int</span> j = i; j &lt;= n; j++) {
+            <span class="k">if</span> (!<span class="fn">cStar</span>(s[j])) all = <span class="k">false</span>;
+            Sg[i][j] = all &amp;&amp; (j - i + <span class="nu">1</span> &lt;= K);
+        }
+    }
+
+    <span class="k">for</span> (<span class="ty">int</span> len = <span class="nu">1</span>; len &lt;= n; len++) {
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i + len - <span class="nu">1</span> &lt;= n; i++) {
+            <span class="ty">int</span> j = i + len - <span class="nu">1</span>;
+
+            <span class="ty">long</span> <span class="ty">long</span> l = <span class="nu">0</span>;
+            <span class="k">if</span> (len &gt;= <span class="nu">2</span> &amp;&amp; <span class="fn">cOpen</span>(s[i]) &amp;&amp; <span class="fn">cClose</span>(s[j])) {
+                <span class="ty">int</span> a = i + <span class="nu">1</span>, b = j - <span class="nu">1</span>;
+                <span class="k">if</span> (len == <span class="nu">2</span>) l = <span class="nu">1</span>;
+                <span class="k">else</span> {
+                    l += Sg[a][b];
+                    l += E[a][b];
+                    <span class="k">for</span> (<span class="ty">int</span> m = a; m &lt; b; m++) {
+                        l += Sg[a][m] * E[m + <span class="nu">1</span>][b] % MOD;
+                        l += E[a][m] * Sg[m + <span class="nu">1</span>][b] % MOD;
+                    }
+                }
+                l %= MOD;
+            }
+            L[i][j] = l;
+
+            <span class="ty">long</span> <span class="ty">long</span> e = L[i][j];
+            <span class="k">for</span> (<span class="ty">int</span> a = i; a &lt; j; a++) {
+                <span class="k">if</span> (!L[i][a]) <span class="k">continue</span>;
+                <span class="k">for</span> (<span class="ty">int</span> b = a; b &lt; j; b++) {
+                    <span class="ty">long</span> <span class="ty">long</span> mid = (b == a) ? <span class="nu">1</span> : (Sg[a + <span class="nu">1</span>][b] ? <span class="nu">1</span> : <span class="nu">0</span>);
+                    <span class="k">if</span> (!mid || !E[b + <span class="nu">1</span>][j]) <span class="k">continue</span>;
+                    e += L[i][a] * mid % MOD * E[b + <span class="nu">1</span>][j] % MOD;
+                }
+            }
+            E[i][j] = e % MOD;
+        }
+    }
+    <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, E[<span class="nu">1</span>][n] % MOD);
+}
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="k">if</span> (<span class="fn">scanf</span>(<span class="st">"%d %d %s"</span>, &amp;n, &amp;K, s + <span class="nu">1</span>) != <span class="nu">3</span>) <span class="k">return</span> <span class="nu">0</span>;
+
+    <span class="ty">bool</span> allQ = <span class="k">true</span>;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) <span class="k">if</span> (s[i] != <span class="st">'?'</span>) { allQ = <span class="k">false</span>; <span class="k">break</span>; }
+
+    <span class="k">if</span> (allQ) <span class="fn">solveAllQ</span>();
+    <span class="k">else</span> <span class="fn">solveGeneral</span>();
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<p>提交时这是<strong>一个文件、两个分支</strong>：读入后判断是否全是 <code>?</code>，是就走一维 DP，否则走 O(n⁴)。65 + 10 = 75 分。</p>
+<h3 id="100-n-500">第四档：100 分（n ≤ 500）</h3>
 <p>把 <code>E</code> 的转移从 O(n) 降回 O(n)：</p>
 <div class="code" data-lang="文本"><div class="code-bar"><span class="code-lang">文本</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code>E[i][j] = L[i][j] + Σ_m (L+N)[i][m] · E[m+1][j]
 </code></pre></div>
@@ -1049,9 +1183,10 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
 <h3 id="sec-17">为什么按字典序贪心是对的</h3>
 <ul>
 <li>每轮的四种组合里，能成立的<strong>至多一种"必要"的</strong>：因为每段两端各只有一个数，一旦要求"第 i 次 = 第 2n+1−i 次"，能配上的数对是确定的。</li>
-<li>若真的有两种组合同时成立（例如 L 左端 = L 右端 = R 左端），选哪个？题解的说法是：<strong>因为每个数恰好出现两次，两个操作互不影响</strong> —— 一对数一旦被配对消耗掉，就不会再参与后面的匹配，所以先选字典序小的那个不会"抢走"后面要用的资源。</li>
+<li>若真的有两种组合同时成立（例如 L 左端 = L 右端 = R 左端），选哪个？<strong>因为每个数恰好出现两次，两个操作互不影响</strong> —— 一对数一旦被配对消耗掉，就不会再参与后面的匹配，所以先选字典序小的那个不会"抢走"后面要用的资源。</li>
 <li>两个起点（第一步 L / 第一步 R）都试一遍，取较小的那个。</li>
 </ul>
+<p><strong>声明</strong>：上面这段是我的推导，不是官方证明。想绕开这个证明也有办法 —— 第二档那份 2<sup>n</sup> 枚举完全不依赖它，只是贵一点。</p>
 <h3 id="28-17-n-10">第一档：28 分（测试点 1~7，n ≤ 10）</h3>
 <p>直接枚举 2<sup>2n</sup> 个操作串，逐个模拟得到 b，检查回文，取字典序最小的。</p>
 <p>n = 10 时 2<sup>20</sup> ≈ 10<sup>6</sup>，每个 O(n) 检查，T = 10 时约 2 × 10<sup>7</sup>，实测 0.5s。</p>
@@ -1091,10 +1226,91 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
     <span class="k">return</span> <span class="nu">0</span>;
 }
 </code></pre></div>
-<h3 id="60-815-n-1000">第二档：60 分（测试点 8~15，n ≤ 1000）</h3>
+<h3 id="40-810-n-20">第二档：40 分（测试点 8~10，n ≤ 20）</h3>
+<p>n = 20 时 2<sup>2n</sup> = 10<sup>12</sup>，枚举操作串没戏。但回文的定义本身给了一条捷径：</p>
+<blockquote>
+<p>b 是回文 ⟺ 第 j 次取的数 == 第 2n−1−j 次取的数。</p>
+</blockquote>
+<p>所以<strong>只要把前 n 次操作（L/R）定下来，后 n 次要取的值就唯一确定了 —— 正好是前 n 个值的逆序</strong>。枚举量从 2<sup>2n</sup> 直接砍到 2<sup>n</sup>：</p>
+<ol>
+<li>DFS 枚举前 n 次操作，<strong>先试 L 再试 R</strong>，这样第一次找到的完整解就是字典序最小的；</li>
+<li>剩下一个区间 [l, r]，按"需要的值序列"从两端取（能取左边就取左边，取不了再试右边）；</li>
+<li>第一个能走通的解就是答案。</li>
+</ol>
+<p>实测：n = 20、T = 50 组，可解数据 0.01s，最坏（无解，要把 2<sup>n</sup> 走完）0.55s。</p>
+<p>为什么这档只值 40 分：<strong>2<sup>n</sup> 是硬上限</strong>，跟数据无关。同一份代码 n = 40 就要 10 秒以上（实测直接超时），n = 1000 完全没可能。要再往上，必须换成下一档那种"每轮只看四种组合"的贪心。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2021 T3 回文 —— 40 分档（测试点 1~10，n &lt;= 20）</span>
+<span class="co">// 思路（比 28 分档的 2^(2n) 枚举少枚举一半）：</span>
+<span class="co">//   b 是回文 =&gt; 第 j 次取出的数必须等于第 2n-1-j 次取出的数。</span>
+<span class="co">//   也就是说，只要前 n 次操作（L/R）定下来，后 n 次要取的值就唯一确定了 ——</span>
+<span class="co">//   正好是前 n 个值的逆序。</span>
+<span class="co">//   于是 DFS 枚举 2^n 种前一半操作（先试 L，保证找到的就是字典序最小），</span>
+<span class="co">//   再把剩下的区间用"两端取数"去凑那个逆序序列，第一次成功即为答案。</span>
+<span class="co">// 为什么只能拿 40 分：2^n 枚举，n &lt;= 20 时 10^6 级别可以接受，n = 1000 时 2^1000 完全不可能。</span>
+<span class="co">//   （60 分档用的是"每轮四种组合按字典序试"的贪心，O(n^2)；100 分档是 O(n)。）</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+
+<span class="ty">int</span> n;
+<span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; a, b, need;
+<span class="ty">string</span> pre, ans;
+<span class="ty">bool</span> found;
+
+<span class="co">// 从区间 [l,r] 里按 need[i..n-1] 的顺序取数（每次只能取左端或右端），字典序优先 L。</span>
+<span class="ty">bool</span> <span class="fn">takeRest</span>(<span class="ty">int</span> l, <span class="ty">int</span> r, <span class="ty">int</span> i, <span class="ty">string</span> &amp;suf) {
+    <span class="k">if</span> (i == n) <span class="k">return</span> <span class="k">true</span>;
+    <span class="k">if</span> (l &gt; r) <span class="k">return</span> <span class="k">false</span>;
+    <span class="k">if</span> (a[l] == need[i]) {
+        suf += <span class="st">'L'</span>;
+        <span class="k">if</span> (<span class="fn">takeRest</span>(l + <span class="nu">1</span>, r, i + <span class="nu">1</span>, suf)) <span class="k">return</span> <span class="k">true</span>;
+        suf.<span class="fn">pop_back</span>();
+    }
+    <span class="k">if</span> (r != l &amp;&amp; a[r] == need[i]) {
+        suf += <span class="st">'R'</span>;
+        <span class="k">if</span> (<span class="fn">takeRest</span>(l, r - <span class="nu">1</span>, i + <span class="nu">1</span>, suf)) <span class="k">return</span> <span class="k">true</span>;
+        suf.<span class="fn">pop_back</span>();
+    }
+    <span class="k">return</span> <span class="k">false</span>;
+}
+
+<span class="ty">void</span> <span class="fn">dfs</span>(<span class="ty">int</span> i, <span class="ty">int</span> l, <span class="ty">int</span> r) {     <span class="co">// 前 i 次操作已定，剩余区间 [l,r]</span>
+    <span class="k">if</span> (found) <span class="k">return</span>;
+    <span class="k">if</span> (i == n) {
+        <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">0</span>; j &lt; n; j++) need[j] = b[n - <span class="nu">1</span> - j];   <span class="co">// 后一半要取的值（逆序）</span>
+        <span class="ty">string</span> suf;
+        <span class="k">if</span> (<span class="fn">takeRest</span>(l, r, <span class="nu">0</span>, suf)) { ans = pre + suf; found = <span class="k">true</span>; }
+        <span class="k">return</span>;
+    }
+    b[i] = a[l]; pre += <span class="st">'L'</span>;        <span class="co">// 先试 L，保证字典序最小</span>
+    <span class="fn">dfs</span>(i + <span class="nu">1</span>, l + <span class="nu">1</span>, r);
+    pre.<span class="fn">pop_back</span>();
+    <span class="k">if</span> (found) <span class="k">return</span>;
+    b[i] = a[r]; pre += <span class="st">'R'</span>;
+    <span class="fn">dfs</span>(i + <span class="nu">1</span>, l, r - <span class="nu">1</span>);
+    pre.<span class="fn">pop_back</span>();
+}
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="ty">int</span> T;
+    <span class="k">if</span> (<span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;T) != <span class="nu">1</span>) <span class="k">return</span> <span class="nu">0</span>;
+    <span class="k">while</span> (T--) {
+        <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;n);
+        a.<span class="fn">assign</span>(<span class="nu">2</span> * n, <span class="nu">0</span>);
+        b.<span class="fn">assign</span>(n, <span class="nu">0</span>);
+        need.<span class="fn">assign</span>(n, <span class="nu">0</span>);
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; <span class="nu">2</span> * n; i++) <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;a[i]);
+        pre.<span class="fn">clear</span>(); ans.<span class="fn">clear</span>(); found = <span class="k">false</span>;
+        <span class="fn">dfs</span>(<span class="nu">0</span>, <span class="nu">0</span>, <span class="nu">2</span> * n - <span class="nu">1</span>);
+        <span class="k">if</span> (!found) <span class="fn">puts</span>(<span class="st">"-1"</span>);
+        <span class="k">else</span> <span class="fn">puts</span>(ans.<span class="fn">c_str</span>());
+    }
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="60-815-n-1000">第三档：60 分（测试点 8~15，n ≤ 1000）</h3>
 <p>思路已经是正解（四指针同时定前后两次操作），但<strong>数据结构选错了</strong>：用 <code>vector</code> 存两段，每次取数 <code>erase(begin())</code> 是 O(n) 的，总复杂度退化成 O(n²)。</p>
 <p>n ≤ 1000 时约 10<sup>6</sup> 次搬移，秒过；n = 5 × 10<sup>5</sup> 时约 2.5 × 10<sup>11</sup>，实测 14.65s，必然超时。</p>
-<p>这是考场上非常典型的失分原因：<strong>算法对了，容器选错</strong>。（改成 <code>deque</code>，或者干脆用下标就是 O(n)，见第三档。）</p>
+<p>这是考场上非常典型的失分原因：<strong>算法对了，容器选错</strong>。（改成 <code>deque</code>，或者干脆用下标就是 O(n)，见第四档。）</p>
 <div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2021 T3 回文 —— 60 分档（测试点 1~15，n &lt;= 1000）</span>
 <span class="co">// 思路与正解完全一致（四指针同时定第 i / 第 2n+1-i 次操作），</span>
 <span class="co">// 但用 vector 保存两段并在取数时 erase(begin())，单次 O(n) -&gt; 总 O(n^2)。</span>
@@ -1171,7 +1387,7 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
     <span class="k">return</span> <span class="nu">0</span>;
 }
 </code></pre></div>
-<h3 id="100-n-5-105">第三档：100 分（n ≤ 5×10<sup>5</sup>）</h3>
+<h3 id="100-n-5-105">第四档：100 分（n ≤ 5×10<sup>5</sup>）</h3>
 <p>把两段换成四个下标 <code>[l1,r1]</code>、<code>[l2,r2]</code>，全程只做 <code>l1++/r1--/l2++/r2--</code>，O(1) 一次。</p>
 <p>两个起点各跑一遍，用 <code>strcmp</code> 比较取较小的（不要用 <code>std::string</code> 拼接，5 × 10<sup>5</sup> 长度下会慢）。</p>
 <p>复杂度 O(n)，实测 n = 5 × 10<sup>5</sup> 时 0.04s。</p>
@@ -1318,6 +1534,7 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
 </tbody></table></div>
 <p>2 ≤ n, m ≤ 500，T ≤ 50，Σk<sub>i</sub> ≤ 50，0 ≤ x ≤ 10<sup>6</sup>。</p>
 <p>注意 <strong>k ≤ 2 的测试点一共 45 分</strong>（3~5 + 9~10 + 13~16），这是本题最大的部分分蛋糕，而且它已经是"平面图最小割 = 对偶图最短路"这个核心技巧。</p>
+<p>另外还有一块很便宜的 60 分：<strong>1~12 全部可以用 Dinic 直接过</strong>（n,m ≤ 100 时只有 10<sup>4</sup> 个点），根本不需要对偶图。</p>
 <h3 id="sec-21">第一步：先把它看成一个最小割</h3>
 <p>给每个格点一个 0/1 变量。每条网格边 (u,v,w) 贡献 w · [x<sub>u</sub> ≠ x<sub>v</sub>]；每个附加点（颜色 c、边权 w）贡献 w · [x<sub>u</sub> ≠ c]。</p>
 <p>这是标准的二值最小割：</p>
@@ -1330,7 +1547,9 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
 <p>答案 = 最小割 = 最大流。</p>
 <h3 id="40-18-n-m-18">第一档：40 分（测试点 1~8，n,m ≤ 18）</h3>
 <p>直接跑 Dinic。n,m ≤ 18 时结点数 ≤ 324，单次最大流非常快，实测 k = 50 交替色只要 0.01s。</p>
-<p>这份代码在 n,m ≤ 18 的 8 个点（10 + 15 + 15 = 40 分）上都能过；n,m = 100 时结点 10<sup>4</sup>、边 4 × 10<sup>4</sup>，Dinic 在网格图上会退化，跑不动。</p>
+<p>这份代码的数组是按 n,m ≤ 18 开的：<code>MAXV = 400</code>、<code>MAXE = 8000</code>、格点权值表 <code>32×32</code>。</p>
+<p><strong>这里有个我自己踩的坑，值得单独说</strong>：我一开始断定"Dinic 在网格图上会退化，n,m = 100 跑不动"，还把它写进了文档。后来实测发现根本不是 Dinic 的问题 —— 是数组开小了，<code>MAXV = 400</code> 遇到 10002 个点直接越界，进程当场挂掉（本地实测 exit code 138，SIGBUS）。看着像"跑不动"，其实是 <strong>RE</strong>。</p>
+<p>把三个数字放大，就是下面 60 分那一档。</p>
 <div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2021 T4 交通规划 —— 40 分档（测试点 1~8，n,m &lt;= 18）</span>
 <span class="co">// 直接建最小割模型：</span>
 <span class="co">//   把每个格点当结点，源 S 代表"黑"，汇 T 代表"白"。</span>
@@ -1346,6 +1565,123 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
 <span class="k">const</span> <span class="ty">int</span> MAXE = <span class="nu">8000</span>;
 <span class="ty">int</span> n, m, T;
 <span class="ty">int</span> X1[<span class="nu">32</span>][<span class="nu">32</span>], X2[<span class="nu">32</span>][<span class="nu">32</span>];
+<span class="ty">int</span> <span class="fn">rayNode</span>(<span class="ty">int</span> p) {                       <span class="co">// 射线 -&gt; 格点（0-indexed）</span>
+    <span class="k">if</span> (p &lt;= m) <span class="k">return</span> (p - <span class="nu">1</span>);
+    <span class="k">if</span> (p &lt;= m + n) <span class="k">return</span> (p - m - <span class="nu">1</span>) * m + (m - <span class="nu">1</span>);
+    <span class="k">if</span> (p &lt;= <span class="nu">2</span> * m + n) { <span class="ty">int</span> i = p - (m + n); <span class="k">return</span> (n - <span class="nu">1</span>) * m + (m - i); }
+    <span class="ty">int</span> i = p - (<span class="nu">2</span> * m + n); <span class="k">return</span> (n - i) * m;
+}
+
+<span class="ty">int</span> head[MAXV], nxt[MAXE], to[MAXE], cap[MAXE], ecnt;
+<span class="k">inline</span> <span class="ty">void</span> <span class="fn">addEdge</span>(<span class="ty">int</span> u, <span class="ty">int</span> v, <span class="ty">int</span> c) {
+    to[ecnt] = v; cap[ecnt] = c; nxt[ecnt] = head[u]; head[u] = ecnt++;
+    to[ecnt] = u; cap[ecnt] = <span class="nu">0</span>; nxt[ecnt] = head[v]; head[v] = ecnt++;
+}
+<span class="k">inline</span> <span class="ty">void</span> <span class="fn">addUndir</span>(<span class="ty">int</span> u, <span class="ty">int</span> v, <span class="ty">int</span> c) {   <span class="co">// 双向各 c</span>
+    to[ecnt] = v; cap[ecnt] = c; nxt[ecnt] = head[u]; head[u] = ecnt++;
+    to[ecnt] = u; cap[ecnt] = c; nxt[ecnt] = head[v]; head[v] = ecnt++;
+}
+
+<span class="ty">int</span> level[MAXV], iter[MAXV];
+<span class="ty">bool</span> <span class="fn">bfs</span>(<span class="ty">int</span> s, <span class="ty">int</span> t, <span class="ty">int</span> V) {
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; V; i++) level[i] = -<span class="nu">1</span>;
+    <span class="ty">queue</span>&lt;<span class="ty">int</span>&gt; q; q.<span class="fn">push</span>(s); level[s] = <span class="nu">0</span>;
+    <span class="k">while</span> (!q.<span class="fn">empty</span>()) {
+        <span class="ty">int</span> u = q.<span class="fn">front</span>(); q.<span class="fn">pop</span>();
+        <span class="k">for</span> (<span class="ty">int</span> e = head[u]; e != -<span class="nu">1</span>; e = nxt[e])
+            <span class="k">if</span> (cap[e] &gt; <span class="nu">0</span> &amp;&amp; level[to[e]] &lt; <span class="nu">0</span>) { level[to[e]] = level[u] + <span class="nu">1</span>; q.<span class="fn">push</span>(to[e]); }
+    }
+    <span class="k">return</span> level[t] &gt;= <span class="nu">0</span>;
+}
+<span class="ty">int</span> <span class="fn">dfs</span>(<span class="ty">int</span> u, <span class="ty">int</span> t, <span class="ty">int</span> f) {
+    <span class="k">if</span> (u == t) <span class="k">return</span> f;
+    <span class="k">for</span> (<span class="ty">int</span> &amp;e = iter[u]; e != -<span class="nu">1</span>; e = nxt[e]) {
+        <span class="ty">int</span> v = to[e];
+        <span class="k">if</span> (cap[e] &gt; <span class="nu">0</span> &amp;&amp; level[v] == level[u] + <span class="nu">1</span>) {
+            <span class="ty">int</span> d = <span class="fn">dfs</span>(v, t, <span class="fn">min</span>(f, cap[e]));
+            <span class="k">if</span> (d &gt; <span class="nu">0</span>) { cap[e] -= d; cap[e ^ <span class="nu">1</span>] += d; <span class="k">return</span> d; }
+        }
+    }
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+<span class="ty">long</span> <span class="ty">long</span> <span class="fn">dinic</span>(<span class="ty">int</span> s, <span class="ty">int</span> t, <span class="ty">int</span> V) {
+    <span class="ty">long</span> <span class="ty">long</span> flow = <span class="nu">0</span>;
+    <span class="k">while</span> (<span class="fn">bfs</span>(s, t, V)) {
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; V; i++) iter[i] = head[i];
+        <span class="ty">int</span> f;
+        <span class="k">while</span> ((f = <span class="fn">dfs</span>(s, t, INT_MAX)) &gt; <span class="nu">0</span>) flow += f;
+    }
+    <span class="k">return</span> flow;
+}
+
+<span class="ty">int</span> <span class="fn">main</span>() {
+    <span class="k">if</span> (<span class="fn">scanf</span>(<span class="st">"%d %d %d"</span>, &amp;n, &amp;m, &amp;T) != <span class="nu">3</span>) <span class="k">return</span> <span class="nu">0</span>;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n - <span class="nu">1</span>; i++) <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">1</span>; j &lt;= m; j++) <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;X1[i][j]);
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">1</span>; j &lt;= m - <span class="nu">1</span>; j++) <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;X2[i][j]);
+
+    <span class="k">while</span> (T--) {
+        <span class="ty">int</span> k; <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;k);
+        <span class="ty">int</span> V = n * m + <span class="nu">2</span>, S = n * m, TT = n * m + <span class="nu">1</span>;
+        ecnt = <span class="nu">0</span>;
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; V; i++) head[i] = -<span class="nu">1</span>;
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n - <span class="nu">1</span>; i++) <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">1</span>; j &lt;= m; j++)
+            <span class="fn">addUndir</span>((i - <span class="nu">1</span>) * m + (j - <span class="nu">1</span>), i * m + (j - <span class="nu">1</span>), X1[i][j]);
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">1</span>; j &lt;= m - <span class="nu">1</span>; j++)
+            <span class="fn">addUndir</span>((i - <span class="nu">1</span>) * m + (j - <span class="nu">1</span>), (i - <span class="nu">1</span>) * m + j, X2[i][j]);
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; k; i++) {
+            <span class="ty">int</span> x3, p, c; <span class="fn">scanf</span>(<span class="st">"%d %d %d"</span>, &amp;x3, &amp;p, &amp;c);
+            <span class="ty">int</span> u = <span class="fn">rayNode</span>(p);
+            <span class="k">if</span> (c == <span class="nu">1</span>) <span class="fn">addEdge</span>(S, u, x3);     <span class="co">// 黑：源侧</span>
+            <span class="k">else</span> <span class="fn">addEdge</span>(u, TT, x3);           <span class="co">// 白：汇侧</span>
+        }
+        <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, <span class="fn">dinic</span>(S, TT, V));
+    }
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+</code></pre></div>
+<h3 id="60-112-n-m-100">第二档：60 分（测试点 1~12，n,m ≤ 100）</h3>
+<p>和上一档<strong>一模一样的 Dinic</strong>，只改三处常量：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">常量</th>
+<th align="center">40 分档</th>
+<th align="center">60 分档</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>MAXV</code></td>
+<td align="center">400</td>
+<td align="center">10010</td>
+</tr>
+<tr>
+<td align="center"><code>MAXE</code></td>
+<td align="center">8000</td>
+<td align="center">200000</td>
+</tr>
+<tr>
+<td align="center"><code>X1</code> / <code>X2</code></td>
+<td align="center"><code>[32][32]</code></td>
+<td align="center"><code>[505][505]</code></td>
+</tr>
+</tbody></table></div>
+<p>n,m ≤ 100 时结点 10<sup>4</sup>、边 4 × 10<sup>4</sup>，Dinic 完全够用：实测 k = 50 单次询问 0.02s，25 组 k ≤ 2 的询问 0.01s。与 100 分档在 n,m ∈ {5,18,40,100} × k ∈ {2,3,8,50} 的 80 组随机数据上逐行一致。</p>
+<p><strong>这是全篇最便宜的一次提分：20 分只值三个数字。</strong></p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2021 T4 交通规划 —— 60 分档（测试点 1~12，n,m &lt;= 100）</span>
+<span class="co">// 和 40 分档是同一份 Dinic 最小割，唯一的区别是把点/边数组开大：</span>
+<span class="co">//   MAXV 400 -&gt; 10010，MAXE 8000 -&gt; 200000，格点权值表 32x32 -&gt; 505x505。</span>
+<span class="co">// 为什么值得单独写一段：我第一版就是因为数组只开了 32x32、MAXV 只有 400，</span>
+<span class="co">//   一到 n,m = 100（10002 个点）就下标越界直接 RE，看上去像"Dinic 在网格图上跑不动"，</span>
+<span class="co">//   其实是自己的锅。放大数组后实测 n,m = 100、k = 50：单次询问 0.02s。</span>
+<span class="co">// n,m &lt;= 100 时结点数 &lt;= 10002、边数 &lt;= 4e4，Dinic 完全够用；</span>
+<span class="co">//   n,m = 500 时结点 2.5e5，才会真的跑不动（那要靠对偶图，见 80/100 分档）。</span>
+<span class="pp">#include &lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> std;
+
+<span class="k">const</span> <span class="ty">int</span> MAXV = <span class="nu">10010</span>;
+<span class="k">const</span> <span class="ty">int</span> MAXE = <span class="nu">200000</span>;
+<span class="ty">int</span> n, m, T;
+<span class="ty">int</span> X1[<span class="nu">505</span>][<span class="nu">505</span>], X2[<span class="nu">505</span>][<span class="nu">505</span>];
 <span class="ty">int</span> <span class="fn">rayNode</span>(<span class="ty">int</span> p) {                       <span class="co">// 射线 -&gt; 格点（0-indexed）</span>
     <span class="k">if</span> (p &lt;= m) <span class="k">return</span> (p - <span class="nu">1</span>);
     <span class="k">if</span> (p &lt;= m + n) <span class="k">return</span> (p - m - <span class="nu">1</span>) * m + (m - <span class="nu">1</span>);
@@ -1500,34 +1836,39 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
 </tr>
 </tbody></table></div>
 <p>（X1[i][j] 是 (i,j)—(i+1,j) 的竖直边，X2[i][j] 是 (i,j)—(i,j+1) 的水平边。）</p>
-<h3 id="70-k-2-7-40">第二档：70 分（k ≤ 2 的 7 个测试点 + 40 分的暴力部分）</h3>
+<h3 id="80-dinic-60-k-2-20">第三档：80 分（Dinic 的 60 + 对偶图处理 k ≤ 2 的 20）</h3>
 <p>只处理 k ≤ 2：建对偶图，两个扇区各连上自己覆盖的边界边，再加上两条"剪断附加点"的边，跑一次 Dijkstra。</p>
 <p>k = 1 或两点同色时答案是 0。</p>
-<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2021 T4 交通规划 —— 70 分档（k &lt;= 2 的 7 个测试点 + n,m &lt;= 18 的暴力分）</span>
-<span class="co">// 思路：k = 2 时若两点同色，全染同色，答案 0；若异色，问题就是"把两个附加点分开的最小割"。</span>
-<span class="co">// 平面图最小割 = 对偶图最短路：</span>
-<span class="co">//   内部面 (n-1)(m-1) 个结点，对偶边权 = 原边权；</span>
-<span class="co">//   外部面被两条射线切成两个扇区 S0、S1，扇区覆盖的每条边界边都连一条边到边界内侧的面；</span>
-<span class="co">//   S0、S1 之间再连一条边（权 = 射线上附加点的 x3），表示"直接剪断附加点那条边"。</span>
-<span class="co">//   答案 = S0 到 S1 的最短路。复杂度 O(nm log(nm))。</span>
-<span class="co">// 注意：这份代码只处理 k &lt;= 2（那 7 个测试点），k &gt; 2 的情况请见 100 分档。</span>
+<p><strong>按 k 分派</strong>就能把两档合起来：k ≤ 2 走对偶图（n,m = 500 也只要 0.3s），k &gt; 2 回退 Dinic（只撑得住 n,m ≤ 100）。合起来覆盖测试点 1~16：</p>
+<div class="code" data-lang="文本"><div class="code-bar"><span class="code-lang">文本</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code>1~2 (10) + 3~5 (15) + 6~8 (15) + 9~10 (10) + 11~12 (10) + 13~16 (20) = 80
+</code></pre></div>
+<p>实测 n = m = 500、T = 25、k ≤ 2：0.30s，与 100 分档逐行一致。</p>
+<div class="code" data-lang="C++"><div class="code-bar"><span class="code-lang">C++</span><button class="copy" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-6A3.5 3.5 0 0 0 3 6.5v6A2.5 2.5 0 0 0 5.5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg></button></div><pre><code><span class="co">// CSP-S 2021 T4 交通规划 —— 80 分档（测试点 1~16）</span>
+<span class="co">//   60 分档的 Dinic（测试点 1~12，n,m &lt;= 100）</span>
+<span class="co">// + 对偶图最短路处理 k &lt;= 2（测试点 3~5、9~10、13~16，其中 13~16 的 n,m 到 500）</span>
+<span class="co">// 提交时按 k 分派：</span>
+<span class="co">//   k &lt;= 2  -&gt; 对偶图 Dijkstra，O(nm log nm)，n,m = 500 也只要 0.3s；</span>
+<span class="co">//   k &gt; 2   -&gt; 回退 Dinic 最小割（只对 n,m &lt;= 100 有效，也就是测试点 1~12 里的 k&gt;2 那几个点）。</span>
+<span class="co">// k &gt; 2 且 n,m 很大（测试点 17~20）这份代码直接输出 0 放弃 —— 那是 100 分档的活。</span>
 <span class="pp">#include &lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span> <span class="k">namespace</span> std;
 
 <span class="k">const</span> <span class="ty">int</span> MAXN = <span class="nu">505</span>;
-<span class="k">const</span> <span class="ty">int</span> MAXV = MAXN * MAXN + <span class="nu">64</span>;
 <span class="k">const</span> <span class="ty">long</span> <span class="ty">long</span> INF = (<span class="ty">long</span> <span class="ty">long</span>)<span class="nu">1e18</span>;
 
 <span class="ty">int</span> n, m, T;
-<span class="ty">int</span> X1[MAXN][MAXN], X2[MAXN][MAXN];
-<span class="ty">int</span> V0;
+<span class="ty">int</span> X1[MAXN][MAXN], X2[MAXN][MAXN];       <span class="co">// X1: 竖直边 (i,j)-(i+1,j)   X2: 水平边 (i,j)-(i,j+1)</span>
+<span class="ty">int</span> V0;                                    <span class="co">// 内部面的个数 (n-1)(m-1)</span>
+
+<span class="co">// ===================== 对偶图（k &lt;= 2）=====================</span>
+<span class="k">const</span> <span class="ty">int</span> MAXVD = MAXN * MAXN + <span class="nu">64</span>;
 <span class="k">struct</span> E { <span class="ty">int</span> to, w; };
-<span class="ty">vector</span>&lt;E&gt; g[MAXV];
+<span class="ty">vector</span>&lt;E&gt; g[MAXVD];
 <span class="k">inline</span> <span class="ty">void</span> <span class="fn">addE</span>(<span class="ty">int</span> u, <span class="ty">int</span> v, <span class="ty">int</span> w) { g[u].<span class="fn">push_back</span>({v, w}); g[v].<span class="fn">push_back</span>({u, w}); }
 <span class="k">inline</span> <span class="ty">int</span> <span class="fn">fid</span>(<span class="ty">int</span> i, <span class="ty">int</span> j) { <span class="k">return</span> (i - <span class="nu">1</span>) * (m - <span class="nu">1</span>) + j; }
 
-<span class="ty">int</span> posF[MAXN * <span class="nu">4</span>], posW[MAXN * <span class="nu">4</span>];
-<span class="ty">long</span> <span class="ty">long</span> dist[MAXV];
+<span class="ty">int</span> posF[MAXN * <span class="nu">4</span>], posW[MAXN * <span class="nu">4</span>];       <span class="co">// 位置 p（射线 p 与 p+1 之间的边界）-&gt; 内侧的面 / 边权</span>
+<span class="ty">long</span> <span class="ty">long</span> dist[MAXVD];
 
 <span class="ty">void</span> <span class="fn">dijkstra</span>(<span class="ty">int</span> s, <span class="ty">int</span> V) {
     <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= V; i++) dist[i] = INF;
@@ -1544,11 +1885,85 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
     }
 }
 
+<span class="co">// ===================== Dinic（k &gt; 2 且 n,m &lt;= 100）=====================</span>
+<span class="k">const</span> <span class="ty">int</span> MAXVF = <span class="nu">10010</span>;
+<span class="k">const</span> <span class="ty">int</span> MAXEF = <span class="nu">200000</span>;
+<span class="ty">int</span> head[MAXVF], nxt[MAXEF], to[MAXEF], cap[MAXEF], ecnt;
+
+<span class="k">inline</span> <span class="ty">void</span> <span class="fn">addEdge</span>(<span class="ty">int</span> u, <span class="ty">int</span> v, <span class="ty">int</span> c) {
+    to[ecnt] = v; cap[ecnt] = c; nxt[ecnt] = head[u]; head[u] = ecnt++;
+    to[ecnt] = u; cap[ecnt] = <span class="nu">0</span>; nxt[ecnt] = head[v]; head[v] = ecnt++;
+}
+<span class="k">inline</span> <span class="ty">void</span> <span class="fn">addUndir</span>(<span class="ty">int</span> u, <span class="ty">int</span> v, <span class="ty">int</span> c) {          <span class="co">// 双向各 c</span>
+    to[ecnt] = v; cap[ecnt] = c; nxt[ecnt] = head[u]; head[u] = ecnt++;
+    to[ecnt] = u; cap[ecnt] = c; nxt[ecnt] = head[v]; head[v] = ecnt++;
+}
+
+<span class="ty">int</span> <span class="fn">rayNode</span>(<span class="ty">int</span> p) {                                 <span class="co">// 射线编号(1-indexed) -&gt; 格点(0-indexed)</span>
+    <span class="k">if</span> (p &lt;= m) <span class="k">return</span> (p - <span class="nu">1</span>);
+    <span class="k">if</span> (p &lt;= m + n) <span class="k">return</span> (p - m - <span class="nu">1</span>) * m + (m - <span class="nu">1</span>);
+    <span class="k">if</span> (p &lt;= <span class="nu">2</span> * m + n) { <span class="ty">int</span> i = p - (m + n); <span class="k">return</span> (n - <span class="nu">1</span>) * m + (m - i); }
+    <span class="ty">int</span> i = p - (<span class="nu">2</span> * m + n); <span class="k">return</span> (n - i) * m;
+}
+
+<span class="ty">int</span> level[MAXVF], iter_[MAXVF];
+<span class="ty">bool</span> <span class="fn">bfs</span>(<span class="ty">int</span> s, <span class="ty">int</span> t, <span class="ty">int</span> V) {
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; V; i++) level[i] = -<span class="nu">1</span>;
+    <span class="ty">queue</span>&lt;<span class="ty">int</span>&gt; q; q.<span class="fn">push</span>(s); level[s] = <span class="nu">0</span>;
+    <span class="k">while</span> (!q.<span class="fn">empty</span>()) {
+        <span class="ty">int</span> u = q.<span class="fn">front</span>(); q.<span class="fn">pop</span>();
+        <span class="k">for</span> (<span class="ty">int</span> e = head[u]; e != -<span class="nu">1</span>; e = nxt[e])
+            <span class="k">if</span> (cap[e] &gt; <span class="nu">0</span> &amp;&amp; level[to[e]] &lt; <span class="nu">0</span>) { level[to[e]] = level[u] + <span class="nu">1</span>; q.<span class="fn">push</span>(to[e]); }
+    }
+    <span class="k">return</span> level[t] &gt;= <span class="nu">0</span>;
+}
+<span class="ty">int</span> <span class="fn">dfsflow</span>(<span class="ty">int</span> u, <span class="ty">int</span> t, <span class="ty">int</span> f) {
+    <span class="k">if</span> (u == t) <span class="k">return</span> f;
+    <span class="k">for</span> (<span class="ty">int</span> &amp;e = iter_[u]; e != -<span class="nu">1</span>; e = nxt[e]) {
+        <span class="ty">int</span> v = to[e];
+        <span class="k">if</span> (cap[e] &gt; <span class="nu">0</span> &amp;&amp; level[v] == level[u] + <span class="nu">1</span>) {
+            <span class="ty">int</span> d = <span class="fn">dfsflow</span>(v, t, <span class="fn">min</span>(f, cap[e]));
+            <span class="k">if</span> (d &gt; <span class="nu">0</span>) { cap[e] -= d; cap[e ^ <span class="nu">1</span>] += d; <span class="k">return</span> d; }
+        }
+    }
+    <span class="k">return</span> <span class="nu">0</span>;
+}
+<span class="ty">long</span> <span class="ty">long</span> <span class="fn">dinic</span>(<span class="ty">int</span> s, <span class="ty">int</span> t, <span class="ty">int</span> V) {
+    <span class="ty">long</span> <span class="ty">long</span> flow = <span class="nu">0</span>;
+    <span class="k">while</span> (<span class="fn">bfs</span>(s, t, V)) {
+        <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; V; i++) iter_[i] = head[i];
+        <span class="ty">int</span> f;
+        <span class="k">while</span> ((f = <span class="fn">dfsflow</span>(s, t, INT_MAX)) &gt; <span class="nu">0</span>) flow += f;
+    }
+    <span class="k">return</span> flow;
+}
+
+<span class="co">// 用最小割求一个询问（k 个附加点），ray/c 都是 1-indexed 的射线编号，w 是附加边权</span>
+<span class="ty">long</span> <span class="ty">long</span> <span class="fn">solveByCut</span>(<span class="k">const</span> <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; &amp;ray, <span class="k">const</span> <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; &amp;col, <span class="k">const</span> <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; &amp;w) {
+    <span class="ty">int</span> k = (<span class="ty">int</span>)ray.<span class="fn">size</span>();
+    <span class="ty">int</span> V = n * m + <span class="nu">2</span>, S = n * m, TT = n * m + <span class="nu">1</span>;
+    ecnt = <span class="nu">0</span>;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; V; i++) head[i] = -<span class="nu">1</span>;
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n - <span class="nu">1</span>; i++)
+        <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">1</span>; j &lt;= m; j++)
+            <span class="fn">addUndir</span>((i - <span class="nu">1</span>) * m + (j - <span class="nu">1</span>), i * m + (j - <span class="nu">1</span>), X1[i][j]);
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++)
+        <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">1</span>; j &lt;= m - <span class="nu">1</span>; j++)
+            <span class="fn">addUndir</span>((i - <span class="nu">1</span>) * m + (j - <span class="nu">1</span>), (i - <span class="nu">1</span>) * m + j, X2[i][j]);
+    <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; k; i++) {
+        <span class="ty">int</span> u = <span class="fn">rayNode</span>(ray[i]);
+        <span class="k">if</span> (col[i] == <span class="nu">1</span>) <span class="fn">addEdge</span>(S, u, w[i]);     <span class="co">// 黑：源侧</span>
+        <span class="k">else</span> <span class="fn">addEdge</span>(u, TT, w[i]);                <span class="co">// 白：汇侧</span>
+    }
+    <span class="k">return</span> <span class="fn">dinic</span>(S, TT, V);
+}
+
 <span class="ty">int</span> <span class="fn">main</span>() {
     <span class="k">if</span> (<span class="fn">scanf</span>(<span class="st">"%d %d %d"</span>, &amp;n, &amp;m, &amp;T) != <span class="nu">3</span>) <span class="k">return</span> <span class="nu">0</span>;
     <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n - <span class="nu">1</span>; i++) <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">1</span>; j &lt;= m; j++) <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;X1[i][j]);
     <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n; i++) <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">1</span>; j &lt;= m - <span class="nu">1</span>; j++) <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;X2[i][j]);
 
+    <span class="co">// 建对偶图：内部面之间的边</span>
     V0 = (n - <span class="nu">1</span>) * (m - <span class="nu">1</span>);
     <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">1</span>; i &lt;= n - <span class="nu">1</span>; i++)
         <span class="k">for</span> (<span class="ty">int</span> j = <span class="nu">1</span>; j &lt;= m - <span class="nu">1</span>; j++) {
@@ -1556,6 +1971,7 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
             <span class="k">if</span> (j + <span class="nu">1</span> &lt;= m - <span class="nu">1</span>) <span class="fn">addE</span>(<span class="fn">fid</span>(i, j), <span class="fn">fid</span>(i, j + <span class="nu">1</span>), X1[i][j + <span class="nu">1</span>]);
         }
 
+    <span class="co">// 边界位置 p  -&gt;  内侧的面 / 边权</span>
     <span class="ty">int</span> N = <span class="nu">2</span> * m + <span class="nu">2</span> * n;
     <span class="k">for</span> (<span class="ty">int</span> p = <span class="nu">0</span>; p &lt; N; p++) { posF[p] = <span class="nu">0</span>; posW[p] = <span class="nu">0</span>; }
     <span class="k">for</span> (<span class="ty">int</span> p = <span class="nu">0</span>; p &lt;= m - <span class="nu">2</span>; p++) { posF[p] = <span class="fn">fid</span>(<span class="nu">1</span>, p + <span class="nu">1</span>); posW[p] = X2[<span class="nu">1</span>][p + <span class="nu">1</span>]; }
@@ -1565,13 +1981,13 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
 
     <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; touched;
     <span class="k">while</span> (T--) {
-        <span class="co">// 清掉上一轮挂在内部面上的动态边（扇区结点自己的出边也一并清掉）</span>
+        <span class="co">// 清掉上一轮挂在内部面上的动态边</span>
         <span class="k">for</span> (<span class="ty">size_t</span> i = <span class="nu">0</span>; i &lt; touched.<span class="fn">size</span>(); i++) {
             <span class="ty">int</span> f = touched[i];
-            <span class="ty">size_t</span> w = <span class="nu">0</span>;
+            <span class="ty">size_t</span> wq = <span class="nu">0</span>;
             <span class="k">for</span> (<span class="ty">size_t</span> j = <span class="nu">0</span>; j &lt; g[f].<span class="fn">size</span>(); j++)
-                <span class="k">if</span> (g[f][j].to &lt;= V0) g[f][w++] = g[f][j];
-            g[f].<span class="fn">resize</span>(w);
+                <span class="k">if</span> (g[f][j].to &lt;= V0) g[f][wq++] = g[f][j];
+            g[f].<span class="fn">resize</span>(wq);
         }
         touched.<span class="fn">clear</span>();
         g[V0 + <span class="nu">1</span>].<span class="fn">clear</span>(); g[V0 + <span class="nu">2</span>].<span class="fn">clear</span>();
@@ -1579,29 +1995,32 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
         <span class="ty">int</span> k; <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;k);
         <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; <span class="fn">P</span>(k), <span class="fn">C</span>(k), <span class="fn">W</span>(k);
         <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; k; i++) { <span class="fn">scanf</span>(<span class="st">"%d %d %d"</span>, &amp;W[i], &amp;P[i], &amp;C[i]); P[i]--; }
-        <span class="k">if</span> (k == <span class="nu">1</span>) { <span class="fn">puts</span>(<span class="st">"0"</span>); <span class="k">continue</span>; }
-        <span class="k">if</span> (k == <span class="nu">2</span>) {
-            <span class="co">// 按射线编号排好序，保证环序</span>
+
+        <span class="k">if</span> (k &lt;= <span class="nu">2</span>) {
+            <span class="k">if</span> (k == <span class="nu">1</span>) { <span class="fn">puts</span>(<span class="st">"0"</span>); <span class="k">continue</span>; }
             <span class="k">if</span> (P[<span class="nu">0</span>] &gt; P[<span class="nu">1</span>]) { <span class="fn">swap</span>(P[<span class="nu">0</span>], P[<span class="nu">1</span>]); <span class="fn">swap</span>(C[<span class="nu">0</span>], C[<span class="nu">1</span>]); <span class="fn">swap</span>(W[<span class="nu">0</span>], W[<span class="nu">1</span>]); }
-            <span class="k">if</span> (C[<span class="nu">0</span>] == C[<span class="nu">1</span>]) { <span class="fn">puts</span>(<span class="st">"0"</span>); <span class="k">continue</span>; }
+            <span class="k">if</span> (C[<span class="nu">0</span>] == C[<span class="nu">1</span>]) { <span class="fn">puts</span>(<span class="st">"0"</span>); <span class="k">continue</span>; }       <span class="co">// 同色：全染同色，代价 0</span>
             <span class="ty">int</span> V = V0 + <span class="nu">2</span>;
             <span class="ty">int</span> a = P[<span class="nu">0</span>], b = P[<span class="nu">1</span>];
             <span class="ty">int</span> t = a;
             <span class="k">while</span> (t != b) { <span class="k">if</span> (posF[t]) { <span class="fn">addE</span>(V0 + <span class="nu">1</span>, posF[t], posW[t]); touched.<span class="fn">push_back</span>(posF[t]); } t = (t + <span class="nu">1</span>) % N; }
             t = b;
             <span class="k">while</span> (t != a) { <span class="k">if</span> (posF[t]) { <span class="fn">addE</span>(V0 + <span class="nu">2</span>, posF[t], posW[t]); touched.<span class="fn">push_back</span>(posF[t]); } t = (t + <span class="nu">1</span>) % N; }
-            <span class="fn">addE</span>(V0 + <span class="nu">1</span>, V0 + <span class="nu">2</span>, W[<span class="nu">1</span>]);   <span class="co">// 经过射线 P[1] 上的附加点</span>
-            <span class="fn">addE</span>(V0 + <span class="nu">1</span>, V0 + <span class="nu">2</span>, W[<span class="nu">0</span>]);   <span class="co">// 经过射线 P[0] 上的附加点</span>
+            <span class="fn">addE</span>(V0 + <span class="nu">1</span>, V0 + <span class="nu">2</span>, W[<span class="nu">1</span>]);      <span class="co">// 经过射线 P[1] 上的附加点</span>
+            <span class="fn">addE</span>(V0 + <span class="nu">1</span>, V0 + <span class="nu">2</span>, W[<span class="nu">0</span>]);      <span class="co">// 经过射线 P[0] 上的附加点</span>
             <span class="fn">dijkstra</span>(V0 + <span class="nu">1</span>, V);
             <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, dist[V0 + <span class="nu">2</span>]);
         } <span class="k">else</span> {
-            <span class="fn">puts</span>(<span class="st">"0"</span>);   <span class="co">// 这份代码不处理 k &gt; 2</span>
+            <span class="k">if</span> ((<span class="ty">long</span> <span class="ty">long</span>)n * m &gt; <span class="nu">10000</span>) { <span class="fn">puts</span>(<span class="st">"0"</span>); <span class="k">continue</span>; }   <span class="co">// 网格太大，Dinic 撑不住</span>
+            <span class="ty">vector</span>&lt;<span class="ty">int</span>&gt; <span class="fn">ray</span>(k), <span class="fn">col</span>(k), <span class="fn">w</span>(k);
+            <span class="k">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i &lt; k; i++) { ray[i] = P[i] + <span class="nu">1</span>; col[i] = C[i]; w[i] = W[i]; }
+            <span class="fn">printf</span>(<span class="st">"%lld\n"</span>, <span class="fn">solveByCut</span>(ray, col, w));
         }
     }
     <span class="k">return</span> <span class="nu">0</span>;
 }
 </code></pre></div>
-<h3 id="100-dp">第三档：100 分（+ 区间 DP）</h3>
+<h3 id="100-dp">第四档：100 分（+ 区间 DP）</h3>
 <p>k &gt; 2 时，扇区有 k 个，按环序排好。设扇区 s 的左端射线颜色是 c[s]，右端是 c[s+1]：</p>
 <ul>
 <li>如果 c[s] == c[s+1]，这段边界两侧同色，割线<strong>不需要</strong>穿过它；</li>
@@ -1804,6 +2223,7 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
 <li>答案可能很大（路径长度总和 × 10<sup>6</sup>），务必 <code>long long</code>。</li>
 <li><code>dist</code> 数组每次 Dijkstra 都要重置，重置范围是 <code>1..V</code>（V = V0 + k），不要只重置到 V0。</li>
 <li>区间 DP 的下标是"复制两倍后的序列"，<code>type</code> 和 <code>dist</code> 要取模 q。</li>
+<li><strong>数组规模要跟着档位改</strong>。<code>MAXV = 400</code> 只够 n,m ≤ 18；n,m = 100 需要 10010。开小了不是"慢"，是直接段错误 —— 而段错误在考场上看起来像"这份代码跑不动"，很容易被误判成算法不行（我自己就误判过一次）。</li>
 </ol>
 <hr>
 <h2 id="sec-25">考场取舍表</h2>
@@ -1854,6 +2274,13 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
 </tr>
 <tr>
 <td align="center">T2</td>
+<td align="left"><code>bracket_75.cpp</code></td>
+<td align="center">75</td>
+<td align="left">65 分档 + 全 <code>?</code> 的一维 DP</td>
+<td align="center">105 行</td>
+</tr>
+<tr>
+<td align="center">T2</td>
 <td align="left"><code>bracket_100.cpp</code></td>
 <td align="center">100</td>
 <td align="left">O(n³) 区间 DP</td>
@@ -1865,6 +2292,13 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
 <td align="center">28</td>
 <td align="left">2<sup>2n</sup> 枚举</td>
 <td align="center">30 行</td>
+</tr>
+<tr>
+<td align="center">T3</td>
+<td align="left"><code>palin_40.cpp</code></td>
+<td align="center">40</td>
+<td align="left">2<sup>n</sup> 枚举前一半 + 凑后一半</td>
+<td align="center">55 行</td>
 </tr>
 <tr>
 <td align="center">T3</td>
@@ -1884,15 +2318,22 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
 <td align="center">T4</td>
 <td align="left"><code>traffic_40.cpp</code></td>
 <td align="center">40</td>
-<td align="left">最小割（Dinic）</td>
+<td align="left">最小割（Dinic，小数组）</td>
 <td align="center">90 行</td>
 </tr>
 <tr>
 <td align="center">T4</td>
-<td align="left"><code>traffic_70.cpp</code></td>
-<td align="center">70</td>
-<td align="left">对偶图 + 最短路</td>
-<td align="center">95 行</td>
+<td align="left"><code>traffic_60.cpp</code></td>
+<td align="center">60</td>
+<td align="left">同一份 Dinic，数组开大</td>
+<td align="center">90 行</td>
+</tr>
+<tr>
+<td align="center">T4</td>
+<td align="left"><code>traffic_80.cpp</code></td>
+<td align="center">80</td>
+<td align="left">Dinic + 对偶图（k ≤ 2）</td>
+<td align="center">175 行</td>
 </tr>
 <tr>
 <td align="center">T4</td>
@@ -1902,8 +2343,15 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
 <td align="center">155 行</td>
 </tr>
 </tbody></table></div>
-<p><strong>想稳拿 300 分的最短路径</strong>：T1 直接写虚拟廊桥（它比 40 分写法只多 20 行，没必要分两步）→ T2 写 O(n³) 的 5 状态 DP（65 分那版只是少优化一层循环，没必要）→ T3 写四指针 O(n)（同样，60 分那版只是容器选错）→ T4 写 k ≤ 2 的对偶图最短路（70 分，是所有档里性价比最高的）。</p>
-<p><strong>想冲 350+</strong>：T4 把 q 个变化扇区的区间 DP 补上，剩下的都是实现细节。</p>
+<p><strong>性价比排序</strong>（同样的代码量换多少分）：</p>
+<ol>
+<li><strong>T4 40 → 60</strong>：改三个常量，20 分。全篇第一。</li>
+<li><strong>T2 65 → 75</strong>：三十行一维 DP，10 分；而且这三十行比 O(n⁴) 好写得多。</li>
+<li><strong>T4 60 → 80</strong>：把 k ≤ 2 的对偶图并进来，20 分，代价是要理解对偶图 —— 但这也是 100 分的必经之路。</li>
+<li><strong>T3 40 → 60</strong>：只是把 <code>vector</code> 换成下标，20 分。</li>
+</ol>
+<p><strong>想稳拿 300 分的最短路径</strong>：T1 直接写虚拟廊桥（比 40 分写法只多 20 行）→ T2 写 O(n³) 的 4 状态 DP（65 分那版只是少优化一层循环）→ T3 写四指针 O(n)（60 分那版只是容器选错）→ T4 写 60 分的 Dinic（数组别开小），合计 360。</p>
+<p><strong>想冲 380+</strong>：T4 把 k ≤ 2 的对偶图补上（80），再把 q 个变化扇区的区间 DP 补上（100），剩下的都是实现细节。</p>
 <h2 id="sec-26">附：代码与测试清单</h2>
 <h3 id="code-zip-code">正解 / 部分分代码（<code>code.zip</code> 内 <code>code/</code>）</h3>
 <div class="table-wrap"><table>
@@ -1937,7 +2385,12 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
 <tr>
 <td align="left"><code>bracket_65.cpp</code></td>
 <td align="left">T2 65 分</td>
-<td align="left">n=100：0.01s；n=500：1.73s（超时）</td>
+<td align="left">n=100：0.01s；n=500 全 <code>?</code>：1.73s（超时）</td>
+</tr>
+<tr>
+<td align="left"><code>bracket_75.cpp</code></td>
+<td align="left">T2 75 分</td>
+<td align="left">n=500 全 <code>?</code>：0.04s（同一输入下 65 分档 1.73s）</td>
 </tr>
 <tr>
 <td align="left"><code>bracket_100.cpp</code></td>
@@ -1948,6 +2401,11 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
 <td align="left"><code>palin_28.cpp</code></td>
 <td align="left">T3 28 分</td>
 <td align="left">T=10, n=10：0.50s</td>
+</tr>
+<tr>
+<td align="left"><code>palin_40.cpp</code></td>
+<td align="left">T3 40 分</td>
+<td align="left">n=20, T=50：0.01s；最坏（全无解）0.55s；n=40 已超时</td>
 </tr>
 <tr>
 <td align="left"><code>palin_60.cpp</code></td>
@@ -1962,12 +2420,17 @@ E[i][j] = L[i][j] + Σ_m (L[i][m] + N[i][m]) · E[m+1][j]
 <tr>
 <td align="left"><code>traffic_40.cpp</code></td>
 <td align="left">T4 40 分</td>
-<td align="left">n=m=18, k=50：0.01s</td>
+<td align="left">n=m=18, k=50：0.01s（n=m=100 直接 RE）</td>
 </tr>
 <tr>
-<td align="left"><code>traffic_70.cpp</code></td>
-<td align="left">T4 70 分</td>
-<td align="left">n=m=500, T=25, k=2：0.36s</td>
+<td align="left"><code>traffic_60.cpp</code></td>
+<td align="left">T4 60 分</td>
+<td align="left">n=m=100, T=25, k≤50：0.18s</td>
+</tr>
+<tr>
+<td align="left"><code>traffic_80.cpp</code></td>
+<td align="left">T4 80 分</td>
+<td align="left">n=m=500, T=25, k≤2：0.28s；n=m=500, T=50：0.53s</td>
 </tr>
 <tr>
 <td align="left"><code>traffic_100.cpp</code></td>
