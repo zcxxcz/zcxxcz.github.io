@@ -1,10 +1,10 @@
 {
   "id": "bitkindle-explained",
-  "title": "读懂 BitKindle：从 3.5 KiB 种子到自举 C 编译器",
+  "title": "从 20 + 22 到 BitKindle：给高级语言使用者的基础详解",
   "type": "资料",
   "format": "html",
   "status": "published",
-  "summary": "七步交互解读：3,584 字节种子怎样启动工具链，为什么 C 编译器能编译自己，以及 Mario 演示究竟验证了什么。",
+  "summary": "从一行代码到真实机器指令，用可单步执行的教学实验解释 CPU、汇编器、编译器、自举与自托管，再解读《我对 AI 说：要有光》的实验和安全含义。",
   "tags": [
     "文章与资料",
     "计算机科学",
@@ -13,6 +13,6 @@
     "自举",
     "BitKindle"
   ],
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "featured": false
 }

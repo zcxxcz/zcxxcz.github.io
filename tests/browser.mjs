@@ -38,12 +38,28 @@ try {
       .querySelector(".pagefind-ui__results")
       ?.textContent.includes("木桶"),
   );
-  await page.locator("#search input[type=text]").fill("自造数据");
-  await page.waitForFunction(() =>
-    document
-      .querySelector(".pagefind-ui__results")
-      ?.textContent.includes("检查"),
+  await page.locator("#search input[type=text]").fill("");
+  await page.waitForFunction(
+    () => !document.querySelector(".pagefind-ui__result-link"),
   );
+  await page.locator("#search input[type=text]").fill("自造数据");
+  await page.locator(".pagefind-ui__result-link").first().waitFor();
+  // 全文命中的文档可能排到下一页；核对文档链接，不依赖会变化的摘要。
+  const fullTextHit = page.locator(
+    '.pagefind-ui__result-link[href$="/xinao-courses/"]',
+  );
+  for (let i = 0; i < 8 && !(await fullTextHit.count()); i++) {
+    const more = page.locator(".pagefind-ui__button");
+    if (!(await more.count()) || !(await more.isVisible())) break;
+    const before = await page.locator(".pagefind-ui__result-link").count();
+    await more.click();
+    await page.waitForFunction(
+      (count) =>
+        document.querySelectorAll(".pagefind-ui__result-link").length > count,
+      before,
+    );
+  }
+  await fullTextHit.waitFor();
   await page.locator("#search input[type=text]").fill("");
   // 筛选按钮由主题词表自动生成，且必须覆盖到全部主题。
   assert.ok((await page.locator(".filter-bar button").count()) >= 4);
