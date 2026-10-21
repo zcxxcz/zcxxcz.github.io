@@ -1,0 +1,11 @@
+{
+  "id": "oi-ai-learning-roadmap",
+  "title": "信奥 × AI · 六年探索路线",
+  "type": "资料",
+  "format": "html",
+  "status": "published",
+  "summary": "从初一 CSP-J 到高中 NOI，把搜索、动态规划、字符串和图算法连接到 AI 经典论文，配套六年规划、8 个基础项目、3 条研究方向与可操作的 BFS/A* 实验。",
+  "tags": ["信奥", "人工智能", "学习路线", "经典论文", "项目实践"],
+  "updated": "2026-10-22",
+  "featured": true
+}
