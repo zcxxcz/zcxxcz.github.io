@@ -32,3 +32,5 @@
 `textPaths` 只允许仓库内明确公开的文件，可为空。导出后该字段替换为 `text`，HTML 优先提取 article 正文、排除导航与脚本。目录输出为 `{ "version": 1, "records": [...] }`；记录字段为 id/title/type/summary/tags/url/updated/featured/text。总入口为记录增加 source，并输出 generated/warnings。
 
 应用有多个作品时列出多条记录。不同版本讲稿可以放同一记录的多个 textPaths 中，生成时去掉重复段落，只保留一个访问 URL。
+
+首页不再按 featured 人工精选。外部记录可提供 publishedAt（ISO 日期）注明首次发布时间；不提供时用首次注册到总入口的时间，后续 updated 更新不影响最新上传排名。个人常用入口按浏览器本地点击统计。

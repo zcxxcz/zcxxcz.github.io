@@ -687,7 +687,8 @@ footer {
     grid-template-columns: 1fr;
   }
   .card-group-head p {
-    display: none;
+    flex-basis: 100%;
+    display: block;
   }
   .series-head {
     grid-template-columns: minmax(0, 1fr) auto;

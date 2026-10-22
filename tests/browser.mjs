@@ -1,4 +1,4 @@
-import { checkOiAiLabs } from './oi-ai-labs-browser.mjs';
+import { checkOiAiLabs } from "./oi-ai-labs-browser.mjs";
 import { chromium } from "playwright";
 import { spawn } from "node:child_process";
 import assert from "node:assert/strict";
@@ -22,7 +22,59 @@ try {
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("http://127.0.0.1:4173");
   await page.locator("#search input[type=text]").waitFor();
-  assert.ok((await page.locator(".card").count()) >= 6);
+  assert.equal(await page.locator("#popular-cards .card").count(), 6);
+  assert.equal(await page.locator("#latest-cards .card").count(), 3);
+  assert.equal(
+    await page
+      .getByRole("heading", { name: "应用与站点", exact: true })
+      .count(),
+    0,
+  );
+  assert.equal(
+    await page.getByRole("heading", { name: "精选内容", exact: true }).count(),
+    0,
+  );
+  assert.match(
+    await page.locator("#popular-note").innerText(),
+    /还没有访问记录/,
+  );
+  const target = await page
+    .locator("#latest-cards .card")
+    .first()
+    .getAttribute("data-record-id");
+  await page.evaluate((id) => {
+    const link = document.querySelector(`.library-row[data-record-id="${id}"]`);
+    document.addEventListener("click", (e) => e.preventDefault(), {
+      once: true,
+    });
+    link.dispatchEvent(
+      new MouseEvent("click", { bubbles: true, cancelable: true }),
+    );
+  }, target);
+  await page.waitForFunction(
+    (id) =>
+      document.querySelector("#popular-cards .card").dataset.recordId === id,
+    target,
+  );
+  await page.reload();
+  assert.equal(
+    await page
+      .locator("#popular-cards .card")
+      .first()
+      .getAttribute("data-record-id"),
+    target,
+  );
+  assert.match(await page.locator("#popular-note").innerText(), /此浏览器/);
+  const blocked = await browser.newPage();
+  await blocked.addInitScript(() => {
+    Storage.prototype.getItem = Storage.prototype.setItem = () => {
+      throw Error("Storage disabled");
+    };
+  });
+  await blocked.goto("http://127.0.0.1:4173");
+  assert.equal(await blocked.locator("#popular-cards .card").count(), 6);
+  assert.match(await blocked.locator("#popular-note").innerText(), /无法保存/);
+  await blocked.close();
   assert.equal(
     await page.locator(".card").filter({ hasText: "星球点名" }).count(),
     0,
@@ -101,6 +153,11 @@ try {
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   );
+  await page.locator(".featured").scrollIntoViewIfNeeded();
+  await page.screenshot({ path: "work/screenshots/home-sections-mobile.png" });
+  await page.setViewportSize({ width: 1440, height: 1100 });
+  await page.locator(".featured").scrollIntoViewIfNeeded();
+  await page.screenshot({ path: "work/screenshots/home-sections-desktop.png" });
   await checkOiAiLabs(browser);
   assert.deepEqual(errors, []);
   console.log(
