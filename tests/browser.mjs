@@ -1,3 +1,4 @@
+import { checkOiAiLabs } from './oi-ai-labs-browser.mjs';
 import { chromium } from "playwright";
 import { spawn } from "node:child_process";
 import assert from "node:assert/strict";
@@ -100,6 +101,7 @@ try {
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   );
+  await checkOiAiLabs(browser);
   assert.deepEqual(errors, []);
   console.log(
     "Desktop/mobile rendering, filters, Chinese search, and excluded entries passed.",

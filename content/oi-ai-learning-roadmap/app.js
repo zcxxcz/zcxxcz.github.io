@@ -299,6 +299,7 @@
     $('#maze-comparison').hidden = false;
   });
   document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+  document.addEventListener('labchange', event => { if (event.detail.id !== 'search') pause(); });
   resetMaze();
 
   // Open native details for printing, then restore the reader's view afterwards.
