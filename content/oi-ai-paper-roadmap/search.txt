@@ -1,0 +1,288 @@
+信奥 × AI 论文路线图
+从 CSP-J 到 NOI，每一步都带一篇“能用上”的经典论文
+
+信奥训练的是算法、复杂度和证明思维，而这些正是 AI 的零件：反向传播是计算图上的 DP，Transformer 的加速靠分块，AlphaGo 的核心是搜索。这份路线把两者按年级对齐：学到什么算法，就读哪篇论文，做哪个小项目。
+
+入门期
+初一 · CSP-J
+提高期
+初三 · CSP-S
+进阶期
+高一 · NOIP
+冲刺期
+高三 · NOI
+
+入门期引入
+搜索与剪枝（DFS/BFS/α-β）
+
+A* 游戏寻路、Minimax 与 α-β 剪枝（国际象棋程序）、蒙特卡洛树搜索（AlphaGo 的核心）
+
+对应论文：Hart 1968 A*；Knuth & Moore 1975 α-β 剪枝分析；Kocsis & Szepesvári 2006 UCT；Silver 2016 AlphaGo
+
+提高期引入
+动态规划
+
+强化学习的 Bellman 方程与 Q-learning、语音与输入法里的 Viterbi（HMM）
+
+对应论文：Bellman 1957 动态规划；Watkins & Dayan 1992 Q-learning；Rabiner 1989 HMM 教程
+
+提高期引入
+图论：最短路与拓扑序
+
+反向传播就是计算图（DAG）上按拓扑序逆序做 DP；PageRank 是图上的迭代；图神经网络的消息传递是树形 DP 的推广
+
+对应论文：Rumelhart, Hinton & Williams 1986 反向传播；Page & Brin 1998 PageRank；Gilmer 2017 消息传递神经网络
+
+提高期引入
+贪心与堆
+
+Huffman 编码（word2vec 的层次 softmax 用它）、决策树每步选最优分裂、Beam Search 解码
+
+对应论文：Huffman 1952；Quinlan 1986 决策树归纳；Mikolov 2013 词与短语的分布式表示
+
+提高期引入
+并查集与最小生成树
+
+Kruskal 等价于单链接层次聚类；图像连通域标记
+
+对应论文：Gower & Ross 1969 最小生成树与单链接聚类
+
+进阶期引入
+字符串：Trie、哈希、AC 自动机
+
+BPE 分词器（大模型的第一步）、局部敏感哈希找相似向量、约束解码与敏感词过滤
+
+对应论文：Sennrich 2016 BPE 子词；Indyk & Motwani 1998 近似最近邻
+
+进阶期引入
+矩阵、FFT 与线代
+
+神经网络就是矩阵乘法；卷积可用 FFT 加速；注意力机制 Q·Kᵀ；LoRA 用低秩分解省参数
+
+对应论文：LeCun 1998 LeNet；Bahdanau 2014 注意力；Vaswani 2017 Transformer；Hu 2021 LoRA
+
+进阶期引入
+概率、期望与随机化
+
+朴素贝叶斯、MCMC 采样、模拟退火（AtCoder 启发式比赛常用）
+
+对应论文：Metropolis 1953；Kirkpatrick 1983 模拟退火；Kingma & Ba 2014 Adam
+
+进阶期引入
+博弈与 SG 函数
+
+自我对弈训练 AlphaZero；德州扑克 AI 用反事实遗憾最小化（CFR）
+
+对应论文：Silver 2017 AlphaZero；Brown & Sandholm 2018 Libratus
+
+冲刺期引入
+网络流与二分图匹配
+
+目标检测 DETR 用匈牙利匹配；最优传输（Sinkhorn）本质是费用流；图割做图像分割
+
+对应论文：Carion 2020 DETR；Cuturi 2013 Sinkhorn 距离；Boykov & Kolmogorov 2004 最大流图割
+
+冲刺期引入
+分块、前缀和与复杂度优化
+
+FlashAttention 用分块降低显存读写；Mamba 等状态空间模型靠并行前缀扫描（scan）；线性注意力把 O(n²) 降到 O(n)
+
+对应论文：Dao 2022 FlashAttention；Katharopoulos 2020 Transformers are RNNs；Gu & Dao 2023 Mamba
+
+冲刺期引入
+NP 难、启发式与构造
+
+神经组合优化（用强化学习解 TSP/背包）、AlphaDev 发现更快的排序程序、大模型解竞赛题
+
+对应论文：Khalil 2017 图上组合优化；Mankowitz 2023 AlphaDev；Li 2022 AlphaCode；Chen 2021 Codex
+
+入门期：初一 · 对标 CSP-J
+
+信奥主线：枚举、模拟、排序、递归、基础 DFS/BFS、栈与队列、简单 DP
+
+算法与 AI 的桥梁
+递归 / DFS 博弈树与 Minimax：电脑怎么下棋
+BFS / 队列 最短路径 → A* 启发式搜索，游戏角色怎么找路
+排序 / 枚举 kNN：找“最像”的样本来分类
+循环 / 数组 感知机：最早会“学习”的神经元
+精读论文
+Shannon 1950《Programming a Computer for Playing Chess》（读思想，跳过细节）
+Hart, Nilsson & Raphael 1968《A Formal Basis for the Heuristic Determination of Minimum Cost Paths》（A* 原论文，配合 Red Blob Games 图解）
+泛读论文
+Turing 1950《Computing Machinery and Intelligence》（哲学读物，读开头与“反对意见”部分）
+Rosenblatt 1958《The Perceptron》
+Cover & Hart 1967《Nearest Neighbor Pattern Classification》
+学习节奏
+第 1–2 月 读 Turing 与 Shannon 的科普解读，写出井字棋 Minimax
+第 3–4 月 BFS 迷宫改成 A*，比较两者扩展的节点数
+第 5–6 月 手写感知机训练循环，画出决策边界
+第 7–9 月 kNN 数字识别，写第一份“论文题解”笔记
+实操项目
+井字棋 Minimax 先全搜索，再加估值函数，体会“搜索 + 评估”
+迷宫与八数码 BFS 对比 A*，试不同启发函数
+感知机与 kNN 用 sklearn 自带数字数据集，先别追求高精度
+达标检验（0/3）
+ 能口头解释“估值函数”和“启发函数”
+ 独立写出 Minimax 与 A*
+ 完成 2 份论文题解笔记
+
+提高期：初一末至初三 · 对标 CSP-S
+
+信奥主线：DP 全家桶、最短路/MST/拓扑排序、线段树与树状数组、并查集、KMP/Trie、二分、概率期望初步
+
+算法与 AI 的桥梁
+拓扑排序 + DP 反向传播：计算图逆序求梯度
+二维前缀和 / 滑窗 卷积神经网络 LeNet
+最短路 / 图迭代 PageRank 与 Bellman 方程家族
+DP 状态转移 HMM 的 Viterbi、Q-learning
+精读论文
+Rumelhart, Hinton & Williams 1986《Learning representations by back-propagating errors》
+LeCun et al. 1998《Gradient-Based Learning Applied to Document Recognition》
+Page, Brin et al. 1998《The PageRank Citation Ranking》
+泛读论文
+Knuth & Moore 1975《An Analysis of Alpha-Beta Pruning》
+Rabiner 1989《A Tutorial on HMMs》
+Watkins & Dayan 1992《Q-learning》
+Gower & Ross 1969（MST 与聚类）
+学习节奏
+学期内 每两周一篇，周末 1–2 小时，配一道对应的信奥题
+先补 导数与链式法则（会用就行），NumPy 基础
+暑假 集中 2–3 周做 micrograd 与 MNIST 项目
+学期末 把 3 篇精读整理成一页“题解”分享给同学
+实操项目
+迷你自动微分 micrograd 约 100 行，建计算图并按拓扑序反传
+NumPy 手写 MLP 识别 MNIST 目标 97% 以上，不用深度学习框架
+PageRank 玩具搜索引擎 用校园网页或维基小子图
+Viterbi 拼音输入法 小语料统计转移概率，用 DP 解码
+达标检验（0/3）
+ 能在纸上对小计算图做反向传播
+ MNIST 达到 97% 以上
+ 能说明 Dijkstra 与 Q-learning 都来自 Bellman 思想
+
+进阶期：初三至高一 · 对标 NOIP
+
+信奥主线：SCC/LCA/网络流入门、平衡树、分块与莫队、AC 自动机与后缀数组、逆元与 NTT、DP 优化、SG 博弈、矩阵与高斯消元
+
+算法与 AI 的桥梁
+矩阵乘 / 查询 注意力：Q、K、V 是可微的“字典查找”
+Trie / AC 自动机 BPE 分词、字符串匹配
+SG 博弈 / 搜索 MCTS + 神经网络 = AlphaGo
+模拟退火 / 随机化 优化与采样，后续调参的基础
+精读论文
+Bahdanau, Cho & Bengio 2014《Neural Machine Translation by Jointly Learning to Align and Translate》
+Vaswani et al. 2017《Attention Is All You Need》
+Mikolov et al. 2013《Efficient Estimation of Word Representations in Vector Space》
+Silver et al. 2016《Mastering the game of Go with deep neural networks and tree search》
+泛读论文
+Sennrich 2016《Neural Machine Translation of Rare Words with Subword Units》
+Kirkpatrick 1983《Optimization by Simulated Annealing》
+Kocsis & Szepesvári 2006（UCT）
+He et al. 2015《Deep Residual Learning》
+Kingma & Ba 2014《Adam》
+Chen & Guestrin 2016《XGBoost》
+学习节奏
+第 1–3 月 注意力与 Transformer，手推 O(n²d) 复杂度
+第 4–6 月 做 mini-GPT，同时读 word2vec
+寒暑假 MCTS 项目与 AtCoder 启发式比赛练手
+全程 每月一篇泛读，写 5 句话摘要即可
+实操项目
+字符级 mini-Transformer 仿 Karpathy 的 nanoGPT，在小说文本上训练
+从零写 BPE 分词器 用哈希表和堆实现合并，对比字符级
+MCTS 玩 Connect4 或 9×9 围棋 先纯 MCTS，再接一个小价值网络
+模拟退火刷 AtCoder 启发式题 体会评分函数与邻域设计
+达标检验（0/3）
+ 能讲清 Q/K/V 与 softmax 的作用
+ 训练出生成像样文本的小模型
+ 能复现 MCTS 的四个步骤
+
+冲刺期：高一至高三 · 对标 NOI
+
+信奥主线：多项式与 FFT、LCT 与可持久化、根号分治、费用流、SAM、计算几何、交互与通信题、构造、NP 难与启发式
+
+算法与 AI 的桥梁
+分块 / 前缀和 FlashAttention 分块、状态空间模型的并行扫描
+费用流 / 匹配 DETR 匈牙利匹配、最优传输
+NP 难 / 启发式 神经组合优化与 AlphaDev 发现新算法
+交互 / 评测 代码大模型的评测方式（pass@k）
+精读论文
+Dao et al. 2022《FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness》
+Gu & Dao 2023《Mamba: Linear-Time Sequence Modeling with Selective State Spaces》
+Khalil et al. 2017《Learning Combinatorial Optimization Algorithms over Graphs》
+Veličković & Blundell 2021《Neural Algorithmic Reasoning》
+Silver et al. 2017《Mastering Chess and Shogi by Self-Play with a General RL Algorithm》
+泛读论文
+Li et al. 2022《Competition-level code generation with AlphaCode》
+Chen et al. 2021《Evaluating Large Language Models Trained on Code》
+Mankowitz 2023（AlphaDev）、Fawzi 2022（AlphaTensor）
+Carion 2020（DETR）、Cuturi 2013（Sinkhorn）
+Kipf & Welling 2017（GCN）
+Kaplan 2020（Scaling Laws）、Ouyang 2022（InstructGPT）
+学习节奏
+高一下 精读 FlashAttention 并写分块版本
+高二 做神经算法推理与组合优化实验，写实验报告
+高二下 可选：参加科创类比赛或整理成小论文
+集训前 AI 旁线降到每周 1 小时以内，全力备赛
+实操项目
+迷你 AlphaZero（Connect4） 自我对弈 + MCTS + 小网络，完整闭环
+FlashAttention 的 NumPy 分块版 验证与朴素注意力数值一致，并分析读写量
+神经网络学 Dijkstra 测试在更大图上的泛化，对比经典算法
+OI 评测与 LLM 解题实验 自建沙箱评测，统计 pass@k，分析失败类型
+达标检验（0/3）
+ 能解释 FlashAttention 如何减少显存读写
+ 完成一份可复现的实验报告
+ 能说出 NOI 中至少 3 个知识点在 AI 里的位置
+
+怎么读论文，怎么分配时间
+用“题解”格式写论文笔记
+
+信奥同学最熟这个套路：①题意（论文要解决什么问题）②暴力做法（之前的方法为什么不够）③关键观察（核心想法）④复杂度与代价⑤自己的代码。每篇论文写一页，比抄摘要有效得多。
+
+读三遍
+
+第一遍 10 分钟：看标题、摘要、图和结论。第二遍：抓核心算法和实验图表，用 5 句话复述。第三遍：在纸上推公式或写代码复现。入门期只要求做到第二遍。
+
+数学补课节奏
+
+初一：向量、函数图像直觉。初二到初三：导数与链式法则（先学“会用”）。高一：矩阵乘法、概率与期望。高二起：线性代数、信息熵。数学跟着项目走，缺哪补哪。
+
+AI 旁线占总学习时间的建议比例
+
+信奥主线永远优先；AI 是“拓展思维和动力”，不是替代刷题。
+
+入门期
+约 10%
+提高期
+约 15%
+进阶期
+约 20%
+冲刺期
+约 20%
+
+冲刺期集训前 3 个月降到 5% 以内。
+
+扩展资源
+书与课
+
+《人工智能：现代方法》（Russell & Norvig）；Sutton & Barto《强化学习》第二版（官网免费）；《动手学深度学习》d2l.ai；《统计学习方法》（李航）；Goodfellow《深度学习》（deeplearningbook.org 免费）
+
+视频课
+
+3Blue1Brown 神经网络与线性代数系列；Karpathy《Neural Networks: Zero to Hero》；哈佛 CS50 AI；李宏毅机器学习；Andrew Ng 机器学习；Stanford CS231n 与 CS224n
+
+图解与博客
+
+Red Blob Games 的 A* 教程；Jay Alammar《The Illustrated Transformer》；Lilian Weng 的 Lil’Log；Distill 归档文章
+
+练手平台
+
+Codeforces、洛谷、AtCoder（含 Heuristic Contest）；Kaggle 入门赛；Hugging Face 课程
+
+信奥题库对应
+
+搜索：洛谷“搜索”标签；DP：背包与区间 DP 专题；图论：最短路与拓扑专题；每读完一篇论文，找 2–3 道同类思想的题巩固
+
+入口链接
+
+Attention Is All You Need；A* 图解；Zero to Hero；d2l.ai
+
+说明：论文以“作者、年份、标题”给出，请用标题在 arXiv、Semantic Scholar 或 Google Scholar 检索原文核对；年代久远的论文（1950–1990）可先读后人的科普解读。部分项目的难度建议在老师或家长陪同下按兴趣取舍。
