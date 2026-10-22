@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="适合信奥中学生的六年 AI 拓展路线：从 CSP-J、CSP-S、NOIP 到 NOI，用搜索、DP、字符串与图算法连接经典论文、实操项目和研究方法。"><meta name="theme-color" content="#183b32"><meta property="og:title" content="信奥 × AI · 六年探索路线"><meta property="og:description" content="从一道算法题，走进 AI 的世界。六年规划、经典论文、8 个基础项目与 BFS/A* 交互实验。"><link rel="canonical" href="https://zcxxcz.github.io/content/oi-ai-learning-roadmap/"><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="style.css"><script src="app.js" defer></script><title>信奥 × AI · 六年探索路线</title></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="适合信奥中学生的六年 AI 拓展路线：从 CSP-J、CSP-S、NOIP 到 NOI，用搜索、DP、字符串与图算法连接经典论文、实操项目和研究方法。"><meta name="theme-color" content="#183b32"><meta property="og:title" content="信奥 × AI · 六年探索路线"><meta property="og:description" content="从一道算法题，走进 AI 的世界。六年规划、经典论文、8 个基础项目、3 条研究方向与 14 个可操作小实验。"><link rel="canonical" href="https://zcxxcz.github.io/content/oi-ai-learning-roadmap/"><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="labs.css"><script src="app.js" defer></script><script type="module" src="labs.js"></script><title>信奥 × AI · 六年探索路线</title></head>
 <body id="top"><a class="skip" href="#main">跳到主要内容</a>
 <header class="topbar">
 <div class="wrap"><a class="brand" href="/"><span class="brand-icon">Z/</span>信奥 × AI <span class="muted">探索路线</span></a>
-<nav class="topnav" aria-label="页面导航"><a href="#roadmap">六年路线</a><a href="#stages">阶段任务</a><a href="#lab">搜索实验</a><a href="#papers">论文书架</a><button class="print-button" id="print-plan" type="button">打印完整规划 ↗</button></nav>
+<nav class="topnav" aria-label="页面导航"><a href="#roadmap">六年路线</a><a href="#stages">阶段任务</a><a href="#lab">互动实验室</a><a href="#papers">论文书架</a><button class="print-button" id="print-plan" type="button">打印完整规划 ↗</button></nav>
 </div>
 </header>
 <main id="main" class="wrap">
@@ -13,7 +13,7 @@
 <p class="eyebrow"><span class="dot"></span>OI × AI · A SIX-YEAR EXPLORATION</p>
 <h1 id="hero-title">从一道算法题，<br>走进 <em>AI 的世界。</em></h1>
 <p class="lead">把搜索、动态规划、字符串和图算法，连接到会决策、会学习的程序。沿着熟悉的知识，读经典论文，做能亲手检验的实验。</p>
-<div class="actions"><a class="button" href="#roadmap">找到我的起点 <span aria-hidden="true">↓</span></a><a class="button secondary" href="#lab">先玩一个搜索实验 ↗</a></div>
+<div class="actions"><a class="button" href="#roadmap">找到我的起点 <span aria-hidden="true">↓</span></a><a class="button secondary" href="#lab">先玩一个小实验 ↗</a></div>
 <p class="hero-note">初一 CSP-J → 初三 CSP-S → 高一 NOIP → 高中 NOI</p>
 </div>
 <div class="hero-art">
@@ -24,10 +24,10 @@
 </section>
 <div class="hero-meta">
 <p><strong>每一步都问：</strong>问题怎样建模？AI 怎样处理不确定性？我们又怎样知道结果值得相信？</p>
-<div class="meta-counts"><span><b>04</b>学习阶段</span><span><b>08</b>基础项目</span><span><b>03</b>研究方向</span></div>
+<div class="meta-counts"><span><b>04</b>学习阶段</span><span><b>08</b>基础项目</span><span><b>03</b>研究方向</span><span><b>14</b>互动实验</span></div>
 </div>
 <noscript>
-<p>此页的完整规划与论文链接无需 JavaScript 也可阅读。启用 JavaScript 可切换阶段、运行搜索实验并记录自查进度。</p>
+<p>此页的完整规划与论文链接无需 JavaScript 也可阅读。启用 JavaScript 可切换阶段、运行 14 个互动实验并记录自查进度。</p>
 </noscript>
 <section class="section" id="roadmap" aria-labelledby="roadmap-title">
 <div class="section-head">
@@ -117,6 +117,7 @@
 <h4>迷宫里的搜索顺序</h4>
 <p class="project-desc">同一张地图，让 BFS、DFS 与 A* 各走一遍。比较路径、展开节点和时间。</p>
 <div class="project-tags"><span>BFS</span><span>搜索</span><span>路径恢复</span><span>A*</span></div>
+<a class="project-demo-link" href="#experiment-search">先玩对应小实验 <span aria-hidden="true">↗</span></a>
 <details>
 <summary>打开项目方案 <span class="project-check-count" data-project-count="p1">0 / 4 项自查</span></summary>
 <p class="detail-title">怎样推进</p>
@@ -136,6 +137,7 @@
 <h4>一个不会输的井字棋</h4>
 <p class="project-desc">把对手的最佳应对，也放进递归。这个程序将成为后续学习方法的可靠对手。</p>
 <div class="project-tags"><span>DFS</span><span>博弈</span><span>递归</span><span>状态编码</span></div>
+<a class="project-demo-link" href="#experiment-minimax">先玩对应小实验 <span aria-hidden="true">↗</span></a>
 <details>
 <summary>打开项目方案 <span class="project-check-count" data-project-count="p2">0 / 4 项自查</span></summary>
 <p class="detail-title">怎样推进</p>
@@ -151,7 +153,7 @@
 </details>
 </div>
 </div>
-<p class="crosslink">选修加餐：写字符二元统计生成器。比较独立抽样与按上一字符抽样的输出，不必进入熵的推导或神经网络训练。</p>
+<p class="crosslink">选修加餐：<a href="#experiment-ngram">先玩字符统计生成实验 ↗</a>，再写字符二元统计生成器。比较独立抽样与按上一字符抽样的输出，不必进入熵的推导或神经网络训练。</p>
 <div class="stage-gate"><b>这一阶段，能讲清楚什么？</b>能解释状态、动作、搜索顺序，以及答案可靠的条件。</div>
 </section>
 <section class="stage-panel" id="stage-probability" aria-labelledby="tab-probability">
@@ -208,6 +210,7 @@
 <h4>推断看不见的天气</h4>
 <p class="project-desc">天气是隐藏状态，只能看见带噪声的观测。寻找整条最可能的天气路径。</p>
 <div class="project-tags"><span>动态规划</span><span>HMM</span><span>概率</span><span>路径恢复</span></div>
+<a class="project-demo-link" href="#experiment-viterbi">先玩对应小实验 <span aria-hidden="true">↗</span></a>
 <details>
 <summary>打开项目方案 <span class="project-check-count" data-project-count="p3">0 / 4 项自查</span></summary>
 <p class="detail-title">怎样推进</p>
@@ -227,6 +230,7 @@
 <h4>亲手造一个分词器</h4>
 <p class="project-desc">模型的 token 也有算法底座。从朴素计数与合并，到能与朴素版本对拍的优化。</p>
 <div class="project-tags"><span>字符串</span><span>哈希</span><span>堆</span><span>BPE</span></div>
+<a class="project-demo-link" href="#experiment-bpe">先玩对应小实验 <span aria-hidden="true">↗</span></a>
 <details>
 <summary>打开项目方案 <span class="project-check-count" data-project-count="p4">0 / 4 项自查</span></summary>
 <p class="detail-title">怎样推进</p>
@@ -246,6 +250,7 @@
 <h4>规则未知的网格世界</h4>
 <p class="project-desc">规则已知时计算价值，规则未知时通过交互估计。让两种方法回答同一个决策问题。</p>
 <div class="project-tags"><span>动态规划</span><span>概率</span><span>强化学习</span><span>Q-learning</span></div>
+<a class="project-demo-link" href="#experiment-qlearning">先玩对应小实验 <span aria-hidden="true">↗</span></a>
 <details>
 <summary>打开项目方案 <span class="project-check-count" data-project-count="p5">0 / 4 项自查</span></summary>
 <p class="detail-title">怎样推进</p>
@@ -265,6 +270,7 @@
 <h4>给棋手一份搜索预算</h4>
 <p class="project-desc">升级初一的棋类项目。有限次数的模拟，应该花在哪些分支上？</p>
 <div class="project-tags"><span>搜索</span><span>博弈</span><span>随机化</span><span>MCTS</span></div>
+<a class="project-demo-link" href="#experiment-mcts">先玩对应小实验 <span aria-hidden="true">↗</span></a>
 <details>
 <summary>打开项目方案 <span class="project-check-count" data-project-count="p6">0 / 4 项自查</span></summary>
 <p class="detail-title">怎样推进</p>
@@ -331,6 +337,7 @@
 <h4>用拓扑排序写自动求导</h4>
 <p class="project-desc">熟悉的 DAG 组织依赖，链式法则决定梯度。先检查计算，再让一个小网络学习。</p>
 <div class="project-tags"><span>图论</span><span>拓扑排序</span><span>微积分</span><span>计算图</span></div>
+<a class="project-demo-link" href="#experiment-autodiff">先玩对应小实验 <span aria-hidden="true">↗</span></a>
 <details>
 <summary>打开项目方案 <span class="project-check-count" data-project-count="p7">0 / 4 项自查</span></summary>
 <p class="detail-title">怎样推进</p>
@@ -350,6 +357,7 @@
 <h4>模型能学会括号规则吗</h4>
 <p class="project-desc">从字符统计基线到小型因果 Transformer。用精确的栈检查器，检验模型生成的序列。</p>
 <div class="project-tags"><span>字符串</span><span>栈</span><span>矩阵</span><span>Transformer</span><span>语言模型</span></div>
+<a class="project-demo-link" href="#experiment-language">先玩对应小实验 <span aria-hidden="true">↗</span></a>
 <details>
 <summary>打开项目方案 <span class="project-check-count" data-project-count="p8">0 / 4 项自查</span></summary>
 <p class="detail-title">怎样推进</p>
@@ -392,7 +400,7 @@
 <h4>博弈与强化学习</h4>
 <p>搜索 · 状态压缩 · 估值 · 随机化</p>
 <a href="https://sites.ualberta.ca/~szepesva/papers/ecml06.pdf" target="_blank" rel="noopener noreferrer">UCT 与蒙特卡洛规划 ↗</a><a href="https://arxiv.org/abs/1312.5602" target="_blank" rel="noopener noreferrer">DQN ↗</a><a href="https://arxiv.org/abs/1712.01815" target="_blank" rel="noopener noreferrer">AlphaZero ↗</a><a href="https://arxiv.org/abs/1707.06347" target="_blank" rel="noopener noreferrer">加餐：PPO ↗</a></div>
-<div class="track-body">
+<div class="track-body"><div class="track-demo-links"><a class="project-demo-link" href="#experiment-value">动手：估值网络 + 搜索 ↗</a></div>
 <h4>网络估值，能否帮助搜索？</h4>
 <p>升级已经验证规则的棋类程序，比较“只有搜索”“只有小网络”“网络＋搜索”三种版本。先在井字棋中校准实现，再考虑更大的棋盘变体。</p>
 <h5>要回答的问题</h5>
@@ -409,7 +417,7 @@
 <h4>图与组合优化</h4>
 <p>状压 DP · 图论 · 近似解 · 精确检查</p>
 <a href="https://arxiv.org/abs/1506.03134" target="_blank" rel="noopener noreferrer">Pointer Networks ↗</a><a href="https://arxiv.org/abs/1611.09940" target="_blank" rel="noopener noreferrer">神经组合优化 ↗</a><a href="https://arxiv.org/abs/1609.02907" target="_blank" rel="noopener noreferrer">加餐：GCN ↗</a><a href="https://arxiv.org/abs/2105.02761" target="_blank" rel="noopener noreferrer">加餐：神经算法推理 ↗</a></div>
-<div class="track-body">
+<div class="track-body"><div class="track-demo-links"><a class="project-demo-link" href="#experiment-tsp">动手：旅行商与概率指针 ↗</a><a class="project-demo-link" href="#experiment-graph">动手：图消息传递 ↗</a></div>
 <h4>学习出来的路线，离最优有多远？</h4>
 <p>从不超过 12 个城市的二维旅行商问题开始。用状压 DP 求精确最优解，设置最近邻等基线；再尝试 Pointer Network，有余力再进入强化学习训练。</p>
 <h5>必须保留的证据</h5>
@@ -426,7 +434,7 @@
 <h4>语言模型与计算效率</h4>
 <p>矩阵 · 低秩 · 分块 · 内存访问</p>
 <a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener noreferrer">LoRA 低秩微调 ↗</a><a href="https://arxiv.org/abs/2205.14135" target="_blank" rel="noopener noreferrer">FlashAttention ↗</a><a href="https://arxiv.org/abs/2001.08361" target="_blank" rel="noopener noreferrer">加餐：Scaling Laws ↗</a><a href="https://arxiv.org/abs/2203.15556" target="_blank" rel="noopener noreferrer">加餐：Chinchilla ↗</a></div>
-<div class="track-body">
+<div class="track-body"><div class="track-demo-links"><a class="project-demo-link" href="#experiment-attention">动手：分块注意力 ↗</a><a class="project-demo-link" href="#experiment-lora">动手：低秩更新 ↗</a></div>
 <h4>相同的计算，为什么成本不同？</h4>
 <p>实现普通注意力，再研究分块与在线 softmax。比较输出误差、内存和时间；或固定基础模型与数据，比较 LoRA 不同秩与全量微调。</p>
 <h5>怎样进行公平比较</h5>
@@ -444,13 +452,10 @@
 </section>
 </section>
 <section class="section lab-section" id="lab" aria-labelledby="lab-title">
-<div class="section-head">
-<div>
-<p class="eyebrow">03 / A SMALL EXPERIMENT</p>
-<h2 id="lab-title">先看见搜索，再讨论“聪明”。</h2>
-</div>
-<p>同一张地图，同一个目标。改变展开节点的顺序，观察是否仍然得到最短路径。</p>
-</div>
+<div class="section-head"><div><p class="eyebrow">03 / THE INTERACTIVE FIELD LAB</p><h2 id="lab-title">14 次动手，把算法连到 AI。</h2></div><p>先猜一次，再改一个变量。每个项目都有小实验，读数来自浏览器中的真实计算。沿着熟悉的信奥知识，观察规则、估计与学习怎样一起工作。</p></div>
+<div class="lab-entry-note"><b>每次 5—10 分钟</b><span>① 选实验　② 猜结果　③ 改变量　④ 用信奥方法解释</span><a href="#stages">返回完整项目方案 ↑</a></div>
+<div class="experiment-nav" id="experiment-menu" aria-label="选择小实验"><div class="experiment-group"><p>基础项目 / 01—08</p><div><button type="button" data-lab-tab="search" aria-controls="experiment-search" aria-pressed="true"><span>01</span><b>迷宫里的搜索顺序</b><small>队列 / 最短路 / 启发式</small></button><button type="button" data-lab-tab="minimax" aria-controls="experiment-minimax" aria-pressed="false"><span>02</span><b>一个不会输的井字棋</b><small>递归 / 博弈 / α–β 剪枝</small></button><button type="button" data-lab-tab="viterbi" aria-controls="experiment-viterbi" aria-pressed="false"><span>03</span><b>从雨伞推断隐藏天气</b><small>线性 DP / 路径恢复 / 概率</small></button><button type="button" data-lab-tab="bpe" aria-controls="experiment-bpe" aria-pressed="false"><span>04</span><b>把字符合成词元</b><small>字符串 / 频率统计 / 贪心</small></button><button type="button" data-lab-tab="qlearning" aria-controls="experiment-qlearning" aria-pressed="false"><span>05</span><b>会试错的网格旅行者</b><small>Bellman 递推 / 期望 / 采样</small></button><button type="button" data-lab-tab="mcts" aria-controls="experiment-mcts" aria-pressed="false"><span>06</span><b>给搜索一个模拟预算</b><small>搜索树 / 随机模拟 / UCT</small></button><button type="button" data-lab-tab="autodiff" aria-controls="experiment-autodiff" aria-pressed="false"><span>07</span><b>沿计算图把梯度传回来</b><small>DAG / 逆拓扑 / 累加贡献</small></button><button type="button" data-lab-tab="language" aria-controls="experiment-language" aria-pressed="false"><span>08</span><b>预测下一个括号</b><small>栈检查 / 矩阵 / 因果掩码</small></button></div></div><div class="experiment-group"><p>研究方向 / 09—11</p><div><button type="button" data-lab-tab="value" aria-controls="experiment-value" aria-pressed="false"><span>09</span><b>让估值网络加入搜索</b><small>精确搜索造数据 / 网络估计 / 对照</small></button><button type="button" data-lab-tab="tsp" aria-controls="experiment-tsp" aria-pressed="false"><span>10</span><b>城市之间的概率指针</b><small>状态压缩 DP / 贪心 / 2-opt</small></button><button type="button" data-lab-tab="attention" aria-controls="experiment-attention" aria-pressed="false"><span>11</span><b>分块也能算对注意力</b><small>分块 / 在线累计 / 数值稳定</small></button></div></div><div class="experiment-group"><p>选修加餐 / 12—14</p><div><button type="button" data-lab-tab="ngram" aria-controls="experiment-ngram" aria-pressed="false"><span>12</span><b>从字符频率长出一段话</b><small>字符串 / 哈希统计 / 条件概率</small></button><button type="button" data-lab-tab="lora" aria-controls="experiment-lora" aria-pressed="false"><span>13</span><b>用两个小矩阵拟合更新</b><small>矩阵维度 / 秩 / 参数计数</small></button><button type="button" data-lab-tab="graph" aria-controls="experiment-graph" aria-pressed="false"><span>14</span><b>消息能走多远</b><small>邻接表 / BFS / 同步迭代</small></button></div></div></div><div class="lab-switcher"><p class="lab-current" id="lab-current" aria-live="polite">01 / 14 · 迷宫里的搜索顺序</p><label for="lab-select">换个实验 <select id="lab-select"><option value="search">01 · 迷宫里的搜索顺序</option><option value="minimax">02 · 一个不会输的井字棋</option><option value="viterbi">03 · 从雨伞推断隐藏天气</option><option value="bpe">04 · 把字符合成词元</option><option value="qlearning">05 · 会试错的网格旅行者</option><option value="mcts">06 · 给搜索一个模拟预算</option><option value="autodiff">07 · 沿计算图把梯度传回来</option><option value="language">08 · 预测下一个括号</option><option value="value">09 · 让估值网络加入搜索</option><option value="tsp">10 · 城市之间的概率指针</option><option value="attention">11 · 分块也能算对注意力</option><option value="ngram">12 · 从字符频率长出一段话</option><option value="lora">13 · 用两个小矩阵拟合更新</option><option value="graph">14 · 消息能走多远</option></select></label></div><section class="experiment-pane" id="experiment-search" aria-labelledby="experiment-title-search">
+<div class="experiment-heading"><p class="eyebrow">EXPERIMENT 01 / 初一 · CSP-J</p><h3 id="experiment-title-search">迷宫里的搜索顺序</h3><p>在同一张图上比较 BFS 与 A*，查看展开顺序和最短距离。</p></div>
 <div class="lab-shell">
 <div>
 <div class="lab-board">
@@ -487,8 +492,62 @@
 <p class="lab-note">四邻接、单位边权；A* 使用曼哈顿距离。并列优先规则影响展开数，不改变这里的最短距离。此实验直接运行搜索算法，未使用模型预测。</p>
 </div>
 </div>
-<p class="print-only print-lab">搜索实验：在同一无权四邻接地图上，比较 BFS 与使用曼哈顿启发式的 A*，记录最短距离和展开节点数。在线页面可逐步运行，并检查不可达地图。</p>
-</section>
+<div class="experiment-learning"><div><span>OI → AI</span><h4>队列 / 最短路 / 启发式</h4><p>队列按距离分层；优先队列可按 g+h 排序。启发式是可证明的下界时，才能讨论最优性保证。</p></div><div><span>先猜，再验证</span><h4>给自己一个观察任务</h4><p>换成不可达地图，两个算法会怎样结束？展开更少就一定更快吗？</p></div></div>
+<p class="experiment-boundary"><b>实验范围</b>　真实运行四邻接、单位边权的 BFS / A*；本演示暂不包含 DFS、变权与不一致启发式。</p>
+</section><section class="experiment-pane" id="experiment-minimax" aria-labelledby="experiment-title-minimax">
+<div class="experiment-heading"><p class="eyebrow">EXPERIMENT 02 / 初一 · CSP-J</p><h3 id="experiment-title-minimax">一个不会输的井字棋</h3><p>你执 X，程序执 O。先看各落子的精确结局，再切换剪枝比较计算量。</p></div>
+<div class="experiment-interactive" data-experiment="minimax"></div><div class="experiment-learning"><div><span>OI → AI</span><h4>递归 / 博弈 / α–β 剪枝</h4><p>Minimax 是对搜索树的递推。对手也取最优动作；α–β 利用上下界跳过不影响答案的分支。</p></div><div><span>先猜，再验证</span><h4>给自己一个观察任务</h4><p>落在中心和角落，哪个局面的递归调用更多？关掉剪枝，格内结局会变吗？</p></div></div>
+<p class="experiment-boundary"><b>实验范围</b>　完整枚举井字棋合法后续；剪枝读数不启用记忆化，以便单独观察剪枝效果。</p>
+</section><section class="experiment-pane" id="experiment-viterbi" aria-labelledby="experiment-title-viterbi">
+<div class="experiment-heading"><p class="eyebrow">EXPERIMENT 03 / 初二 · → CSP-S</p><h3 id="experiment-title-viterbi">从雨伞推断隐藏天气</h3><p>修改每天有没有带伞，让 Viterbi 在时间展开图上推进并回溯。</p></div>
+<div class="experiment-interactive" data-experiment="viterbi"></div><div class="experiment-learning"><div><span>OI → AI</span><h4>线性 DP / 路径恢复 / 概率</h4><p>dp[t][s] 只保留到第 t 天、以天气 s 结尾的最佳前缀；prev 记录前驱。对数把概率连乘变为相加。</p></div><div><span>先猜，再验证</span><h4>给自己一个观察任务</h4><p>把天气保持概率从 0.9 调到 0.1，同样的雨伞序列会推断出什么？</p></div></div>
+<p class="experiment-boundary"><b>实验范围</b>　2 个隐藏状态、2 种观测；参数手工指定。没有从数据估计 HMM 参数，也没有语音识别流程。</p>
+</section><section class="experiment-pane" id="experiment-bpe" aria-labelledby="experiment-title-bpe">
+<div class="experiment-heading"><p class="eyebrow">EXPERIMENT 04 / 初二 · → CSP-S</p><h3 id="experiment-title-bpe">把字符合成词元</h3><p>输入自己的短文本，逐轮合并最高频相邻对，观察词元数量如何变化。</p></div>
+<div class="experiment-interactive" data-experiment="bpe"></div><div class="experiment-learning"><div><span>OI → AI</span><h4>字符串 / 频率统计 / 贪心</h4><p>哈希表统计相邻对，贪心选最高频项，再扫描替换。可以继续研究用堆与局部更新加速计数。</p></div><div><span>先猜，再验证</span><h4>给自己一个观察任务</h4><p>输入 aaaa：最高频对出现几次？一轮合并后剩几个词元？</p></div></div>
+<p class="experiment-boundary"><b>实验范围</b>　字符级教学 BPE，空白单独保留；不含字节编码、词边界标记、预分词和新文本编码流程。</p>
+</section><section class="experiment-pane" id="experiment-qlearning" aria-labelledby="experiment-title-qlearning">
+<div class="experiment-heading"><p class="eyebrow">EXPERIMENT 05 / 初三 · CSP-S</p><h3 id="experiment-title-qlearning">会试错的网格旅行者</h3><p>通过真实回合更新 Q 表，并与已知环境时的精确动态规划并排比较。</p></div>
+<div class="experiment-interactive" data-experiment="qlearning"></div><div class="experiment-learning"><div><span>OI → AI</span><h4>Bellman 递推 / 期望 / 采样</h4><p>已知转移概率时可对所有后继求期望；Q-learning 用一次采样的回报去更新相同的 Bellman 目标。</p></div><div><span>先猜，再验证</span><h4>给自己一个观察任务</h4><p>提高打滑概率后，靠近陷阱的最短路线还值得选吗？训练更多是否每次都更好？</p></div></div>
+<p class="experiment-boundary"><b>实验范围</b>　4×4 表格强化学习；Q 值来自真实随机交互。固定种子便于复核，固定学习率下不保证读数单调。</p>
+</section><section class="experiment-pane" id="experiment-mcts" aria-labelledby="experiment-title-mcts">
+<div class="experiment-heading"><p class="eyebrow">EXPERIMENT 06 / 初三 · CSP-S</p><h3 id="experiment-title-mcts">给搜索一个模拟预算</h3><p>从一次模拟开始，观察 MCTS 如何重新分配每个候选落子的访问量。</p></div>
+<div class="experiment-interactive" data-experiment="mcts"></div><div class="experiment-learning"><div><span>OI → AI</span><h4>搜索树 / 随机模拟 / UCT</h4><p>搜索树逐步扩展，回报沿父指针回传；UCT 的探索项照顾访问少的分支，区别于穷举全部后续。</p></div><div><span>先猜，再验证</span><h4>给自己一个观察任务</h4><p>把探索系数设为 0，再设为 2.8，小预算时最常访问的格子会一样吗？</p></div></div>
+<p class="experiment-boundary"><b>实验范围</b>　完整井字棋规则，树外随机对弈；回报含平局 0.5。采样均值不等于 Minimax 的最坏情形保证。</p>
+</section><section class="experiment-pane" id="experiment-autodiff" aria-labelledby="experiment-title-autodiff">
+<div class="experiment-heading"><p class="eyebrow">EXPERIMENT 07 / 高一 · NOIP</p><h3 id="experiment-title-autodiff">沿计算图把梯度传回来</h3><p>单步反传一个共享变量的计算图，再用梯度下降降低误差。</p></div>
+<div class="experiment-interactive" data-experiment="autodiff"></div><div class="experiment-learning"><div><span>OI → AI</span><h4>DAG / 逆拓扑 / 累加贡献</h4><p>前向值按拓扑顺序计算；反向沿边传播局部导数。一个父节点被多次使用时，梯度必须累加。</p></div><div><span>先猜，再验证</span><h4>给自己一个观察任务</h4><p>平方节点等于把同一个差值乘两次；如果漏掉一条边，梯度会差多少？</p></div></div>
+<p class="experiment-boundary"><b>实验范围</b>　固定小计算图 L=(xw+b−y)²，支持有限差分核对和 w、b 的真实更新；完整项目再扩展成通用求导器。</p>
+</section><section class="experiment-pane" id="experiment-language" aria-labelledby="experiment-title-language">
+<div class="experiment-heading"><p class="eyebrow">EXPERIMENT 08 / 高一 · NOIP</p><h3 id="experiment-title-language">预测下一个括号</h3><p>训练一个小型注意力预测器的输出头，检查注意力是否偷看未来，并用栈验收生成串。</p></div>
+<div class="experiment-interactive" data-experiment="language"></div><div class="experiment-learning"><div><span>OI → AI</span><h4>栈检查 / 矩阵 / 因果掩码</h4><p>注意力用矩阵组织位置之间的读写；上三角掩码限制依赖。栈能精确判定括号合法，给概率模型提供参照。</p></div><div><span>先猜，再验证</span><h4>给自己一个观察任务</h4><p>关闭遮罩后，第一行能读到最后一个符号吗？训练损失下降，是否保证每次生成都合法？</p></div></div>
+<p class="experiment-boundary"><b>实验范围</b>　Q=K=V 使用固定嵌入与位置特征，只训练 40 参数输出头；这是因果注意力机制演示，未实现完整 Transformer。</p>
+</section><section class="experiment-pane" id="experiment-value" aria-labelledby="experiment-title-value">
+<div class="experiment-heading"><p class="eyebrow">EXPERIMENT 09 / 高二 / 高三 · 方向 A</p><h3 id="experiment-title-value">让估值网络加入搜索</h3><p>用 Minimax 生成监督标签，训练小价值网络，再把它接到 MCTS 的叶节点。</p></div>
+<div class="experiment-interactive" data-experiment="value"></div><div class="experiment-learning"><div><span>OI → AI</span><h4>精确搜索造数据 / 网络估计 / 对照</h4><p>精确算法既能作老师，也能作裁判。比较网络直接选点、网络配合搜索和精确答案，分析估计误差如何影响决策。</p></div><div><span>先猜，再验证</span><h4>给自己一个观察任务</h4><p>训练集误差降了，留出局面误差一定也降吗？加入搜索后，这个局面是否就选对了？</p></div></div>
+<p class="experiment-boundary"><b>实验范围</b>　89 参数网络，监督标签来自精确搜索；没有自我对弈、策略网络或策略改进闭环，不属于 AlphaZero 复现。</p>
+</section><section class="experiment-pane" id="experiment-tsp" aria-labelledby="experiment-title-tsp">
+<div class="experiment-heading"><p class="eyebrow">EXPERIMENT 10 / 高二 / 高三 · 方向 B</p><h3 id="experiment-title-tsp">城市之间的概率指针</h3><p>逐城采样构造旅行商路线，与 Held–Karp 的精确最优解比较，再试局部交换。</p></div>
+<div class="experiment-interactive" data-experiment="tsp"></div><div class="experiment-learning"><div><span>OI → AI</span><h4>状态压缩 DP / 贪心 / 2-opt</h4><p>dp[mask][last] 求小规模最优解，可生成标准答案；近似构造强调速度，必须单独验证是否漏城并计算最优差距。</p></div><div><span>先猜，再验证</span><h4>给自己一个观察任务</h4><p>低温度接近最近邻，但最近邻一定最优吗？2-opt 改善以后，差距能否仍大于 0？</p></div></div>
+<p class="experiment-boundary"><b>实验范围</b>　5—9 个城市；指针概率由手设 −距离打分，没有训练 Pointer Network。DP、采样和 2-opt 均实际运行。</p>
+</section><section class="experiment-pane" id="experiment-attention" aria-labelledby="experiment-title-attention">
+<div class="experiment-heading"><p class="eyebrow">EXPERIMENT 11 / 高二 / 高三 · 方向 C</p><h3 id="experiment-title-attention">分块也能算对注意力</h3><p>逐块处理键值，查看在线 softmax 的累计状态和输出误差。</p></div>
+<div class="experiment-interactive" data-experiment="attention"></div><div class="experiment-learning"><div><span>OI → AI</span><h4>分块 / 在线累计 / 数值稳定</h4><p>用循环不变量维护每行的最大值、归一化分母与加权和。分块改变中间结果的存放方式，不改变目标公式。</p></div><div><span>先猜，再验证</span><h4>给自己一个观察任务</h4><p>先调小块，再把 Q/K 尺度放大到 100；数值为什么仍然有限？最终误差会是多少？</p></div></div>
+<p class="experiment-boundary"><b>实验范围</b>　浏览器 CPU 教学计算，只计分数区域的元素数；不是 FlashAttention GPU 内核，不声称实际速度或显存提升。</p>
+</section><section class="experiment-pane" id="experiment-ngram" aria-labelledby="experiment-title-ngram">
+<div class="experiment-heading"><p class="eyebrow">EXPERIMENT 12 / 初一选修</p><h3 id="experiment-title-ngram">从字符频率长出一段话</h3><p>对比 0、1、2 阶字符模型，亲自查询上下文频次并采样生成。</p></div>
+<div class="experiment-interactive" data-experiment="ngram"></div><div class="experiment-learning"><div><span>OI → AI</span><h4>字符串 / 哈希统计 / 条件概率</h4><p>用哈希表把“上下文 → 后继计数”存起来；字符计数变成条件概率，再用随机数选择下一字符。</p></div><div><span>先猜，再验证</span><h4>给自己一个观察任务</h4><p>只改变上下文长度，同一份语料生成的文字会更连贯，还是更容易重复？</p></div></div>
+<p class="experiment-boundary"><b>实验范围</b>　有限语料的统计生成器，未学习语义。未见上下文回退到字符独立分布；每次采样都能由种子复现。</p>
+</section><section class="experiment-pane" id="experiment-lora" aria-labelledby="experiment-title-lora">
+<div class="experiment-heading"><p class="eyebrow">EXPERIMENT 13 / 高一 / 高二选修</p><h3 id="experiment-title-lora">用两个小矩阵拟合更新</h3><p>把一个 6×6 目标更新分解为 B×A，比较不同秩和全矩阵拟合的误差。</p></div>
+<div class="experiment-interactive" data-experiment="lora"></div><div class="experiment-learning"><div><span>OI → AI</span><h4>矩阵维度 / 秩 / 参数计数</h4><p>矩阵乘法的维度决定参数量；当更新接近低秩时，用两个窄矩阵限制自由度。基础权重仍然存在。</p></div><div><span>先猜，再验证</span><h4>给自己一个观察任务</h4><p>目标的秩是 2；r=1 为什么会留下误差？r=3 时，这个小例子还节省可训练参数吗？</p></div></div>
+<p class="experiment-boundary"><b>实验范围</b>　真实梯度下降拟合目标差矩阵；基座权重被代数消去，无需加载语言模型。未测任务效果、显存或优化器开销。</p>
+</section><section class="experiment-pane" id="experiment-graph" aria-labelledby="experiment-title-graph">
+<div class="experiment-heading"><p class="eyebrow">EXPERIMENT 14 / 高二 / 高三 · 图方向选修</p><h3 id="experiment-title-graph">消息能走多远</h3><p>选择源点、添加桥边，一层一层传播特征，再与精确 BFS 可达性比较。</p></div>
+<div class="experiment-interactive" data-experiment="graph"></div><div class="experiment-learning"><div><span>OI → AI</span><h4>邻接表 / BFS / 同步迭代</h4><p>每层按邻接关系读取上一层状态，k 层只覆盖 k 跳感受野。聚合数值经阈值判断，与精确图算法的含义不同。</p></div><div><span>先猜，再验证</span><h4>给自己一个观察任务</h4><p>两个分量之间加桥后，远处节点什么时候收到消息？阈值太高会把可达点漏掉吗？</p></div></div>
+<p class="experiment-boundary"><b>实验范围</b>　固定的均值聚合，含自环；没有可学习参数或 GCN 训练。用于理解消息传递，再扩展到监督学习实验。</p>
+</section><noscript><p>这些实验需要 JavaScript 才能操作；上方仍可阅读各实验的信奥连接、观察任务和范围说明。</p></noscript>
+<p class="lab-bridge-note">演示是理解机制的起点。完成一次操作后，回到对应项目，用 C++ 或 Python 独立实现、对拍和记录；原项目的完整验收要求仍然保留。</p></section>
 <section class="section" id="papers" aria-labelledby="papers-title">
 <div class="section-head">
 <div>
