@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>信奥 × AI 论文路线图</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f3f6fb;--fg:#17202e;--mut:#5a6578;--card:#fff;--bd:#dde3ee;--ac:#2f5fe0;--s1:#13946f;--s2:#2f6fed;--s3:#7a4de8;--s4:#e0502a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1420;--fg:#e7ebf5;--mut:#9ba6bb;--card:#161e2f;--bd:#27324a;--ac:#8ea6ff;--s1:#3fd0a0;--s2:#6c9bff;--s3:#a98bff;--s4:#ff8a63}}
+:root[data-theme="dark"]{--bg:#0e1420;--fg:#e7ebf5;--mut:#9ba6bb;--card:#161e2f;--bd:#27324a;--ac:#8ea6ff;--s1:#3fd0a0;--s2:#6c9bff;--s3:#a98bff;--s4:#ff8a63}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 56px);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 "PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",system-ui,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--card)}
+.w{max-width:980px;margin:0 auto;padding:0 18px}
+header{padding:56px 0 30px}
+h1{font-size:clamp(30px,6vw,52px);line-height:1.2;margin:0 0 14px;font-weight:800;letter-spacing:-.5px}
+h1 span{display:block;font-size:.5em;font-weight:600;color:var(--mut);margin-top:8px}
+h2{font-size:26px;margin:0 0 6px}
+h3{font-size:18px;margin:0 0 6px}
+p{margin:0 0 10px}.mut{color:var(--mut)}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:11;background:var(--card);border-bottom:1px solid var(--bd);overflow-x:auto;white-space:nowrap}
+nav .w{display:flex;gap:4px}
+nav a{padding:14px 12px;color:var(--mut);text-decoration:none;font-size:15px}
+nav a:hover{color:var(--ac)}
+section{padding:42px 0 6px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px 18px}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.line{display:flex;align-items:center;margin:26px 0 4px;overflow-x:auto;padding-bottom:6px}
+.st{flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:120px;font-size:14px;color:var(--mut);text-align:center}
+.st i{width:22px;height:22px;border-radius:50%;border:5px solid;background:var(--card);display:block}
+.st b{color:var(--fg);font-size:15px}
+.seg{flex:1;min-width:34px;height:6px;border-radius:3px;margin-top:-34px}
+.map{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:14px;align-items:start}
+.chips{display:flex;flex-direction:column;gap:6px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.chip{text-align:left;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:8px 12px;font-size:15px;border-left:6px solid var(--c)}
+.chip[aria-pressed="true"]{background:var(--c);color:#fff;border-color:var(--c)}
+.det{border-top:6px solid var(--c);position:sticky;top:calc(env(safe-area-inset-top,0px) + 62px)}
+.tag{display:inline-block;font-size:13px;padding:1px 10px;border-radius:99px;background:var(--c);color:#fff;margin:0 6px 6px 0}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tab{padding:10px 16px;border-radius:10px;border:2px solid var(--c);background:var(--card);font-weight:700}
+.tab[aria-selected="true"]{background:var(--c);color:#fff}
+.pn{border-left:6px solid var(--c);padding-left:16px}
+.pn h3{color:var(--c)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:15px}
+td{padding:8px 10px;border-bottom:1px solid var(--bd);vertical-align:top}
+td:first-child{font-weight:700;white-space:nowrap;width:1%}
+ul{margin:4px 0 0;padding-left:20px}li{margin-bottom:6px}
+.ms label{display:block;padding:4px 0;cursor:pointer}
+.bar{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:14px}
+.bar div{height:16px;border-radius:8px}
+a{color:var(--ac)}
+footer{padding:36px 0 50px;color:var(--mut);font-size:14px}
+@media (max-width:700px){.map{grid-template-columns:1fr}.det{position:static}.chips{flex-direction:row;flex-wrap:wrap}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Allow long project names and nested columns to wrap on narrow screens. */
+@media (max-width:700px){.two{grid-template-columns:minmax(0,1fr)}.map>*{min-width:0}.pn table{table-layout:fixed}.pn td{overflow-wrap:anywhere}.pn td:first-child{white-space:normal;width:36%}}
+</style>
+</head>
+<body>
+<header><div class="w">
+<h1>信奥 × AI 论文路线图<span>从 CSP-J 到 NOI，每一步都带一篇“能用上”的经典论文</span></h1>
+<p class="mut" style="max-width:640px">信奥训练的是算法、复杂度和证明思维，而这些正是 AI 的零件：反向传播是计算图上的 DP，Transformer 的加速靠分块，AlphaGo 的核心是搜索。这份路线把两者按年级对齐：学到什么算法，就读哪篇论文，做哪个小项目。</p>
+<div class="line" aria-label="四个阶段">
+<div class="st"><i style="border-color:var(--s1)"></i><b>入门期</b>初一 · CSP-J</div><div class="seg" style="background:linear-gradient(90deg,var(--s1),var(--s2))"></div>
+<div class="st"><i style="border-color:var(--s2)"></i><b>提高期</b>初三 · CSP-S</div><div class="seg" style="background:linear-gradient(90deg,var(--s2),var(--s3))"></div>
+<div class="st"><i style="border-color:var(--s3)"></i><b>进阶期</b>高一 · NOIP</div><div class="seg" style="background:linear-gradient(90deg,var(--s3),var(--s4))"></div>
+<div class="st"><i style="border-color:var(--s4)"></i><b>冲刺期</b>高三 · NOI</div>
+</div>
+</div></header>
+<nav><div class="w"><a href="#map">知识点地图</a><a href="#stages">四阶段路线</a><a href="#how">读论文与时间分配</a><a href="#res">扩展资源</a></div></nav>
+
+<main class="w">
+<section id="map">
+<h2>信奥知识点 → AI 应用地图</h2>
+<p class="mut">点左侧的知识点，看它在 AI 里变成了什么。颜色表示建议在哪个阶段引入。</p>
+<div class="map"><div class="chips" id="chips"></div><div class="card det" id="det" aria-live="polite"></div></div>
+</section>
+
+<section id="stages">
+<h2>四阶段路线</h2>
+<p class="mut">每个阶段包含：信奥主线、算法与 AI 的桥梁、精读与泛读论文、学习节奏、实操项目、达标检验。</p>
+<div class="tabs" role="tablist" id="tabs"></div>
+<div class="card pn" id="pn"></div>
+</section>
+
+<section id="how">
+<h2>怎么读论文，怎么分配时间</h2>
+<div class="g3">
+<div class="card"><h3>用“题解”格式写论文笔记</h3><p>信奥同学最熟这个套路：①题意（论文要解决什么问题）②暴力做法（之前的方法为什么不够）③关键观察（核心想法）④复杂度与代价⑤自己的代码。每篇论文写一页，比抄摘要有效得多。</p></div>
+<div class="card"><h3>读三遍</h3><p>第一遍 10 分钟：看标题、摘要、图和结论。第二遍：抓核心算法和实验图表，用 5 句话复述。第三遍：在纸上推公式或写代码复现。入门期只要求做到第二遍。</p></div>
+<div class="card"><h3>数学补课节奏</h3><p>初一：向量、函数图像直觉。初二到初三：导数与链式法则（先学“会用”）。高一：矩阵乘法、概率与期望。高二起：线性代数、信息熵。数学跟着项目走，缺哪补哪。</p></div>
+</div>
+<div class="card" style="margin-top:14px"><h3>AI 旁线占总学习时间的建议比例</h3>
+<p class="mut">信奥主线永远优先；AI 是“拓展思维和动力”，不是替代刷题。</p>
+<div id="bars"></div></div>
+</section>
+
+<section id="res">
+<h2>扩展资源</h2>
+<div class="g3" id="resg"></div>
+</section>
+</main>
+<footer><div class="w">说明：论文以“作者、年份、标题”给出，请用标题在 arXiv、Semantic Scholar 或 Google Scholar 检索原文核对；年代久远的论文（1950–1990）可先读后人的科普解读。部分项目的难度建议在老师或家长陪同下按兴趣取舍。</div></footer>
+
+<script>
+var C=['var(--s1)','var(--s2)','var(--s3)','var(--s4)'];
+var M=[
+['搜索与剪枝（DFS/BFS/α-β）',1,'A* 游戏寻路、Minimax 与 α-β 剪枝（国际象棋程序）、蒙特卡洛树搜索（AlphaGo 的核心）','Hart 1968 A*；Knuth & Moore 1975 α-β 剪枝分析；Kocsis & Szepesvári 2006 UCT；Silver 2016 AlphaGo'],
+['动态规划',2,'强化学习的 Bellman 方程与 Q-learning、语音与输入法里的 Viterbi（HMM）','Bellman 1957 动态规划；Watkins & Dayan 1992 Q-learning；Rabiner 1989 HMM 教程'],
+['图论：最短路与拓扑序',2,'反向传播就是计算图（DAG）上按拓扑序逆序做 DP；PageRank 是图上的迭代；图神经网络的消息传递是树形 DP 的推广','Rumelhart, Hinton & Williams 1986 反向传播；Page & Brin 1998 PageRank；Gilmer 2017 消息传递神经网络'],
+['贪心与堆',2,'Huffman 编码（word2vec 的层次 softmax 用它）、决策树每步选最优分裂、Beam Search 解码','Huffman 1952；Quinlan 1986 决策树归纳；Mikolov 2013 词与短语的分布式表示'],
+['并查集与最小生成树',2,'Kruskal 等价于单链接层次聚类；图像连通域标记','Gower & Ross 1969 最小生成树与单链接聚类'],
+['字符串：Trie、哈希、AC 自动机',3,'BPE 分词器（大模型的第一步）、局部敏感哈希找相似向量、约束解码与敏感词过滤','Sennrich 2016 BPE 子词；Indyk & Motwani 1998 近似最近邻'],
+['矩阵、FFT 与线代',3,'神经网络就是矩阵乘法；卷积可用 FFT 加速；注意力机制 Q·Kᵀ；LoRA 用低秩分解省参数','LeCun 1998 LeNet；Bahdanau 2014 注意力；Vaswani 2017 Transformer；Hu 2021 LoRA'],
+['概率、期望与随机化',3,'朴素贝叶斯、MCMC 采样、模拟退火（AtCoder 启发式比赛常用）','Metropolis 1953；Kirkpatrick 1983 模拟退火；Kingma & Ba 2014 Adam'],
+['博弈与 SG 函数',3,'自我对弈训练 AlphaZero；德州扑克 AI 用反事实遗憾最小化（CFR）','Silver 2017 AlphaZero；Brown & Sandholm 2018 Libratus'],
+['网络流与二分图匹配',4,'目标检测 DETR 用匈牙利匹配；最优传输（Sinkhorn）本质是费用流；图割做图像分割','Carion 2020 DETR；Cuturi 2013 Sinkhorn 距离；Boykov & Kolmogorov 2004 最大流图割'],
+['分块、前缀和与复杂度优化',4,'FlashAttention 用分块降低显存读写；Mamba 等状态空间模型靠并行前缀扫描（scan）；线性注意力把 O(n²) 降到 O(n)','Dao 2022 FlashAttention；Katharopoulos 2020 Transformers are RNNs；Gu & Dao 2023 Mamba'],
+['NP 难、启发式与构造',4,'神经组合优化（用强化学习解 TSP/背包）、AlphaDev 发现更快的排序程序、大模型解竞赛题','Khalil 2017 图上组合优化；Mankowitz 2023 AlphaDev；Li 2022 AlphaCode；Chen 2021 Codex']
+];
+var T=['入门期','提高期','进阶期','冲刺期'];
+var S=[
+{n:'入门期',g:'初一 · 对标 CSP-J',
+oi:'枚举、模拟、排序、递归、基础 DFS/BFS、栈与队列、简单 DP',
+br:[['递归 / DFS','博弈树与 Minimax：电脑怎么下棋'],['BFS / 队列','最短路径 → A* 启发式搜索，游戏角色怎么找路'],['排序 / 枚举','kNN：找“最像”的样本来分类'],['循环 / 数组','感知机：最早会“学习”的神经元']],
+must:['Shannon 1950《Programming a Computer for Playing Chess》（读思想，跳过细节）','Hart, Nilsson & Raphael 1968《A Formal Basis for the Heuristic Determination of Minimum Cost Paths》（A* 原论文，配合 Red Blob Games 图解）'],
+skim:['Turing 1950《Computing Machinery and Intelligence》（哲学读物，读开头与“反对意见”部分）','Rosenblatt 1958《The Perceptron》','Cover & Hart 1967《Nearest Neighbor Pattern Classification》'],
+plan:[['第 1–2 月','读 Turing 与 Shannon 的科普解读，写出井字棋 Minimax'],['第 3–4 月','BFS 迷宫改成 A*，比较两者扩展的节点数'],['第 5–6 月','手写感知机训练循环，画出决策边界'],['第 7–9 月','kNN 数字识别，写第一份“论文题解”笔记']],
+pj:[['井字棋 Minimax','先全搜索，再加估值函数，体会“搜索 + 评估”'],['迷宫与八数码','BFS 对比 A*，试不同启发函数'],['感知机与 kNN','用 sklearn 自带数字数据集，先别追求高精度']],
+ms:['能口头解释“估值函数”和“启发函数”','独立写出 Minimax 与 A*','完成 2 份论文题解笔记']},
+{n:'提高期',g:'初一末至初三 · 对标 CSP-S',
+oi:'DP 全家桶、最短路/MST/拓扑排序、线段树与树状数组、并查集、KMP/Trie、二分、概率期望初步',
+br:[['拓扑排序 + DP','反向传播：计算图逆序求梯度'],['二维前缀和 / 滑窗','卷积神经网络 LeNet'],['最短路 / 图迭代','PageRank 与 Bellman 方程家族'],['DP 状态转移','HMM 的 Viterbi、Q-learning']],
+must:['Rumelhart, Hinton & Williams 1986《Learning representations by back-propagating errors》','LeCun et al. 1998《Gradient-Based Learning Applied to Document Recognition》','Page, Brin et al. 1998《The PageRank Citation Ranking》'],
+skim:['Knuth & Moore 1975《An Analysis of Alpha-Beta Pruning》','Rabiner 1989《A Tutorial on HMMs》','Watkins & Dayan 1992《Q-learning》','Gower & Ross 1969（MST 与聚类）'],
+plan:[['学期内','每两周一篇，周末 1–2 小时，配一道对应的信奥题'],['先补','导数与链式法则（会用就行），NumPy 基础'],['暑假','集中 2–3 周做 micrograd 与 MNIST 项目'],['学期末','把 3 篇精读整理成一页“题解”分享给同学']],
+pj:[['迷你自动微分 micrograd','约 100 行，建计算图并按拓扑序反传'],['NumPy 手写 MLP 识别 MNIST','目标 97% 以上，不用深度学习框架'],['PageRank 玩具搜索引擎','用校园网页或维基小子图'],['Viterbi 拼音输入法','小语料统计转移概率，用 DP 解码']],
+ms:['能在纸上对小计算图做反向传播','MNIST 达到 97% 以上','能说明 Dijkstra 与 Q-learning 都来自 Bellman 思想']},
+{n:'进阶期',g:'初三至高一 · 对标 NOIP',
+oi:'SCC/LCA/网络流入门、平衡树、分块与莫队、AC 自动机与后缀数组、逆元与 NTT、DP 优化、SG 博弈、矩阵与高斯消元',
+br:[['矩阵乘 / 查询','注意力：Q、K、V 是可微的“字典查找”'],['Trie / AC 自动机','BPE 分词、字符串匹配'],['SG 博弈 / 搜索','MCTS + 神经网络 = AlphaGo'],['模拟退火 / 随机化','优化与采样，后续调参的基础']],
+must:['Bahdanau, Cho & Bengio 2014《Neural Machine Translation by Jointly Learning to Align and Translate》','Vaswani et al. 2017《Attention Is All You Need》','Mikolov et al. 2013《Efficient Estimation of Word Representations in Vector Space》','Silver et al. 2016《Mastering the game of Go with deep neural networks and tree search》'],
+skim:['Sennrich 2016《Neural Machine Translation of Rare Words with Subword Units》','Kirkpatrick 1983《Optimization by Simulated Annealing》','Kocsis & Szepesvári 2006（UCT）','He et al. 2015《Deep Residual Learning》','Kingma & Ba 2014《Adam》','Chen & Guestrin 2016《XGBoost》'],
+plan:[['第 1–3 月','注意力与 Transformer，手推 O(n²d) 复杂度'],['第 4–6 月','做 mini-GPT，同时读 word2vec'],['寒暑假','MCTS 项目与 AtCoder 启发式比赛练手'],['全程','每月一篇泛读，写 5 句话摘要即可']],
+pj:[['字符级 mini-Transformer','仿 Karpathy 的 nanoGPT，在小说文本上训练'],['从零写 BPE 分词器','用哈希表和堆实现合并，对比字符级'],['MCTS 玩 Connect4 或 9×9 围棋','先纯 MCTS，再接一个小价值网络'],['模拟退火刷 AtCoder 启发式题','体会评分函数与邻域设计']],
+ms:['能讲清 Q/K/V 与 softmax 的作用','训练出生成像样文本的小模型','能复现 MCTS 的四个步骤']},
+{n:'冲刺期',g:'高一至高三 · 对标 NOI',
+oi:'多项式与 FFT、LCT 与可持久化、根号分治、费用流、SAM、计算几何、交互与通信题、构造、NP 难与启发式',
+br:[['分块 / 前缀和','FlashAttention 分块、状态空间模型的并行扫描'],['费用流 / 匹配','DETR 匈牙利匹配、最优传输'],['NP 难 / 启发式','神经组合优化与 AlphaDev 发现新算法'],['交互 / 评测','代码大模型的评测方式（pass@k）']],
+must:['Dao et al. 2022《FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness》','Gu & Dao 2023《Mamba: Linear-Time Sequence Modeling with Selective State Spaces》','Khalil et al. 2017《Learning Combinatorial Optimization Algorithms over Graphs》','Veličković & Blundell 2021《Neural Algorithmic Reasoning》','Silver et al. 2017《Mastering Chess and Shogi by Self-Play with a General RL Algorithm》'],
+skim:['Li et al. 2022《Competition-level code generation with AlphaCode》','Chen et al. 2021《Evaluating Large Language Models Trained on Code》','Mankowitz 2023（AlphaDev）、Fawzi 2022（AlphaTensor）','Carion 2020（DETR）、Cuturi 2013（Sinkhorn）','Kipf & Welling 2017（GCN）','Kaplan 2020（Scaling Laws）、Ouyang 2022（InstructGPT）'],
+plan:[['高一下','精读 FlashAttention 并写分块版本'],['高二','做神经算法推理与组合优化实验，写实验报告'],['高二下','可选：参加科创类比赛或整理成小论文'],['集训前','AI 旁线降到每周 1 小时以内，全力备赛']],
+pj:[['迷你 AlphaZero（Connect4）','自我对弈 + MCTS + 小网络，完整闭环'],['FlashAttention 的 NumPy 分块版','验证与朴素注意力数值一致，并分析读写量'],['神经网络学 Dijkstra','测试在更大图上的泛化，对比经典算法'],['OI 评测与 LLM 解题实验','自建沙箱评测，统计 pass@k，分析失败类型']],
+ms:['能解释 FlashAttention 如何减少显存读写','完成一份可复现的实验报告','能说出 NOI 中至少 3 个知识点在 AI 里的位置']}
+];
+var R=[
+['书与课','《人工智能：现代方法》（Russell & Norvig）；Sutton & Barto《强化学习》第二版（官网免费）；《动手学深度学习》d2l.ai；《统计学习方法》（李航）；Goodfellow《深度学习》（deeplearningbook.org 免费）'],
+['视频课','3Blue1Brown 神经网络与线性代数系列；Karpathy《Neural Networks: Zero to Hero》；哈佛 CS50 AI；李宏毅机器学习；Andrew Ng 机器学习；Stanford CS231n 与 CS224n'],
+['图解与博客','Red Blob Games 的 A* 教程；Jay Alammar《The Illustrated Transformer》；Lilian Weng 的 Lil’Log；Distill 归档文章'],
+['练手平台','Codeforces、洛谷、AtCoder（含 Heuristic Contest）；Kaggle 入门赛；Hugging Face 课程'],
+['信奥题库对应','搜索：洛谷“搜索”标签；DP：背包与区间 DP 专题；图论：最短路与拓扑专题；每读完一篇论文，找 2–3 道同类思想的题巩固'],
+['入口链接','<a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Attention Is All You Need</a>；<a href="https://www.redblobgames.com/pathfinding/a-star/introduction.html" target="_blank" rel="noopener">A* 图解</a>；<a href="https://karpathy.ai/zero-to-hero.html" target="_blank" rel="noopener">Zero to Hero</a>；<a href="https://d2l.ai" target="_blank" rel="noopener">d2l.ai</a>']
+];
+function el(i){return document.getElementById(i)}
+function showMap(i){
+  var m=M[i],c=C[m[1]-1];
+  document.querySelectorAll('.chip').forEach(function(b,j){b.setAttribute('aria-pressed',j==i)});
+  var d=el('det');d.style.setProperty('--c',c);
+  d.innerHTML='<span class="tag">'+T[m[1]-1]+'引入</span><h3>'+m[0]+'</h3><p>'+m[2]+'</p><p class="mut"><b>对应论文：</b>'+m[3]+'</p>';
+}
+el('chips').innerHTML=M.map(function(m,i){return '<button class="chip" style="--c:'+C[m[1]-1]+'" onclick="showMap('+i+')" aria-pressed="false">'+m[0]+'</button>'}).join('');
+showMap(0);
+function li(a){return '<ul>'+a.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>'}
+function showStage(i){
+  var s=S[i];
+  document.querySelectorAll('.tab').forEach(function(b,j){b.setAttribute('aria-selected',j==i)});
+  var p=el('pn');p.style.setProperty('--c',C[i]);
+  p.innerHTML='<h3>'+s.n+'：'+s.g+'</h3><p><b>信奥主线：</b>'+s.oi+'</p>'
+  +'<h3 style="margin-top:14px">算法与 AI 的桥梁</h3><table>'+s.br.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>'}).join('')+'</table>'
+  +'<div class="two"><div><h3>精读论文</h3>'+li(s.must)+'</div><div><h3>泛读论文</h3>'+li(s.skim)+'</div></div>'
+  +'<h3>学习节奏</h3><table>'+s.plan.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>'}).join('')+'</table>'
+  +'<h3 style="margin-top:14px">实操项目</h3><table>'+s.pj.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>'}).join('')+'</table>'
+  +'<div class="ms"><h3 style="margin-top:14px">达标检验（<span id="cnt">0</span>/'+s.ms.length+'）</h3>'+s.ms.map(function(x){return '<label><input type="checkbox" onchange="cnt()"> '+x+'</label>'}).join('')+'</div>';
+}
+function cnt(){el('cnt').textContent=document.querySelectorAll('.ms input:checked').length}
+el('tabs').innerHTML=S.map(function(s,i){return '<button class="tab" role="tab" style="--c:'+C[i]+'" onclick="showStage('+i+')" aria-selected="false">'+s.n+' '+s.g.split('，')[0].split(' · ')[0]+'</button>'}).join('');
+showStage(0);
+var B=[['入门期',10],['提高期',15],['进阶期',20],['冲刺期',20]];
+el('bars').innerHTML=B.map(function(b,i){return '<div class="bar"><span style="width:56px">'+b[0]+'</span><div style="width:'+b[1]*3+'%;background:'+C[i]+'"></div><span>约 '+b[1]+'%</span></div>'}).join('')+'<p class="mut" style="font-size:14px">冲刺期集训前 3 个月降到 5% 以内。</p>';
+el('resg').innerHTML=R.map(function(r){return '<div class="card"><h3>'+r[0]+'</h3><p>'+r[1]+'</p></div>'}).join('');
+</script>
+</body>
+</html>
