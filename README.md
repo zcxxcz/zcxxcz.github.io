@@ -34,7 +34,7 @@ npm run publish
 
 ## 内容约定
 
-- `content/<slug>/meta.json`：`id` 必须等于目录名；标题、简介、类型、标签、更新日期必填。`featured: true` 才出现在首页作品卡片。
+- `content/<slug>/meta.json`：`id` 必须等于目录名；标题、简介、类型、标签、更新日期必填。`featured` 保留为元信息；首页不再人工挑选精选卡片。
 - `tags` 里必须包含一个受控主题词（信奥 / 文章与资料 / 家庭游戏 / 英语），列表上方的筛选按钮由它自动生成并显示条数；其余 tags 作为自由关键词。新增主题需同时改 `scripts/build.mjs` 的 `TOPICS`。
 - `status: draft` 不复制到公开产物；`status: published` 才上线。
 - `format: markdown` 使用 `body.md`；`format: html` 使用原样发布的 `index.html`；`format: pdf` 使用 `file` 指定同目录附件。
@@ -72,3 +72,9 @@ npm run test:browser
 ```
 
 检查重复 ID/URL、缺图、内部死链、中文搜索、分类筛选、桌面与手机布局。GitHub Actions 额外在 Windows 上验证 Node 脚本、构建和搜索。所有运行时、依赖以 workflow 和 lockfile 为准。
+
+## 首页常用与最新内容
+
+首页展示此浏览器最常访问的 6 个入口和最新上传的 3 条内容。点击卡片、完整目录、搜索结果都会累计本浏览器的访问次数（包括中键打开）；不上传点击记录、不跨设备同步。尚无记录或不足 6 条时补充默认入口，存储不可用时显示默认入口和提示，不冒充全站热度。清除浏览器站点数据会重置个人排行。
+
+最新上传按 `publishedAt`（可选 ISO 日期）排序；未填写时，本仓库内容从 Git 历史找首次 `published` 的提交时间，外部站点用首次注册时间。后续修改 `updated` 不会把旧内容顶到最新。并列时间按 ID 稳定排序；旧记录缺少历史时才用 `updated` 兜底。完整目录仍按最近更新排列。

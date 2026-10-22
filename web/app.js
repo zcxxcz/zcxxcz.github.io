@@ -14,6 +14,7 @@ window.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#search").textContent =
       "搜索暂时无法加载，请使用下方内容目录。";
   }
+  setupPopular();
   const rows = [...document.querySelectorAll(".library-row")];
   const groups = [...document.querySelectorAll("details.series")];
   const status = document.querySelector("#filter-status");
@@ -68,7 +69,12 @@ window.addEventListener("DOMContentLoaded", () => {
               "zh",
             ),
         );
-      else list.sort((a, b) => originalOrder.get(container).indexOf(a) - originalOrder.get(container).indexOf(b));
+      else
+        list.sort(
+          (a, b) =>
+            originalOrder.get(container).indexOf(a) -
+            originalOrder.get(container).indexOf(b),
+        );
       container.append(...list);
     }
   });
@@ -83,3 +89,74 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+function setupPopular() {
+  const key = "content-hub-visits-v1";
+  const template = document.querySelector("#home-card-templates");
+  const container = document.querySelector("#popular-cards");
+  if (!template || !container) return;
+  const cards = new Map(
+    [...template.content.querySelectorAll(".card")].map((card) => [
+      card.dataset.recordId,
+      card,
+    ]),
+  );
+  const defaults = [...container.children].map((card) => card.dataset.recordId);
+  const urls = new Map(
+    [...cards].map(([id, card]) => [
+      new URL(card.href, location.href).href,
+      id,
+    ]),
+  );
+  let visits = Object.create(null);
+  let available = true;
+  try {
+    const saved = JSON.parse(localStorage.getItem(key) || "{}");
+    if (saved && typeof saved === "object" && !Array.isArray(saved)) {
+      for (const [id, n] of Object.entries(saved))
+        if (cards.has(id) && Number.isSafeInteger(n) && n > 0) visits[id] = n;
+    }
+  } catch {
+    available = false;
+  }
+  function render() {
+    const ranked = Object.keys(visits).sort(
+      (a, b) => visits[b] - visits[a] || a.localeCompare(b),
+    );
+    const ids = [...new Set([...ranked, ...defaults])].slice(0, 6);
+    container.replaceChildren(
+      ...ids.map((id, i) => {
+        const card = cards.get(id).cloneNode(true);
+        card.querySelector(".card-number").textContent = String(i + 1).padStart(
+          2,
+          "0",
+        );
+        return card;
+      }),
+    );
+    document.querySelector("#popular-note").textContent = !available
+      ? "浏览器无法保存访问记录，暂时显示默认入口。"
+      : ranked.length
+        ? "按此浏览器的点击次数排序；不足 6 个时补充默认入口。"
+        : "还没有访问记录，先从这些入口开始。";
+  }
+  function record(event) {
+    if (event.type === "auxclick" && event.button !== 1) return;
+    const link = event.target.closest("a[href]");
+    if (!link) return;
+    const id = urls.get(new URL(link.href, location.href).href);
+    if (!id) return;
+    visits[id] = Math.min((visits[id] || 0) + 1, Number.MAX_SAFE_INTEGER);
+    try {
+      localStorage.setItem(key, JSON.stringify(visits));
+    } catch {
+      available = false;
+    }
+    // Keep the activated anchor in place until the browser finishes its navigation.
+    setTimeout(render, 0);
+  }
+  document.addEventListener("click", record);
+  document.addEventListener("auxclick", record);
+  window.addEventListener("pageshow", render);
+  render();
+}

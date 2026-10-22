@@ -3,6 +3,7 @@ import path from "node:path";
 import { marked } from "marked";
 import * as pagefind from "pagefind";
 import { esc, json, text, validate, checkLinks, origin } from "./lib.mjs";
+import { firstPublished, newest } from "./publication.mjs";
 const out = "dist";
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
@@ -48,7 +49,15 @@ for (const f of (await readdir("sites"))
       }
     } else throw Error(`${site.id}: ${e.message}`);
   }
-  all.push(...records.map((r) => ({ ...r, source: site.id })));
+  all.push(
+    ...records.map((r) => ({
+      ...r,
+      source: site.id,
+      publishedAt: firstPublished("sites/" + f, r.updated, {
+        explicit: r.publishedAt,
+      }),
+    })),
+  );
 }
 const shell = (title, body) =>
   `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} · 内容与作品</title><link rel="stylesheet" href="/style.css"><link rel="icon" href="/favicon.svg"></head><body><header class="topbar"><a class="brand" href="/">Z / 内容与作品</a><a href="/#library">全部内容 ↗</a></header><main class="reading">${body}</main><footer>内容与作品 · zcxxcz</footer></body></html>`;
@@ -100,6 +109,10 @@ for (const slug of (await readdir("content", { withFileTypes: true }))
     url: origin + `/content/${slug}/`,
     text: text(body) + "\n" + extra,
     source: "hub",
+    publishedAt: firstPublished(`content/${slug}/meta.json`, m.updated, {
+      explicit: m.publishedAt,
+      content: true,
+    }),
   });
 }
 validate(all);
@@ -134,124 +147,28 @@ const filtersHtml = filterDefs
   )
   .join("");
 
-const byId = new Map(all.map((r) => [r.id, r]));
-// 同系列内容合并成一张卡，避免首页被同一系列刷屏。
-const seriesDefs = [
-  {
-    id: "csp-s-solutions",
-    title: "CSP-S 历年题解：从部分分到 AC",
-    summary:
-      "2021、2023–2025 四届 CSP-S 复赛真题的完整档位拆解——每道题从暴力部分分一路推到 AC，附可编译代码与本地对拍。",
-    type: "文章",
-    tags: ["信奥", "CSP-S", "题解"],
-    members: [
-      { id: "csp-s2025-solutions", label: "CSP-S 2025" },
-      { id: "csp-s2024-solutions", label: "CSP-S 2024" },
-      { id: "csp-s2023-solutions", label: "CSP-S 2023" },
-      { id: "csp-s2021-solutions", label: "CSP-S 2021" },
-    ],
-  },
-  {
-    id: "p8820-videos",
-    title: "P8820 数据传输：三个版本的动画讲解",
-    summary:
-      "同一道题，三种拆法。12 分钟版把部分分当台阶，从 4 分一路爬到 25 分；17 分钟版走树链剖分；7 分钟版压成五状态 min-plus 矩阵。挑一条思路跟到底。",
-    type: "视频",
-    tags: ["信奥", "CSP-S", "P8820", "数学动画"],
-    members: [
-      { id: "p8820-3b1b-video", label: "12:20 · 分数爬坡版" },
-      { id: "p8820-data-transmission-video", label: "17:37 · 树链剖分版" },
-      { id: "p8820-deepseek-video", label: "07:19 · 五状态 min-plus 版" },
-    ],
-  },
-];
-const seriesIds = new Set(seriesDefs.map((s) => s.id));
-const seriesOfMember = new Map();
-for (const s of seriesDefs) for (const m of s.members) seriesOfMember.set(m.id, s);
-
-const cardGroups = [
-  {
-    label: "应用与站点",
-    note: "可以直接用的工具与作品",
-    items: [
-      "xinao-courses",
-      "word-builder",
-      "magic-pets",
-      "spinner",
-      "spy",
-      "xiaohongshu",
-    ],
-  },
-  {
-    label: "精选内容",
-    note: "值得先读的文章与交互页",
-    items: [
-      "xinao-knowledge-graph",
-      "csp-s-solutions",
-      "p8820-videos",
-      "xinao-optimization-handbook",
-      "csps-interactive-notes",
-      "kazike-prompt-toolkit",
-    ],
-  },
-];
-// 兜底：featured 但没在分组里列出的内容，一律补进最后一组，保证不会凭空消失。
-const listed = new Set(cardGroups.flatMap((g) => g.items));
-const leftovers = all
-  .filter(
-    (r) => r.featured && !listed.has(r.id) && !seriesOfMember.has(r.id),
-  )
-  .map((r) => r.id);
-if (leftovers.length) cardGroups.at(-1).items.push(...leftovers);
-
-const pills = (title, summary, type, i, arrow) =>
-  `<div class="card-top"><span class="card-number">${String(i + 1).padStart(2, "0")}</span><span class="pill">${esc(type)}</span></div><h3>${esc(title)}${arrow ? ` <span aria-hidden="true">↗</span>` : ""}</h3><p>${esc(summary)}</p>`;
-const tagsHtml = (tags) =>
-  `<div class="tags">${tags.map((t) => `<span>${esc(t)}</span>`).join("")}</div>`;
 const recordCard = (r, i) =>
-  `<a class="card" href="${esc(r.url)}" data-type="${esc(r.type)}" data-tags="${esc(r.tags.join(" "))}" data-topics="${esc(rowTopics(r.tags))}">${pills(r.title, r.summary, r.type, i, true)}${tagsHtml(r.tags)}</a>`;
-const seriesCard = (s, i) => {
-  const links = s.members
-    .map((m) => ({ label: m.label, rec: byId.get(m.id) }))
-    .filter((m) => m.rec)
-    .map((m) => `<a href="${esc(m.rec.url)}">${esc(m.label)} ↗</a>`)
-    .join("");
-  return `<div class="card card-series" data-type="${esc(s.type)}" data-tags="${esc(s.tags.join(" "))}" data-topics="${esc(rowTopics(s.tags))}">${pills(s.title, s.summary, s.type, i, false)}<div class="series-links">${links}</div>${tagsHtml(s.tags)}</div>`;
-};
-// 精选卡片：列表里写了但内容不存在（或没标 featured）时跳过并告警，
-// 保证「内容被删掉/改名」不会直接把站点构建打断。
-const cardGroupHtml = [];
-let cardCount = 0;
-for (const g of cardGroups) {
-  const renderable = [];
-  for (const id of g.items) {
-    if (seriesIds.has(id)) {
-      renderable.push({ series: seriesDefs.find((s) => s.id === id) });
-      continue;
-    }
-    const r = byId.get(id);
-    if (!r) {
-      warnings.push(`精选卡片「${g.label}」：找不到内容 ${id}，已跳过`);
-      continue;
-    }
-    if (!r.featured) {
-      warnings.push(`精选卡片「${g.label}」：${id} 未标记 featured，已跳过`);
-      continue;
-    }
-    renderable.push({ record: r });
-  }
-  if (!renderable.length) continue;
-  const cards = renderable
-    .map((x, i) =>
-      x.series ? seriesCard(x.series, i) : recordCard(x.record, i),
-    )
-    .join("");
-  cardCount += renderable.length;
-  cardGroupHtml.push(
-    `<div class="card-group"><div class="card-group-head"><h3>${esc(g.label)}</h3><p>${esc(g.note)}</p></div><div class="cards">${cards}</div></div>`,
-  );
-}
-const cardsHtml = cardGroupHtml.join("");
+  `<a class="card" href="${esc(r.url)}" data-record-id="${esc(r.id)}" data-type="${esc(r.type)}" data-tags="${esc(r.tags.join(" "))}" data-topics="${esc(rowTopics(r.tags))}"><div class="card-top"><span class="card-number">${String(i + 1).padStart(2, "0")}</span><span class="pill">${esc(r.type)}</span></div><h3>${esc(r.title)} <span aria-hidden="true">↗</span></h3><p>${esc(r.summary)}</p><div class="tags">${r.tags.map((t) => `<span>${esc(t)}</span>`).join("")}</div></a>`;
+const defaultIds = [
+  "xinao-courses",
+  "word-builder",
+  "magic-pets",
+  "spinner",
+  "spy",
+  "xiaohongshu",
+];
+const defaults = defaultIds
+  .map((id) => all.find((r) => r.id === id))
+  .filter(Boolean);
+const popular = [
+  ...defaults,
+  ...all.filter((r) => !defaultIds.includes(r.id)),
+].slice(0, 6);
+const latest = newest(all);
+const cardCount = popular.length + latest.length;
+const cardsHtml = `<div class="card-group"><div class="card-group-head"><h3>你最常访问的</h3><p id="popular-note">还没有访问记录，先从这些入口开始。</p></div><div class="cards" id="popular-cards">${popular.map(recordCard).join("")}</div></div><div class="card-group"><div class="card-group-head"><h3>最新上传</h3><p>最近首次收录的 3 条内容</p></div><div class="cards" id="latest-cards">${latest.map(recordCard).join("")}</div></div>`;
+// Templates let the browser reorder known, escaped links without constructing HTML from storage.
+const cardTemplates = `<template id="home-card-templates">${all.map(recordCard).join("")}</template>`;
 
 // 资料库：大来源折叠成一组，避免单个仓库的子页面把列表淹没。
 const listGroups = [
@@ -267,7 +184,7 @@ const grouped = new Set(
     .map((r) => r.id),
 );
 const rowHtml = (r) =>
-  `<a class="library-row" href="${esc(r.url)}" data-type="${esc(r.type)}" data-tags="${esc(r.tags.join(" "))}" data-topics="${esc(rowTopics(r.tags))}"><span class="row-type">${esc(r.type)}</span><span><strong>${esc(r.title)}</strong><small>${esc(r.summary)}</small></span><span class="row-date">${esc(r.updated)} ↗</span></a>`;
+  `<a class="library-row" data-record-id="${esc(r.id)}" href="${esc(r.url)}" data-type="${esc(r.type)}" data-tags="${esc(r.tags.join(" "))}" data-topics="${esc(rowTopics(r.tags))}"><span class="row-type">${esc(r.type)}</span><span><strong>${esc(r.title)}</strong><small>${esc(r.summary)}</small></span><span class="row-date">${esc(r.updated)} ↗</span></a>`;
 const rowsHtml =
   `<div class="rows-flat">${all
     .filter((r) => !grouped.has(r.id))
@@ -283,10 +200,10 @@ const rowsHtml =
 
 let html = await readFile("web/index.html", "utf8");
 html = html
-  .replace("{{CARDS}}", cardsHtml)
+  .replace("{{CARDS}}", cardsHtml + cardTemplates)
   .replace("{{FILTERS}}", filtersHtml)
   .replace("{{COUNT}}", String(all.length))
-  .replace("{{FEATURED}}", String(cardCount))
+  .replace("{{FEATURED}}", String(all.filter((r) => r.featured).length))
   .replace("{{DATE}}", fetched.slice(0, 10))
   .replace("{{ROWS}}", rowsHtml);
 await writeFile(path.join(out, "index.html"), html);
