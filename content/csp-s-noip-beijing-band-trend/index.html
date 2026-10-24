@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>北京 CSP-S 分数带 → NOIP 一等奖：六年转化率与年度趋势</title>
+<style>
+:root{
+  --bg:#f6f7f9; --card:#ffffff; --ink:#16202b; --ink2:#4a5a68; --ink3:#7b8b99;
+  --line:#e3e8ee; --accent:#1f6feb; --accent2:#0b7a5b;
+  --good:#0b7a5b; --bad:#c94f3d; --warn:#b7791f;
+  --mono:"SFMono-Regular",Consolas,"Cascadia Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+:root{
+  --bg:#12161b; --card:#1a2027; --ink:#e8eef5; --ink2:#a9b7c4; --ink3:#7b8b99;
+  --line:#2b3540; --accent:#5b9dff; --accent2:#34d399;
+  --good:#34d399; --bad:#f87171; --warn:#fbbf24;
+}
+img{background:#fff;border-radius:10px}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.75 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px 90px}
+header.hero{background:linear-gradient(135deg,#10314f 0%,#1c5d7a 55%,#0b7a5b 100%);color:#fff;
+  margin:0 -20px 0;padding:52px 40px 44px;border-radius:0 0 22px 22px}
+header.hero h1{margin:0 0 10px;font-size:30px;letter-spacing:.5px;line-height:1.32}
+header.hero p{margin:6px 0 0;color:#cfe3ee;font-size:15px;max-width:840px}
+.hero .chips{margin-top:20px;display:flex;flex-wrap:wrap;gap:9px}
+.chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);
+  padding:5px 12px;border-radius:999px;font-size:13px;color:#fff}
+h2{font-size:23px;margin:54px 0 14px;padding-bottom:9px;border-bottom:2px solid var(--line);letter-spacing:.3px}
+h2 .n{color:var(--accent);font-weight:800;margin-right:9px}
+h3{font-size:17.5px;margin:30px 0 10px}
+p{margin:11px 0}
+ul,ol{margin:11px 0;padding-left:24px}
+li{margin:7px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin:18px 0;
+  box-shadow:0 1px 2px rgba(16,32,48,.04)}
+.callout{border-left:4px solid var(--accent);background:rgba(31,111,235,.07);border-radius:0 12px 12px 0;
+  padding:14px 18px;margin:18px 0}
+.callout.warn{border-left-color:var(--warn);background:rgba(183,121,31,.09)}
+.callout.good{border-left-color:var(--good);background:rgba(11,122,91,.08)}
+.callout>b:first-child{display:block;margin-bottom:4px}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14px;background:var(--card)}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+th{background:rgba(127,127,127,.10);font-weight:650;color:var(--ink2);font-size:13.5px}
+td.l,th.l{text-align:left}
+tr:nth-child(even) td{background:rgba(127,127,127,.035)}
+.statrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:20px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.stat .v{font-size:25px;font-weight:800;letter-spacing:.5px}
+.stat .k{font-size:12.5px;color:var(--ink3);margin-top:2px}
+.stat.g .v{color:var(--good)} .stat.r .v{color:var(--bad)} .stat.b .v{color:var(--accent)}
+figure{margin:26px 0}
+figure img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:12px}
+figcaption{font-size:13px;color:var(--ink3);margin-top:9px;line-height:1.65}
+nav.toc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 22px;margin:26px 0}
+nav.toc b{font-size:14px;color:var(--ink3);letter-spacing:1px}
+nav.toc ol{margin:8px 0 0;columns:2;column-gap:34px}
+@media(max-width:700px){nav.toc ol{columns:1}}
+nav.toc a{color:var(--accent);text-decoration:none}
+nav.toc a:hover{text-decoration:underline}
+.tiny{font-size:13px;color:var(--ink3)}
+.tbl-scroll{overflow-x:auto}
+.tbl-scroll table{min-width:640px}
+.hl{font-weight:700}
+.mini{font-size:12px;color:var(--ink3)}
+footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink3)}
+@media(max-width:640px){
+  header.hero{padding:40px 22px 34px}
+  header.hero h1{font-size:23px}
+  .wrap{padding:0 14px 70px}
+  table{font-size:13px}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>北京 CSP-S 分数带 → NOIP 一等奖：六年转化率与年度趋势</h1>
+  <p>同一个分数带，在不同的年份值多少钱？用 2020–2025 年 CCF 官方公示名单里 <b>1,120 组北京双榜样本</b>回答：<b>这条曲线的形状六年没变，但整条曲线在往下沉。</b></p>
+  <div class="chips">
+    <span class="chip">信奥</span><span class="chip">CSP-S</span><span class="chip">NOIP</span>
+    <span class="chip">北京</span><span class="chip">1,120 组样本</span><span class="chip">2020–2025</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+<nav class="toc">
+  <b>目录</b>
+  <ol>
+    <li><a href="#s1">三十秒速览</a></li>
+    <li><a href="#s2">主干：分档曲线加了年份</a></li>
+    <li><a href="#s3">逐年明细表</a></li>
+    <li><a href="#s4">热力图：一条曲线，五次下沉</a></li>
+    <li><a href="#s5">为什么跌：分母膨胀，分子没动</a></li>
+    <li><a href="#s6">换把尺子：仍有一半差距是真的</a></li>
+    <li><a href="#s7">三条可执行的结论</a></li>
+    <li><a href="#s8">方法与数据边界</a></li>
+  </ol>
+</nav>
+
+<h2 id="s1"><span class="n">01</span>三十秒速览</h2>
+
+<div class="statrow">
+  <div class="stat b"><div class="v">1,120</div><div class="k">北京双榜匹配样本（2020–2025）</div></div>
+  <div class="stat g"><div class="v">90%</div><div class="k">CSP-S 300 分以上拿 NOIP 一等（六年合计）</div></div>
+  <div class="stat r"><div class="v">3%</div><div class="k">CSP-S 0–59 分拿 NOIP 一等</div></div>
+  <div class="stat r"><div class="v">52% → 18%</div><div class="k">中段（150–249）转化率，2020 → 2024</div></div>
+</div>
+
+<div class="callout">
+  <b>一句话结论</b>
+  CSP-S 分数带对 NOIP 一等奖的<b>预测方向</b>六年没变——分数越高，拿奖概率越大，300 分以上稳定在 84%–100%。
+  但<b>同一个分数带的含金量在持续贬值</b>：中段从 2020 年的 52% 滑到 2024 年的 18%，2025 年才回到 29%。
+  这不是学生退步，而是 CSP-S 获奖池扩容、NOIP 一等奖名额几乎不动造成的结构性挤压。
+</div>
+
+<h2 id="s2"><span class="n">02</span>主干：分档曲线加了年份</h2>
+
+<p><b>(a)</b> 是六年合并的原图：横轴把 CSP-S 分数切成七个带，纵轴是这个带里最终拿到 NOIP 一等奖的比例。
+单调上升，没有任何反转——<b>150 分以下是个位数到 14%，300 分以上是 90%</b>，中间每一档的斜率都很清楚。</p>
+
+<p>把同一张图按年份拆开，就是 <b>(b)</b>。五条曲线（2022 年北京无 NOIP 名单数据）形状几乎平行，
+但位置一路下沉：<b>2020 最高，2024 触底，2025 略有回升</b>。</p>
+
+<figure>
+  <img src="bj1.png" alt="北京 CSP-S 分数带 到 NOIP 一等奖转化率：六年合计柱状图 + 逐年曲线">
+  <figcaption>图1　(a) 六年合计的七个分数带；(b) 同一条曲线在五年里的位置变化。2022 年 CCF 公示的 NOIP 名单缺北京等 8 个省级单位，因此该年无数据。</figcaption>
+</figure>
+
+<p>读图要点只有两条：</p>
+<ul>
+  <li><b>形状稳定。</b>五年里没有一年出现“低分高转化”或“高分低转化”的反转。分数带始终是最强的单一预测变量。</li>
+  <li><b>水平在跌。</b>以 200–249 这一档为例，2021 年是 100%（n=10），2023 年 59%，2024 年 29%，2025 年 34%。同一档位，三年掉了七成。</li>
+</ul>
+
+<div class="callout warn">
+  <b>注意样本量</b>
+  高分段的格子很小：300–400 档 2020 年只有 7 人、2021 年 18 人。小样本会让百分比剧烈跳动（100% 可能只是 7 个人全中），
+  所以看图时请把 <code>n</code> 一起读，不要只看柱子高低。
+</div>
+
+<h2 id="s3"><span class="n">03</span>逐年明细表</h2>
+
+<p>把图1(b) 拆成数字。括号内是该格子的样本量，<b>空白表示当年该档无人</b>，2022 整列为空。</p>
+
+<div class="tbl-scroll">
+<table>
+  <thead>
+    <tr>
+      <th class="l">CSP-S 分数带</th><th>2020</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th><th>六年合计</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="l">300–400</td><td>100% (7)</td><td>100% (18)</td><td class="mini">—</td><td>93% (41)</td><td>84% (68)</td><td>94% (32)</td><td class="hl">90% (166)</td></tr>
+    <tr><td class="l">250–299</td><td>83% (12)</td><td>100% (6)</td><td class="mini">—</td><td>85% (13)</td><td>32% (31)</td><td>57% (30)</td><td class="hl">59% (92)</td></tr>
+    <tr><td class="l">200–249</td><td>67% (21)</td><td>100% (10)</td><td class="mini">—</td><td>59% (22)</td><td>29% (52)</td><td>34% (58)</td><td class="hl">44% (163)</td></tr>
+    <tr><td class="l">150–199</td><td>42% (31)</td><td>65% (17)</td><td class="mini">—</td><td>47% (45)</td><td>6% (48)</td><td>23% (64)</td><td class="hl">31% (205)</td></tr>
+    <tr><td class="l">100–149</td><td>15% (40)</td><td>41% (37)</td><td class="mini">—</td><td>17% (114)</td><td>4% (75)</td><td>7% (61)</td><td class="hl">14% (327)</td></tr>
+    <tr><td class="l">60–99</td><td>3% (30)</td><td>21% (38)</td><td class="mini">—</td><td>12% (16)</td><td>0% (2)</td><td>0% (16)</td><td class="hl">11% (102)</td></tr>
+    <tr><td class="l">0–59</td><td>0% (15)</td><td>6% (33)</td><td class="mini">—</td><td>0% (2)</td><td class="mini">—</td><td>0% (15)</td><td class="hl">3% (65)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="tiny">合计行与图1(a) 的柱子一致。2022 年北京无 NOIP 名单数据，故整列为空。</p>
+
+<p>两个细节值得单独看一眼：</p>
+<ul>
+  <li><b>2021 年是六年里的异常高点。</b>七个档位里有三档是 100%，150–199 也有 65%。这一年北京 NOIP 一等奖 72 人，而 CSP-S 获奖只有 443 人——分母小、分子相对宽裕。</li>
+  <li><b>2024 年是六年里的最低点。</b>除了 300 分以上还守住 84%，其余六档全部落在 32% 及以下，150–199 只有 6%。</li>
+</ul>
+
+<h2 id="s4"><span class="n">04</span>热力图：一条曲线，五次下沉</h2>
+
+<p>同一份数据换成色块，看“整条曲线”怎么移动会比折线更直观：颜色从深到浅，就是从“稳拿”到“基本无望”。</p>
+
+<figure>
+  <img src="bj2.png" alt="北京 CSP-S 分数带与年份的热力图，格内标注转化率与样本量">
+  <figcaption>图2　横轴年份、纵轴分数带，格内是转化率与样本量。斜纹格为 2022 年（北京无 NOIP 名单数据）。</figcaption>
+</figure>
+
+<p>从色块能读出三件事：</p>
+<ol>
+  <li><b>深色区在收窄。</b>2020–2021 年，200 分以上就基本是深蓝；2024 年要到 300 分以上才重新变深。</li>
+  <li><b>塌陷从中段开始。</b>250–299 这一行从 83%/100%/85% 直接掉到 32%，是单格跌幅最大的一处。</li>
+  <li><b>2025 年不是延续下跌，而是小幅回弹。</b>250–299 从 32% 回到 57%，150–199 从 6% 回到 23%——正好对应那一年的名额比回升（见下节）。</li>
+</ol>
+
+<h2 id="s5"><span class="n">05</span>为什么跌：分母膨胀，分子没动</h2>
+
+<p>转化率是一个分数：分母是 CSP-S 获奖人数，分子是最终拿到 NOIP 一等奖的人数。北京这六年的问题是<b>分母翻了近三倍，分子原地不动</b>。</p>
+
+<figure>
+  <img src="bj3.png" alt="北京 CSP-S 获奖人数与 NOIP 一等奖人数逐年对比">
+  <figcaption>图3　左轴（柱）是北京 CSP-S 获奖总人数，右轴（橙线）是北京 NOIP 一等奖人数。2022 年无 NOIP 数据，折线断开。</figcaption>
+</figure>
+
+<div class="tbl-scroll">
+<table>
+  <thead>
+    <tr><th class="l">年份</th><th>北京 CSP-S 获奖</th><th>北京 NOIP 一等奖</th><th>名额比</th><th>整体转化率</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="l">2020</td><td>461</td><td>51</td><td>11.1%</td><td>32.7%</td></tr>
+    <tr><td class="l">2021</td><td>443</td><td>72</td><td>16.3%</td><td>44.0%</td></tr>
+    <tr><td class="l">2022</td><td>591</td><td class="mini">无数据</td><td class="mini">—</td><td class="mini">—</td></tr>
+    <tr><td class="l">2023</td><td>940</td><td>104</td><td>11.1%</td><td>41.1%</td></tr>
+    <tr><td class="l">2024</td><td>1,351</td><td>87</td><td class="hl">6.4%</td><td>31.9%</td></tr>
+    <tr><td class="l">2025</td><td>1,095</td><td>87</td><td>7.9%</td><td>31.2%</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="tiny">名额比 = 北京 NOIP 一等奖人数 ÷ 同届北京 CSP-S 获奖人数。整体转化率 = 匹配样本内拿到 NOIP 一等奖的比例。</p>
+
+<p>这个结构性挤压的后果很直接：<b>2024 年北京每 100 个 CSP-S 获奖者里，只有 6.4 个能拿到 NOIP 一等奖</b>。
+换句话说，CSP-S 获奖本身已经不是稀缺资源了，NOIP 一等奖才是——而且它的总量在 87–104 人这个区间已经钉了三年。</p>
+
+<div class="callout">
+  <b>为什么 2025 年回来了</b>
+  CSP-S 获奖人数从 1,351 回落到 1,095，NOIP 一等奖仍然是 87 人，名额比从 6.4% 升到 7.9%，
+  于是中高段的转化率同步回升。这反过来证明：<b>转化率的第一驱动力是名额比，不是学生水平</b>。
+</div>
+
+<h2 id="s6"><span class="n">06</span>换把尺子：仍有一半差距是真的</h2>
+
+<p>上面的逐年比较有一个隐患：<b>CSP-S 的分数本身在通胀</b>。2020 年北京 CSP-S 获奖者均分 118 分，2024 年是 155 分。
+同样一个“250 分”，在 2020 年和 2024 年对应的相对位置完全不同——直接按绝对分带比较，会把通胀算成“学生变差”。</p>
+
+<p>换个尺子：不看绝对分，看<b>当届百分位</b>——把每年的北京 CSP-S 获奖者按当年分数排序，取前 10%、75–90%、50–75% 三档，再算转化率。</p>
+
+<figure>
+  <img src="bj4.png" alt="按当届百分位分档后的逐年转化率">
+  <figcaption>图4　换成“当届百分位”分档后的逐年转化率。2022 年北京无数据，灰带处折线断开。</figcaption>
+</figure>
+
+<p>结果很有意思，而且给出一个更精确的答案：</p>
+<ul>
+  <li><b>前 10% 相对稳。</b>81% → 100% → 91% → 82% → 72%。六年只掉了 9 个百分点，2025 年仍有 72%。</li>
+  <li><b>75–90% 塌得最狠。</b>61% → 67% → 48% → 26% → 32%。这才是真正被挤压的一层。</li>
+  <li><b>50–75% 六年没过 25%。</b>12% → 22% → 25% → 6% → 16%。这一档基本可以认为“拿一等是小概率事件”。</li>
+</ul>
+
+<div class="callout good">
+  <b>所以“下跌”要拆成两半</b>
+  一半是<b>口径问题</b>：分数通胀让同一个绝对分带装进了相对更弱的人，这部分不是真的变难。
+  另一半是<b>真的变难</b>：即使按百分位重排，75–90% 这一档也从 61% 掉到 26%。<b>名额比从 11% 掉到 6% 这件事，会直接传导到同一相对位置的人身上。</b>
+</div>
+
+<h2 id="s7"><span class="n">07</span>三条可执行的结论</h2>
+
+<div class="card">
+  <h3>1. 别拿“某某分就能拿一等”跨年套用</h3>
+  <p>2021 年北京 CSP-S 250 分以上是 100% 拿一等，2024 年同样的 250–299 只有 32%。<b>分数线的含义每年都在变</b>，
+  真正稳定的参照是<b>当届百分位</b>：北京近三年站在当届 CSP-S 获奖者<b>前 10%</b> 的人，拿 NOIP 一等的概率是 72%–91%；
+  掉到 75–90% 只剩 26%–48%，50% 之后基本无望。</p>
+</div>
+
+<div class="card">
+  <h3>2. 把 250 分当成“入场券”，不是“安全线”</h3>
+  <p>六年合计看，250 分以上拿一等的概率是 59%（250–299）和 90%（300+），而 200–249 只有 44%、150–199 只有 31%。
+  但从 2024 年起，250–299 已经跌到 32%。<b>用合并口径做的规划，在近两年会系统性高估成功率</b>——
+  做目标时请用最近两年的数据，而不是六年平均。</p>
+</div>
+
+<div class="card">
+  <h3>3. 认清“名额”这堵墙，把精力放在跨过它而不是刷分</h3>
+  <p>北京 NOIP 一等奖总量三年稳定在 87–104 人。这意味着<b>北京每年只有不到一百个一等奖名额</b>，
+  而 CSP-S 获奖者有上千人。在同一个奖级内多刷十几分，对结果的边际影响远小于<b>跨过档次边界</b>。
+  如果目标是省队/NOI，更该关注的是 NOIP 分数在全国的位次，而不是 CSP-S 的绝对分。</p>
+</div>
+
+<h2 id="s8"><span class="n">08</span>方法与数据边界</h2>
+
+<h3>数据来源</h3>
+<ul>
+  <li>CCF NOI 官网「获奖名单公示」栏目，2020–2025 年共 <b>36 份</b>官方名单（CSP-J/S 第二轮提高级 + NOIP，各分一/二/三等奖）。</li>
+  <li>CSP-S 与 NOIP 两榜通过<b>省份 + 姓名 + 学校</b>匹配，北京共得到 <b>1,120 组</b>双榜样本。准考证号在两种赛事里编码规则不同，无法直接关联。</li>
+  <li>NOIP 一等奖以官方公示的“一等奖”标注为准，不使用推断分数线。</li>
+</ul>
+
+<h3>必须交代的四个边界</h3>
+<ol>
+  <li><b>2022 年北京完全没有数据。</b>该年 CCF 公示的 NOIP 名单只覆盖 19 个省级单位，缺北京、重庆、河北等 8 省。所以所有逐年图在 2022 处断开，任何“六年连续趋势”的说法都要扣掉这一年。</li>
+  <li><b>样本只包含获奖者。</b>CSP-S 未获奖的学生不在名单里，因此这里的“转化率”是<b>获奖者内部</b>的转化率，不是全体参赛者的转化率，会系统性高于真实水平。</li>
+  <li><b>小样本格子不稳定。</b>高分段和 2021 年的中段格子 n 只有 6–20，百分比波动很大。看趋势请看中段和总样本，不要盯单个格子。</li>
+  <li><b>这是相关性描述，不是因果结论。</b>“名额比下降→转化率下降”是最合理的解释，但名单数据无法排除其他同时变化的因素（如当年题目难度、省队选拔规则调整）。</li>
+</ol>
+
+<div class="callout warn">
+  <b>给要拿这份数据做决策的人</b>
+  这套口径适合回答“某个分数带大概有多大机会”，不适合回答“我家孩子能不能拿一等”。
+  个体预测的误差带很宽——同一分数带内部的差异，比分数带之间的差异更大。
+</div>
+
+<footer>
+  数据整理与图表：zcxxcz · 2026-10-24 · 原始名单来自 CCF NOI 官网公示（noi.cn）<br>
+  同系列：<a href="/content/csp-s2025-beijing-strategy/" style="color:var(--accent)">CSP-S 2025 北京选手 · 夺分策略指南</a>
+</footer>
+
+</div>
+</body>
+</html>
