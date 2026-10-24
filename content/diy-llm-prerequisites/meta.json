@@ -1,0 +1,18 @@
+{
+  "id": "diy-llm-prerequisites",
+  "title": "Diy-LLM 逐章学习准备指南",
+  "type": "资料",
+  "format": "html",
+  "status": "published",
+  "summary": "面向需要补 Python 与数学基础的学习者，逐章拆解 Diy-LLM 16 章的阅读门槛、动手要求、自测练习和学习资料，附基础路线、本地进度、笔记与记录备份。",
+  "tags": [
+    "文章与资料",
+    "大语言模型",
+    "学习路线",
+    "Python",
+    "数学",
+    "深度学习"
+  ],
+  "updated": "2026-10-24",
+  "featured": false
+}
