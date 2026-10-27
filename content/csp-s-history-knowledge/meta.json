@@ -1,0 +1,11 @@
+{
+  "id": "csp-s-history-knowledge",
+  "title": "CSP-S 真题知识点地图：26 年题目、前半题位与两小时自测",
+  "type": "文章",
+  "summary": "从 2000—2025 年旧 NOIP 提高组与 CSP-S 的 122 道题，筛出四题卷前两题、六题卷第 1/2/4 题共 61 题。整合洛谷难度快照、知识点频次与替代解法、清单缺口、12 道 DP 题分组和两小时闭卷自测。图表、逐题检索与自测均可直接使用。",
+  "tags": ["信奥", "CSP-S", "NOIP", "知识点", "学习诊断", "真题分析"],
+  "updated": "2026-10-27",
+  "format": "html",
+  "status": "published",
+  "featured": false
+}
