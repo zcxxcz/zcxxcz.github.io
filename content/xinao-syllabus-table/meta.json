@@ -1,0 +1,11 @@
+{
+  "id": "xinao-syllabus-table",
+  "title": "信奥知识点汇总表 · 阅读版：五模块 × 四段",
+  "type": "资料",
+  "format": "html",
+  "status": "published",
+  "summary": "把一份流传中的信奥知识点汇总表按视频画面逐格复原成可筛选的网页：五模块（基础 / 图论 / DP / 树论 / 数学）× 四段（J 组 / S+NOIP / 省选+NOI / 数学），可按关键词与模块筛选，并明确标注画面缺口、大纲等级与获取完整表的途径。",
+  "tags": ["信奥", "知识点", "大纲", "CSP-J", "CSP-S", "NOIP", "省选", "NOI"],
+  "updated": "2026-10-31",
+  "featured": false
+}

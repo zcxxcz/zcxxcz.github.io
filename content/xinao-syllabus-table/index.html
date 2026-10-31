@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="把一份流传中的信奥知识点汇总表按视频画面逐格复原：五模块 × 四段（J 组 / S+NOIP / 省选+NOI / 数学），标注缺口、大纲等级与获取完整表的途径。">
+<title>信奥知识点汇总表 · 阅读版：五模块 × 四段</title>
+<link rel="canonical" href="https://zcxxcz.github.io/content/xinao-syllabus-table/">
+<link rel="icon" href="/favicon.svg">
+<style>
+:root{
+  --paper:#f2f5f8;--panel:#ffffff;--ink:#14263b;--mute:#58697b;--line:#cfd9e3;
+  --blue:#1f5fbf;--blue-soft:#e3edfb;--onblue:#fff;--zebra:#f4f8fd;
+  --warn:#7d5300;--warn-soft:#fff6e0;--warn-line:#e8c987;
+  --mark:#ffe9a8;--mark-ink:#14263b;
+  --grid:rgba(31,95,191,.06);
+  --sans:"PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Source Han Sans SC","Microsoft YaHei",system-ui,sans-serif;
+  --serif:"Songti SC","Noto Serif CJK SC","Source Han Serif SC","STSong","SimSun",serif;
+  --mono:ui-monospace,"SF Mono",Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#0e1a28;--panel:#142437;--ink:#e6eef7;--mute:#9db0c4;--line:#2b4058;
+  --blue:#6aa5ff;--blue-soft:#17315a;--onblue:#0e1a28;--zebra:#17293e;
+  --warn:#f2c35b;--warn-soft:#332a12;--warn-line:#6b5723;
+  --mark:#6b5a1a;--mark-ink:#f4f8ff;
+  --grid:rgba(106,165,255,.07);
+}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;font:16px/1.7 var(--sans);-webkit-text-size-adjust:100%}
+a{color:var(--blue)}
+.topbar{position:sticky;top:0;z-index:20;background:var(--panel);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1120px;margin:0 auto;padding:10px clamp(14px,3vw,28px);display:flex;align-items:center;gap:18px;justify-content:space-between;flex-wrap:wrap}
+.brand{font-family:var(--serif);font-weight:700;text-decoration:none;color:var(--ink)}
+.tabbar{display:flex;gap:14px;font-size:14px;flex-wrap:wrap}
+.tabbar a{text-decoration:none;color:var(--mute)}
+.tabbar a:hover{color:var(--blue)}
+.wrap{max-width:1120px;margin:0 auto;padding:30px clamp(14px,3vw,28px) 40px}
+.eyebrow{font:600 12px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
+h1,h2,h3{font-family:var(--serif);line-height:1.35;margin:0}
+h1{font-size:clamp(26px,4.4vw,38px);margin-bottom:12px}
+h2{font-size:22px;margin:0}
+h3{font-size:16px;margin:0 0 6px}
+p{margin:8px 0;max-width:46em}
+.lead{font-size:17px;color:var(--mute);max-width:44em}
+.meta-line{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--mute);margin:16px 0 22px}
+.meta-line span::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--line);margin-right:7px;vertical-align:2px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px;margin:0 0 26px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+.stat b{display:block;font:700 24px/1.2 var(--serif)}
+.stat span{font-size:12.5px;color:var(--mute)}
+.notice{background:var(--warn-soft);border:1px solid var(--warn-line);color:var(--warn);border-radius:6px;padding:12px 16px;font-size:14px;margin:0 0 26px}
+.notice p{margin:4px 0;max-width:none}
+.notice b{font-weight:700}
+.controls{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin:0 0 22px;position:sticky;top:52px;z-index:10}
+.ctrl-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:6px 0}
+.ctrl-label{font:600 12px/1.4 var(--mono);letter-spacing:.1em;color:var(--mute);text-transform:uppercase;min-width:40px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{appearance:none;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:5px 12px;font:14px/1.5 var(--sans);cursor:pointer;transition:.15s}
+.chip:hover{border-color:var(--blue);color:var(--blue)}
+.chip[aria-pressed=true]{background:var(--blue);border-color:var(--blue);color:var(--onblue);font-weight:600}
+.chip[aria-pressed=true]:hover{color:var(--onblue)}
+.chip i{font-style:normal;opacity:.62;margin-left:5px;font-size:12px}
+.search{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px}
+.search input{flex:1 1 220px;min-width:0;padding:8px 12px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink);font:15px var(--sans)}
+.search input:focus{outline:2px solid var(--blue);outline-offset:1px}
+.count{font-size:13px;color:var(--mute);white-space:nowrap}
+.seg{margin:0 0 34px}
+.seg-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.range{font:500 12px/1.4 var(--mono);color:var(--mute);background:var(--blue-soft);border-radius:4px;padding:2px 7px}
+.seg-note{font-size:13.5px;color:var(--mute);margin:0 0 10px;max-width:60em}
+.tablewrap{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:auto}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:14.5px;min-width:640px}
+th,td{padding:8px 11px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+th:last-child,td:last-child{border-right:0}
+tbody tr:last-child td,tbody tr:last-child th{border-bottom:0}
+thead th{position:sticky;top:0;background:var(--panel);font:600 13px/1.5 var(--sans);color:var(--mute);white-space:nowrap;border-bottom:2px solid var(--line);z-index:1}
+tbody tr:nth-child(even){background:var(--zebra)}
+tbody th{font:500 12.5px/1.6 var(--mono);color:var(--mute);white-space:nowrap;text-align:center;width:52px}
+td.empty{color:var(--line);text-align:center}
+tbody tr:hover{background:var(--blue-soft)}
+.hide{display:none !important}
+mark{background:var(--mark);color:var(--mark-ink);border-radius:2px;padding:0 1px}
+.sec-title{margin:36px 0 10px;font-size:20px;font-family:var(--serif)}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:14px 0 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+.card h3{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lv{font:600 12px/1 var(--mono);border-radius:4px;padding:4px 7px;background:var(--blue-soft);color:var(--blue)}
+.card ul{margin:8px 0 0;padding-left:18px;font-size:14px}
+.card li{margin:4px 0}
+.card li em{font:600 12px/1 var(--mono);font-style:normal;color:var(--blue)}
+.card p{font-size:14px;margin:6px 0 0}
+code{font-family:var(--mono);font-size:.92em;background:var(--blue-soft);border-radius:3px;padding:1px 4px}
+.next{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:14px 0 0}
+.next a{display:block;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;text-decoration:none;color:var(--ink);transition:.15s}
+.next a:hover{border-color:var(--blue);transform:translateY(-1px)}
+.next b{display:block;font-family:var(--serif);font-size:16px;margin-bottom:3px}
+.next span{font-size:13px;color:var(--mute)}
+footer{max-width:1120px;margin:0 auto;padding:0 clamp(14px,3vw,28px) 60px;font-size:13px;color:var(--mute);border-top:0}
+footer p{max-width:none}
+footer a{color:var(--mute)}
+@media (max-width:720px){
+  .controls{position:static}
+  .ctrl-label{min-width:auto}
+  /* 窄屏把表格拆成卡片，避免横向滚动 */
+  .tablewrap{overflow:visible;background:transparent;border:0}
+  table{display:block;min-width:0;font-size:14px}
+  thead{display:none}
+  tbody{display:block}
+  tbody tr{display:block;background:var(--panel);border:1px solid var(--line);border-radius:8px;margin:0 0 6px;padding:5px 0}
+  tbody tr:nth-child(even){background:var(--panel)}
+  tbody tr:hover{background:var(--panel)}
+  tbody th{display:block;width:auto;text-align:left;padding:0 12px 2px;color:var(--blue);font-weight:600;line-height:1.4}
+  tbody th::before{content:"第 "}
+  tbody th::after{content:" 行"}
+  tbody td{display:block;border:0;padding:1px 12px;line-height:1.55}
+  tbody td.empty{display:none}
+  tbody td::before{content:attr(data-label) "　";font-size:12px;color:var(--mute)}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="/">Z / 内容与作品</a>
+    <nav class="tabbar">
+      <a href="#tables">四段表格</a>
+      <a href="#levels">大纲等级</a>
+      <a href="#sources">完整表在哪</a>
+      <a href="/content/xinao-syllabus-method/">方法论 ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="eyebrow">OI SYLLABUS / 五模块 × 四段</div>
+  <h1>信奥知识点汇总表 · 阅读版</h1>
+  <p class="lead">一张常被转发、却很少被拆开看的表：横向五个模块，纵向按组别切四段。这里把视频画面里的每一格复原成可筛选的网页，并明确标出哪些是画面可见、哪些是缺口。</p>
+  <div class="meta-line">
+    <span>来源：B站《信奥知识点大全 汇总表》· FayeTY · 2026-10-26 · 07:58</span>
+    <span>复原自腾讯文档截图（480P）</span>
+    <span>整理：2026-10-31</span>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="notice">
+    <p><b>这不是全表。</b>视频里的表格是横向滚动的大表，截图有几处硬缺口，复原时一律留空、不臆造：</p>
+    <p>① E 列（数学）在 J 组与 S 组段整列被裁掉；② 第 30 行之后多数列没有新内容、画面只拍到图论列，因此按行区间合并展示；③ 省选段的四个列位与 J/S 段并不严格对应，列名按内容推断。</p>
+    <p>完整表在腾讯文档与 QQ 群公告，见页面底部。</p>
+  </div>
+
+  <div class="controls" id="controls">
+    <div class="ctrl-row">
+      <span class="ctrl-label">组别</span>
+      <div class="chips" id="segChips"></div>
+    </div>
+    <div class="ctrl-row">
+      <span class="ctrl-label">模块</span>
+      <div class="chips" id="modChips"></div>
+    </div>
+    <div class="search">
+      <input id="q" type="search" placeholder="搜知识点，例如：并查集 / 线段树 / 莫队 / 反演" aria-label="搜索知识点">
+      <span class="count" id="count"></span>
+    </div>
+  </div>
+
+  <div id="tables"></div>
+  <p class="seg-note" id="modHint" hidden>省选段与数学段的列位和 J/S 段不同，不参与模块筛选；切回「全部模块」可看完整四段。</p>
+
+  <h2 class="sec-title" id="levels">大纲里的方括号数字，怎么读</h2>
+  <p class="seg-note">官方《NOI 大纲》每条写成 <code>• 【6】 分治算法</code>，方括号里的 1–10 是<b>掌握等级</b>，数字越大越靠后。它给的是「阶段」，不是「该不该学」——这也是这份表要在等级之外再叠一层「近七年考没考」的原因。</p>
+  <div class="levels">
+    <div class="card">
+      <h3><span class="lv">【4】–【7】</span>入门级常见区间</h3>
+      <ul>
+        <li>基础算法 <em>【6】</em>分治</li>
+        <li>排序 <em>【5】</em>归并 / 快速 / 堆 / 桶，<em>【6】</em>基数排序</li>
+        <li>字符串 <em>【4】</em>KMP，<em>【7】</em>Manacher</li>
+        <li>图论 <em>【6】</em>最小生成树、单源最短路，<em>【7】</em>Floyd-Warshall、强连通分量、割点割边</li>
+        <li>图上路径 <em>【7】</em>单源次短路</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="lv">【8】–【10】</span>省选 / NOI 区间</h3>
+      <ul>
+        <li>图论 <em>【8】</em>基环树、最小树形图、2-SAT、网络流、匈牙利，<em>【10】</em>KM、一般图匹配</li>
+        <li>动态规划 <em>【9】</em>模型构建与优化</li>
+        <li>初等数论 <em>【8】</em>原根与指数、BSGS，<em>【9】</em>狄利克雷卷积，<em>【10】</em>二次剩余</li>
+        <li>线性代数 <em>【9】</em>逆矩阵、行列式、向量空间与线性相关、基与线性基</li>
+        <li>高等数学 <em>【8】</em>多项式微分 / 积分，<em>【10】</em>泰勒级数、快速傅里叶变换</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="sec-title" id="sources">完整表在哪</h2>
+  <p class="seg-note">这期视频没有给出下载，只有两条路，都需要账号或社群身份：</p>
+  <div class="levels">
+    <div class="card">
+      <h3>腾讯文档</h3>
+      <p>画面地址栏里的《信奥题单（持续更新）》，路径 <code>docs.qq.com/sheet/DWHFhdWVsVcZ2bkd0</code>，需登录腾讯账号，不是公开链接。</p>
+    </div>
+    <div class="card">
+      <h3>QQ 群公告</h3>
+      <p>群号 <b>910647237</b>。视频里说的是「表一直放在公益题单里，群里领」，这是最直接的获取方式。</p>
+    </div>
+  </div>
+
+  <h2 class="sec-title">下一步</h2>
+  <div class="next">
+    <a href="/content/xinao-syllabus-method/"><b>知识点表怎么做才不过时 →</b><span>三个通病、比大纲更细的做法、每年只改哪一段</span></a>
+    <a href="/content/xinao-knowledge-graph/"><b>信奥知识图谱 · 交互版 →</b><span>知识点连成依赖图，点节点看前置链与解锁链</span></a>
+    <a href="/content/csp-s-history-knowledge/"><b>CSP-S 真题知识点地图 →</b><span>26 年 122 道题，看哪些知识点真的在考</span></a>
+  </div>
+</div>
+
+<footer>
+  <p>内容整理自 B站 BV1hon96xEab（FayeTY，2026-10-26）。表格复原仅覆盖视频画面可见部分，行号沿用原表；大纲等级引用《NOI 大纲 2025 修订版》。 · <a href="/">回到目录</a></p>
+</footer>
+
+<script type="application/json" id="syllabus-data">
+{
+  "segs": [
+    {
+      "key": "j",
+      "name": "J 组",
+      "range": "行 2–20",
+      "note": "蓝底段，CSP-J 的必备盘面。前四列完整可见；第五列（数学）整列被裁掉。",
+      "cols": ["基础 / 算法 / 数据结构体", "图论", "DP", "树论"],
+      "short": ["基础", "图论", "DP", "树论"],
+      "filterable": true
+    },
+    {
+      "key": "s",
+      "name": "S 组 + NOIP",
+      "range": "行 21–37",
+      "note": "黄底段。讲者强调 S 组与 NOIP 不该刻意分开：同一批知识点，只是某个组别考得更难。第 23 行起 DP 列没有新内容。",
+      "cols": ["基础 / 算法 / 数据结构体", "图论", "DP", "树论"],
+      "filterable": true
+    },
+    {
+      "key": "noi",
+      "name": "省选 + NOI",
+      "range": "行 38–55",
+      "note": "第 38 行是分段标题「省选+NOI 结合大纲以及近 7 年考点」。列位与 J/S 段不严格对应，列名按内容推断，位置按画面保留。",
+      "cols": ["列一 · 基础 / 杂项算法", "列二 · 数据结构 / 字符串", "列三 · 图论 / DP", "列四 · 树论 / 优化"],
+      "short": ["列一", "列二", "列三", "列四"],
+      "filterable": false
+    },
+    {
+      "key": "math",
+      "name": "省选 + NOI 数学",
+      "range": "行 56–62",
+      "note": "第 56 行是分段标题「省选+NOI 数学」。这是全表唯一能看到数学列内容的段落。",
+      "cols": ["数论", "组合 · 多项式", "计数 · 反演", "变换 · 几何 · 代数"],
+      "short": ["数论", "组合", "计数", "变换"],
+      "filterable": false
+    }
+  ],
+  "rows": [
+    ["j", "3", "分支结构", "邻接表 / 邻接矩阵", "线性 DP", "树状数组维护"],
+    ["j", "4", "循环结构", "链式前向星", "01 / 完全 / 多重 / 混合背包", "字典树 Trie"],
+    ["j", "5", "数组 / 数组下标", "堆 / 优先队列", "二维费用背包", "01Trie 异或对"],
+    ["j", "6", "冒泡 / 选择 / 插入排序", "对顶堆", "负数背包", "线段树 构造 / 点 / 区间"],
+    ["j", "7", "Sort 排序", "反悔贪心 · 堆", "区间 DP", "线段树 区间重置 / 更新 / 反转"],
+    ["j", "8", "计数排序", "拓扑排序 / 字典序拓扑排序", "DAG 上 DP", "线段树 区间乘法"],
+    ["j", "9", "结构体 / 自定义排序", "并查集 / 路径压缩 / 合并", "树形 DP", "线段树 区间开根号 / 取模"],
+    ["j", "10", "字符 / 字符串操作", "带权 / 多倍并查集", "树的直径", "线段树 区间取值 / 合并"],
+    ["j", "11", "Map / Vector", "最小 / 大生成树", "树的直径 2 次 DFS / 树形 DP", "线段树 区间 GCD"],
+    ["j", "12", "单向 / 双向 / 单调队列", "Prim / Kruskal", "直径路径记录 · 公共直径", "线段树 区间最大子段和"],
+    ["j", "13", "栈 / 单调栈 符号匹配", "最短路 / 最长路", "树的重心", "线段树 区间最长子序列"],
+    ["j", "14", "前中后缀表达式转换 / 求值", "Floyd", "点权树求重心", "线段树 区间平方和 / 方差"],
+    ["j", "15", "单双向链表的插入 / 删除", "最小环", "树形背包", "线段树 区间种类个数"],
+    ["j", "16", "一维 / 二维前缀和", "Dijkstra + 堆优化", "换根 DP", "线段树二分"],
+    ["j", "17", "一维 / 二维差分", "分层图最短路", "状压 DP", "线段树差分"],
+    ["j", "18", "二分查找", "严格 / 非严格 次短路", "数位 DP", "离散化线段树"],
+    ["j", "19", "二分答案", "强 / 弱连通分量", "矩阵加速 DP", "权值线段树"],
+    ["j", "20", "BFS 最短路", "Tarjan", "单调队列优化 DP", "扫描线"],
+
+    ["s", "21", "递归 / DFS 排列组合 / 方案数", "割点 / 割边 / 桥 / 缩点", "树状数组优化 DP", "线段树 区间种类个数"],
+    ["s", "22", "记忆化搜索", "LCA", "线段树优化 DP", "线段树二分"],
+    ["s", "23", "ST 表", "LCA 离线 Tarjan / 在线 ST", "", "线段树差分"],
+    ["s", "24", "离散化", "树上差分 / 前缀和", "", "离散化线段树"],
+    ["s", "25", "位运算技巧", "二分图的判定 / 染色法", "", "权值线段树"],
+    ["s", "26", "数值 / 字符串 哈希", "欧拉路径 / 回路", "", "扫描线"],
+    ["s", "27", "KMP", "LCA 树链剖分", "", "扫描线 + 线段树"],
+    ["s", "28", "Manacher", "严格 / 非严格 次小生成树", "", "点分治"],
+    ["s", "29", "归并排序 / 归并分治", "Bellman-Ford", "", "边分治"],
+    ["s", "30–32", "", "SPFA / SPFA 双端队列优化 / 差分约束", "", ""],
+    ["s", "33–34", "", "连通 / 限制超级源点 / 点边双连通分量", "", ""],
+    ["s", "35–37", "", "启发式搜索 A* / K 短路", "", ""],
+
+    ["noi", "39", "模拟退火", "分块", "线段树优化建图", "Kruskal 重构树"],
+    ["noi", "40", "迭代加深搜索", "块状链表", "扩展 KMP", "CDQ 分治"],
+    ["noi", "41", "李超线段树", "树上分块", "AC 自动机", "摩尔投票"],
+    ["noi", "42", "失配树", "双层分块", "后缀自动机 SAM", "虚树"],
+    ["noi", "43", "圆方树", "分块 + 并查集", "后缀数组 SA", "左偏树 + 可并堆"],
+    ["noi", "44", "最小斯坦纳树", "根号分治", "回文自动机 PAM", "可持久化左偏树"],
+    ["noi", "45", "最小树形图 朱刘算法", "莫队", "博弈论", "基环树"],
+    ["noi", "46", "三分", "带修莫队", "SG 函数", "动态 DP"],
+    ["noi", "47", "折半搜索", "回滚莫队", "Nim 游戏", "四边形不等式 DP"],
+    ["noi", "48", "0/1 分数规划", "树上莫队", "重链剖分 LCA", "斜率优化 DP"],
+    ["noi", "49", "最优比率生成树", "二次离线莫队", "重链剖分 + 长链剖分", "轮廓线 DP"],
+    ["noi", "50", "同余最短路", "wqs 二分", "启发式合并", "bitset"],
+    ["noi", "51", "2-SAT", "树的最小支配集", "开点线段树", "实践分治"],
+    ["noi", "52", "KD 树", "树的最小点覆盖", "吉如一阶线段树", "LCT"],
+    ["noi", "53", "树套树", "树的最大独立集", "线段树分裂", "可持久化 0/1Trie"],
+    ["noi", "54", "线段树合并", "一般图的最大匹配", "可持久化线段树", "可持久化可撤销并查集"],
+    ["noi", "55", "线段树合并优化 DP", "一般图的最大权匹配", "标记永久化", "线段树分治"],
+
+    ["math", "57", "筛法求欧拉函数", "BSGS / 扩展 BSGS", "拉格朗日插值法", "快速傅里叶变换 FFT 算法"],
+    ["math", "58", "筛法求莫比乌斯函数", "高斯消元", "生成函数", "FFT 算法 多项式乘法"],
+    ["math", "59", "威尔逊定理", "线性基", "狄利克雷卷积", "FFT 算法 高精度乘法"],
+    ["math", "60", "扩展 GCD / 不定方程", "二项式定理", "和式的变换", "快速数论变换 NTT 算法"],
+    ["math", "61", "卡特兰数", "二项式反演", "莫比乌斯反演", "圆排列 / 错位排列"],
+    ["math", "62", "Prüfer 序列", "贝叶斯公式", "杜教筛", "群论"]
+  ]
+}
+</script>
+
+<script>
+(function () {
+  var DATA = JSON.parse(document.getElementById("syllabus-data").textContent);
+  var segs = DATA.segs, rows = DATA.rows;
+  var state = { seg: "all", mod: "all", q: "" };
+  var MODS = ["基础 / 算法 / 数据结构体", "图论", "DP", "树论"];
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+  function items(r) { return r.slice(2).filter(Boolean).length; }
+  var totalItems = rows.reduce(function (n, r) { return n + items(r); }, 0);
+  var totalRows = rows.length;
+
+  document.getElementById("stats").innerHTML = [
+    [totalItems, "复原条目（格）"],
+    [totalRows, "覆盖行数"],
+    [segs.length, "分段"],
+    ["2 处", "画面主要缺口"],
+  ].map(function (p) {
+    return '<div class="stat"><b>' + esc(p[0]) + "</b><span>" + esc(p[1]) + "</span></div>";
+  }).join("");
+
+  function segCount(k) {
+    return rows.filter(function (r) { return r[0] === k; })
+      .reduce(function (n, r) { return n + items(r); }, 0);
+  }
+  document.getElementById("segChips").innerHTML =
+    '<button class="chip" data-seg="all" aria-pressed="true">全部四段<i>' + totalItems + "</i></button>" +
+    segs.map(function (s) {
+      return '<button class="chip" data-seg="' + s.key + '" aria-pressed="false">' + esc(s.name) +
+        "<i>" + segCount(s.key) + "</i></button>";
+    }).join("");
+  document.getElementById("modChips").innerHTML =
+    '<button class="chip" data-mod="all" aria-pressed="true">全部模块</button>' +
+    MODS.map(function (m, i) {
+      return '<button class="chip" data-mod="' + i + '" aria-pressed="false">' + esc(m) + "</button>";
+    }).join("");
+
+  function tableFor(seg, list) {
+    var head = '<tr><th style="width:52px">行</th>' +
+      seg.cols.map(function (c, i) { return '<th data-col="' + i + '">' + esc(c) + "</th>"; }).join("") + "</tr>";
+    var body = list.map(function (r) {
+      var cells = seg.cols.map(function (colName, i) {
+        var v = r[2 + i] || "";
+        var label = (seg.short && seg.short[i]) || colName;
+        var attrs = ' data-col="' + i + '" data-label="' + esc(label) + '"';
+        return v ? "<td" + attrs + ">" + esc(v) + "</td>" : '<td class="empty"' + attrs + ">—</td>";
+      }).join("");
+      return '<tr><th scope="row">' + esc(r[1]) + "</th>" + cells + "</tr>";
+    }).join("");
+    return '<div class="tablewrap"><table><thead>' + head + "</thead><tbody>" + body + "</tbody></table></div>";
+  }
+
+  function render() {
+    var q = state.q.trim().toLowerCase();
+    var modActive = state.mod !== "all";
+    var shown = 0;
+    var html = segs
+      .filter(function (s) { return state.seg === "all" || state.seg === s.key; })
+      .filter(function (s) { return !modActive || s.filterable; })
+      .map(function (s) {
+        var list = rows.filter(function (r) { return r[0] === s.key; });
+        if (modActive && s.filterable) {
+          list = list.filter(function (r) { return r[2 + Number(state.mod)]; });
+        }
+        if (q) {
+          list = list.filter(function (r) {
+            return r.slice(2).some(function (c) { return (c || "").toLowerCase().indexOf(q) >= 0; });
+          });
+        }
+        for (var i = 0; i < list.length; i++) shown += items(list[i]);
+        return '<section class="seg" data-seg="' + s.key + '">' +
+          '<div class="seg-head"><h2>' + esc(s.name) + "</h2>" +
+          '<span class="range">' + esc(s.range) + "</span></div>" +
+          '<p class="seg-note">' + esc(s.note) + "</p>" + tableFor(s, list) + "</section>";
+      }).join("");
+
+    document.getElementById("tables").innerHTML = html ||
+      '<div class="notice"><p>这个组合下没有内容，换个关键词，或切回「全部模块」。</p></div>';
+
+    if (modActive) {
+      var m = Number(state.mod);
+      document.querySelectorAll("#tables thead th[data-col]").forEach(function (th) {
+        th.classList.toggle("hide", Number(th.dataset.col) !== m);
+      });
+      document.querySelectorAll("#tables tbody td[data-col]").forEach(function (td) {
+        td.classList.toggle("hide", Number(td.dataset.col) !== m);
+      });
+    }
+
+    if (q) {
+      document.querySelectorAll("#tables td").forEach(function (td) {
+        var raw = td.textContent;
+        if (raw.toLowerCase().indexOf(q) < 0) return;
+        var re = new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "gi");
+        td.innerHTML = esc(raw).replace(re, "<mark>$1</mark>");
+      });
+    }
+
+    document.getElementById("modHint").hidden = !modActive;
+    document.getElementById("count").textContent =
+      (q || modActive || state.seg !== "all")
+        ? "显示 " + shown + " / " + totalItems + " 条"
+        : "共 " + totalItems + " 条 · " + totalRows + " 行";
+
+    document.querySelectorAll("#segChips button").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.seg === state.seg));
+    });
+    document.querySelectorAll("#modChips button").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.mod === state.mod));
+    });
+  }
+
+  document.getElementById("segChips").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-seg]");
+    if (!b) return;
+    state.seg = b.dataset.seg;
+    render();
+  });
+  document.getElementById("modChips").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-mod]");
+    if (!b) return;
+    state.mod = b.dataset.mod;
+    render();
+  });
+  var timer;
+  document.getElementById("q").addEventListener("input", function (e) {
+    clearTimeout(timer);
+    var v = e.target.value;
+    timer = setTimeout(function () { state.q = v; render(); }, 120);
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
