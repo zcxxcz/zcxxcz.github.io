@@ -2,6 +2,8 @@
 
 适用于 zcxxcz 的公开 GitHub Pages 项目。私有资料、登录数据不进入目录。
 
+如果只需添加一个入口，应用尚无公开目录接口，可仅在总入口新建 `sites/<repo>.json`，包含 `id`、`repository` 和 `records`（字段与下方记录协议一致，不含 `textPaths`）。生成器直接使用这些公开记录，无需改动应用仓库。后续要由应用自动更新目录时，再按以下步骤接入，并用 `catalog` 地址替换注册文件中的 `records`。
+
 1. 在项目根目录创建 `publish.json`，参照下方协议；显式列出公开的搜索记录。每条记录的 ID 在总入口全局唯一。
 2. 从总入口复制 `scripts/publish.mjs`、`scripts/export_catalog.py`、`scripts/verify_public.py`。package.json 添加 `"publish": "node scripts/publish.mjs"`。
 3. 新建 `.github/workflows/pages.yml`，名称必须为 `Publish Pages`。参考 `zcxxcz/eileen-magic-pets` 的工作流，使用 PR 验证、main 推送部署、workflow_dispatch 手工重发。

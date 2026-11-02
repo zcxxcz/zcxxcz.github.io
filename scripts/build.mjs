@@ -18,7 +18,9 @@ for (const f of (await readdir("sites"))
   let records;
   try {
     let catalog;
-    if (process.env.LOCAL_CATALOG_ROOT) {
+    if (site.records) {
+      catalog = { version: 1, records: site.records };
+    } else if (process.env.LOCAL_CATALOG_ROOT) {
       catalog = await json(
         path.join(process.env.LOCAL_CATALOG_ROOT, site.id + ".json"),
       );
@@ -31,7 +33,7 @@ for (const f of (await readdir("sites"))
     }
     records = catalog.records;
     validate(records);
-    if (!records.length) throw Error("Empty remote catalog");
+    if (!records.length) throw Error("Empty catalog");
   } catch (e) {
     if (process.env.ALLOW_STALE === "1") {
       try {

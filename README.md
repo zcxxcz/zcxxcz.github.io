@@ -48,6 +48,8 @@ npm run publish
 
 新应用按照 `templates/INTEGRATION.md` 接入。第一次从新仓库运行发布脚本，会给总入口提交 `sites/<repo>.json` 注册 PR，等待检查并合并。后续发布成功自动触发总入口刷新。跨仓库触发使用操作者已有的 `gh` 登录，不在子仓库存放跨仓库令牌。
 
+仅需收录入口、尚无公开 `catalog.json` 的应用，可在 `sites/<repo>.json` 中直接填写 `records`，使用相同的公开记录字段代替 `catalog` 地址。简介和关键词由总入口维护，无需改动应用；这些记录同样生成首页入口、主题筛选和搜索索引。
+
 如果直接在 GitHub 网页合并或 `git push main`，项目会发布，但总索引依赖每天新加坡时间 06:23 的补漏同步（GitHub 调度可能延迟），也可以在本仓库 Actions → Publish Pages → Run workflow，或运行：
 
 ```sh
