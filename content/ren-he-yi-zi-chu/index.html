@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>人何以自处 — 孟岩对话李继刚</title>
+<meta name="description" content="孟岩与李继刚关于 AI、认知与人的主体性的对话整理，涵盖取景框、三个世界、AI 阅读、人机协作和教育，保留互动标签页、滑块与展开内容。">
+<style>
+:root {
+  --ink: #1a1a2e;
+  --paper: #faf8f4;
+  --accent: #c0392b;
+  --accent2: #e74c3c;
+  --gold: #d4a017;
+  --teal: #16a085;
+  --teal-light: #1abc9c;
+  --blue: #2c3e7a;
+  --blue-light: #3d5299;
+  --warm-gray: #6b6860;
+  --light-gray: #e8e4de;
+  --bg-gradient: linear-gradient(180deg, #faf8f4 0%, #f0ece4 100%);
+  --section-dark: #1a1a2e;
+  --section-dark2: #16213e;
+  --card-shadow: 0 4px 24px rgba(26,26,46,0.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Georgia', 'Noto Serif SC', 'Songti SC', serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.85;
+  font-size: 18px;
+  overflow-x: hidden;
+}
+
+/* Progress Bar */
+#progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--gold), var(--teal));
+  z-index: 10001;
+  width: 0%;
+  transition: width 0.1s;
+}
+
+/* Navigation */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  background: rgba(250,248,244,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  transition: transform 0.3s;
+}
+
+nav .nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+nav .nav-brand {
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+nav .nav-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+
+nav .nav-links a {
+  text-decoration: none;
+  color: var(--warm-gray);
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
+  font-family: -apple-system, 'PingFang SC', sans-serif;
+}
+
+nav .nav-links a:hover { color: var(--accent); }
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--ink);
+  margin: 5px 0;
+  transition: 0.3s;
+}
+
+/* Hero */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 120px 24px 80px;
+  background: linear-gradient(170deg, #faf8f4 0%, #f0e6d8 40%, #e8ddd0 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  right: -200px;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(192,57,43,0.06) 0%, transparent 70%);
+}
+
+.hero-kicker {
+  font-family: -apple-system, 'PingFang SC', sans-serif;
+  font-size: 13px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 24px;
+}
+
+.hero h1 {
+  font-size: clamp(2.4rem, 6vw, 4.5rem);
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 24px;
+  color: var(--ink);
+  max-width: 800px;
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.hero .subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: var(--warm-gray);
+  max-width: 640px;
+  margin-bottom: 40px;
+  line-height: 1.8;
+}
+
+.hero .speakers {
+  display: flex;
+  gap: 48px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.speaker-card {
+  text-align: center;
+}
+.speaker-card .avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin: 0 auto 12px;
+  color: white;
+  font-weight: bold;
+}
+.speaker-card:first-child .avatar { background: var(--blue); }
+.speaker-card:last-child .avatar { background: var(--teal); }
+.speaker-card .name {
+  font-weight: bold;
+  font-size: 16px;
+}
+.speaker-card .role {
+  font-family: -apple-system, 'PingFang SC', sans-serif;
+  font-size: 13px;
+  color: var(--warm-gray);
+}
+
+/* Section Styles */
+.section {
+  padding: 80px 24px;
+}
+.section-dark {
+  background: var(--section-dark);
+  color: #e0ddd6;
+}
+.section-dark h2, .section-dark h3 { color: #fff; }
+.section-dark .accent-text { color: var(--gold); }
+
+.section-alt {
+  background: linear-gradient(180deg, #f5f1ea 0%, #faf8f4 100%);
+}
+
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.container-wide {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+h2 {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  margin-bottom: 8px;
+  margin-top: 32px;
+}
+
+.section-label {
+  font-family: -apple-system, 'PingFang SC', sans-serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.section-dark .section-label { color: var(--gold); }
+
+p { margin-bottom: 20px; }
+
+.lead {
+  font-size: 1.15em;
+  color: var(--warm-gray);
+}
+
+/* Pull Quote */
+.pull-quote {
+  border-left: 4px solid var(--accent);
+  padding: 20px 0 20px 28px;
+  margin: 36px 0;
+  font-size: 1.15em;
+  font-style: italic;
+  color: var(--blue);
+}
+
+.pull-quote.gold { border-left-color: var(--gold); color: var(--ink); }
+.section-dark .pull-quote { border-left-color: var(--gold); color: #f0e6d8; }
+
+/* Key Term */
+.key-term {
+  font-weight: bold;
+  color: var(--accent);
+}
+
+/* Cards */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin: 32px 0;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(26,26,46,0.12);
+}
+
+.section-dark .card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.card .card-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.card h4 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.card p {
+  font-size: 0.95rem;
+  color: var(--warm-gray);
+  margin-bottom: 0;
+}
+.section-dark .card p { color: #b0ada6; }
+
+/* Interactive Tabs */
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--light-gray);
+  margin-bottom: 24px;
+  overflow-x: auto;
+}
+
+.tab-btn {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-family: -apple-system, 'PingFang SC', sans-serif;
+  font-size: 14px;
+  color: var(--warm-gray);
+  transition: all 0.2s;
+  white-space: nowrap;
+  min-height: 44px;
+}
+
+.tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+}
+
+.tab-btn:hover { color: var(--ink); }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Expandable */
+.expandable {
+  margin: 20px 0;
+  border: 1px solid var(--light-gray);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.section-dark .expandable {
+  border-color: rgba(255,255,255,0.15);
+}
+
+.expand-header {
+  padding: 16px 20px;
+  background: rgba(0,0,0,0.02);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: -apple-system, 'PingFang SC', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  min-height: 44px;
+  user-select: none;
+}
+
+.section-dark .expand-header { background: rgba(255,255,255,0.04); }
+
+.expand-header::after {
+  content: '+';
+  font-size: 20px;
+  font-weight: 300;
+  transition: transform 0.2s;
+  color: var(--accent);
+}
+
+.expand-header.open::after {
+  transform: rotate(45deg);
+}
+
+.expand-body {
+  display: none;
+  padding: 16px 20px;
+  font-size: 0.95em;
+  line-height: 1.8;
+}
+
+.expand-body.open { display: block; }
+
+/* Visual build-up diagram */
+.diagram-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin: 20px 0;
+  padding: 16px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.02);
+}
+
+.section-dark .diagram-step { background: rgba(255,255,255,0.04); }
+
+.step-number {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.step-content h4 { margin-bottom: 4px; font-size: 1rem; }
+.step-content p { margin-bottom: 0; font-size: 0.95rem; }
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 32px;
+  margin: 32px 0;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--light-gray);
+}
+
+.section-dark .timeline::before { background: rgba(255,255,255,0.15); }
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 28px;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -28px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.timeline-item .time-label {
+  font-family: -apple-system, 'PingFang SC', sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--accent);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Comparison */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 32px 0;
+}
+
+.compare-box {
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.compare-box.before {
+  background: rgba(44,62,122,0.06);
+  border: 1px solid rgba(44,62,122,0.15);
+}
+
+.compare-box.after {
+  background: rgba(22,160,133,0.06);
+  border: 1px solid rgba(22,160,133,0.15);
+}
+
+.compare-box h4 {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  font-family: -apple-system, 'PingFang SC', sans-serif;
+}
+
+.compare-box.before h4 { color: var(--blue); }
+.compare-box.after h4 { color: var(--teal); }
+
+/* Interactive Slider */
+.slider-container {
+  background: white;
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: var(--card-shadow);
+  margin: 32px 0;
+}
+
+.slider-container label {
+  display: block;
+  font-family: -apple-system, 'PingFang SC', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.slider-container input[type="range"] {
+  width: 100%;
+  margin: 8px 0;
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--light-gray);
+  outline: none;
+}
+
+.slider-container input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+}
+
+.slider-output {
+  text-align: center;
+  padding: 16px;
+  margin-top: 12px;
+  border-radius: 8px;
+  background: rgba(192,57,43,0.04);
+  font-size: 1.1em;
+}
+
+/* Takeaway */
+.takeaway {
+  background: linear-gradient(135deg, var(--section-dark), var(--section-dark2));
+  color: #e0ddd6;
+  border-radius: 16px;
+  padding: 40px;
+  margin: 40px 0;
+}
+
+.takeaway h3 { color: var(--gold); margin-top: 0; }
+
+.takeaway-list {
+  list-style: none;
+  padding: 0;
+}
+
+.takeaway-list li {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.takeaway-list li:last-child { border-bottom: none; }
+
+.takeaway-list .num {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+/* Transition */
+.transition-block {
+  text-align: center;
+  padding: 48px 24px;
+  font-style: italic;
+  color: var(--warm-gray);
+  font-size: 1.05em;
+}
+
+.transition-block .arrow {
+  display: block;
+  font-size: 24px;
+  margin-bottom: 12px;
+  color: var(--accent);
+}
+
+/* Footer */
+footer {
+  background: var(--section-dark);
+  color: #8a8780;
+  padding: 40px 24px;
+  text-align: center;
+  font-size: 14px;
+  font-family: -apple-system, 'PingFang SC', sans-serif;
+}
+
+footer a { color: var(--gold); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* Scroll reveal */
+.reveal {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.hidden {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  nav .nav-links { display: none; }
+  nav .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(250,248,244,0.98);
+    padding: 16px 24px;
+    gap: 16px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .hamburger { display: block; }
+  .compare-grid { grid-template-columns: 1fr; }
+  .hero .speakers { gap: 24px; }
+  body { font-size: 16px; }
+  .section { padding: 56px 20px; }
+  .pull-quote { padding-left: 20px; font-size: 1.05em; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">人何以自处</div>
+    <button class="hamburger" onclick="toggleMenu(event)" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#viewfinder">取景框</a></li>
+      <li><a href="#three-worlds">三个世界</a></li>
+      <li><a href="#ai-reading">AI与读书</a></li>
+      <li><a href="#business">商业变革</a></li>
+      <li><a href="#human-ai">人机协作</a></li>
+      <li><a href="#education">教育未来</a></li>
+      <li><a href="#takeaways">核心启示</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-kicker">一场关于AI、认知与存在的深度对话</div>
+  <h1>在AI时代，<br><em>人何以自处？</em></h1>
+  <p class="subtitle">投资人孟岩与提示词先驱李继刚，用三个半小时探讨了一个根本性问题：当机器的"脑力"远超人类，我们该如何安放自己？</p>
+  <div class="speakers">
+    <div class="speaker-card">
+      <div class="avatar">孟</div>
+      <div class="name">孟岩</div>
+      <div class="role">有知有行创始人 · 投资人</div>
+    </div>
+    <div class="speaker-card">
+      <div class="avatar">李</div>
+      <div class="name">李继刚</div>
+      <div class="role">自称读书人 · 投资者 · 提示词先驱</div>
+    </div>
+  </div>
+</section>
+
+<!-- TRANSITION -->
+<div class="transition-block">
+  <span class="arrow">↓</span>
+  想象你戴着一副独特的眼镜看世界——每个人的镜片都不同，看到的风景自然也不同。这场对话，就从"镜片"开始。
+</div>
+
+<!-- SECTION: 取景框 -->
+<section class="section" id="viewfinder">
+  <div class="container reveal">
+    <span class="section-label">核心概念</span>
+    <h2>取景框：你看世界的那副"眼镜"</h2>
+    <p class="lead">每个人理解世界都用一套框架——就像摄影师透过取景框拍照一样，你框住什么、忽略什么，决定了你"看到"的世界是什么样。</p>
+
+    <p>李继刚把这称为 <span class="key-term">取景框</span>（viewfinder）。他的核心信念是：真实的世界就像一个高维度的物体，我们每个人只能看到它的一个侧面。就像盲人摸象——摸到耳朵的人说大象像扇子，摸到腿的人说大象像柱子。</p>
+
+    <div class="pull-quote">
+      "我认为每个人加引号的'都是错的'。因为每个人看到的都只是那个本体在自己取景框中的一个投影而已。"<br>—— 李继刚
+    </div>
+
+    <p>但关键的态度转变在于：一旦你真正接受了这个世界观，<strong>谦卑和开放就不再是道德表演，而是你存在的底色。</strong>因为你知道自己的先验（现有认知）一定是片面的，你自然会渴望听到不同的声音、收集更多的取景框。</p>
+
+    <h3>查理·芒格的栅格理论</h3>
+    <p>孟岩指出，这和查理·芒格常说的<span class="key-term">多元思维模型</span>（Mental Models）如出一辙——从不同学科借来不同的框架看同一个问题，就像用多把钥匙去开同一把锁，总有一把最合适。</p>
+
+    <div class="expandable">
+      <div class="expand-header" onclick="toggleExpand(event, 'ex-invest')">深入：李继刚如何用"取景框"做投资？</div>
+      <div class="expand-body" id="ex-invest">
+        <p>李继刚此前把所有钱放在余额宝，因为"看不懂股票涨跌，那就是赌博"。后来朋友奥德赛教会他一个新的取景框：</p>
+        <p><strong>投资 = 用现金换取"未来世界财富占比的增加"。</strong></p>
+        <p>世界总财富在增长，如果你持有现金不动，你的财富占比其实在下降。投资不是"赚钱"，而是"保持你在这个世界的购买力"。</p>
+        <p>有了这个框架，"什么时候止盈"变成了一个假问题——止盈就是把股票换成现金，意味着你认为现金的未来财富占比比股票高，这值得打个大大的问号。</p>
+        <p>他投资的方法也极为独特：用AI提示词画出每家公司在不同发展阶段的<strong>结构</strong>，看这个结构是否符合时代趋势，然后下注。买完之后<strong>一两年不看</strong>，不看K线，不看财报——因为他买的是结构，只要结构没变，就继续持有。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION: 底层三定律 -->
+<section class="section section-dark" id="three-laws">
+  <div class="container reveal">
+    <span class="section-label">底层世界观</span>
+    <h2>求真的三把钥匙</h2>
+    <p>当你收集了300个取景框之后，能不能找到它们<em>下面</em>更根本的东西？李继刚说他找到了三个"压舱石"——三条可以推演出几乎所有道理的底层定律。</p>
+
+    <div class="card-grid" style="margin-top: 32px;">
+      <div class="card">
+        <div class="card-icon">📐</div>
+        <h4>贝叶斯公式</h4>
+        <p>我们的认知永远是0.3、0.4这样的概率，不可能直接到1（全知）。每次获得新信息，后验认知提升一点。这意味着：<strong>谦卑和开放是数学必然</strong>，而不是道德选择。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">✂️</div>
+        <h4>奥卡姆剃刀</h4>
+        <p>1000个变量中，可能只有3个是真正的"维度级"变量，其余997个都是表象。李继刚永远在"找那3个"——找到它们就定住了整个坐标系。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌌</div>
+        <h4>万有理论的信念</h4>
+        <p>物理学追求一个公式统一四种基本力。虽然还没找到，但这个信念驱动李继刚：在任何领域，都应该存在一个更简洁的上层解释。</p>
+      </div>
+    </div>
+
+    <div class="pull-quote" style="margin-top: 32px;">
+      "进一寸有进一寸的欢喜，所以每天都很祥和和快乐。"
+    </div>
+  </div>
+</section>
+
+<!-- TRANSITION -->
+<div class="transition-block">
+  <span class="arrow">↓</span>
+  有了这三把钥匙，李继刚开始看AI——他发现的东西让人震惊。
+</div>
+
+<!-- SECTION: 三个世界 -->
+<section class="section" id="three-worlds">
+  <div class="container reveal">
+    <span class="section-label">核心洞见</span>
+    <h2>我们同时生活在三个世界</h2>
+    <p class="lead">原子世界、比特世界、向量世界——每一次跃迁，都拿掉了一个维度的约束，打开了一片全新的可能性空间。</p>
+
+    <div class="tabs" id="worlds-tabs">
+      <button class="tab-btn active" onclick="switchTab(event, 'worlds-tabs', 'world-atom')">🧱 原子世界</button>
+      <button class="tab-btn" onclick="switchTab(event, 'worlds-tabs', 'world-bit')">💻 比特世界</button>
+      <button class="tab-btn" onclick="switchTab(event, 'worlds-tabs', 'world-vector')">🧠 向量世界</button>
+    </div>
+
+    <div class="tab-panel active" id="world-atom">
+      <h3>原子世界（工业革命以来的200年）</h3>
+      <p><strong>构成：</strong>由原子构成，就是我们触手可及的物理世界。</p>
+      <p><strong>稀缺性来自于：位置。</strong>山顶的水比山下贵，不是因为搬运费力，而是因为那个位置上你别无选择。学区房、商铺、地段——本质上都是"位置"。</p>
+      <p><strong>带来的变化：</strong>工业革命让原子的移动被机械放大了成千上万倍，世界变得<em>丰饶</em>——物质极大丰富。</p>
+      <p><strong>解放了什么：</strong>人的肌肉（体力劳动）。</p>
+    </div>
+
+    <div class="tab-panel" id="world-bit">
+      <h3>比特世界（过去30年的互联网时代）</h3>
+      <p><strong>构成：</strong>由比特（0和1）构成，互联网世界。</p>
+      <p><strong>被拿掉的维度：空间。</strong>任意两点之间距离为零。海南的直播和新疆的直播，我们打开手机就能看到。</p>
+      <p><strong>稀缺性转移到：注意力。</strong>所有信息在面前展开，瓶颈变成了你有限的注意力。所以互联网公司的核心竞争是抢夺注意力。</p>
+      <p><strong>带来的变化：</strong>世界变<em>平</em>了——地球被拍成一张纸，信息即时可达。</p>
+      <p><strong>底层规律：</strong>马太效应——网的价值与节点数的平方成正比，谁先过临界值谁赢。</p>
+    </div>
+
+    <div class="tab-panel" id="world-vector">
+      <h3>向量世界（过去三年的AI时代）</h3>
+      <p><strong>构成：</strong>由向量构成——这是大模型的"语言"，每个概念都是一个多维空间中的一个点。</p>
+      <p><strong>被拿掉的维度：时间。</strong>全人类几千年的知识被"烧"成了一个晶体，你直接对话就能调用。不需要花8小时读完一本书才能知道它说了什么——模型瞬间给你。</p>
+      <p><strong>带来的变化：</strong>世界变<em>快</em>了。不是比喻，是事实——过去三年和之前三年的时间流速完全不同。</p>
+      <p><strong>底层规律：</strong>长尾效应——不再是"千人一面"（工业时代）或"千人千面"（互联网时代），而是<strong>"一人一面"</strong>。每个人看到的东西都是为TA定制的。</p>
+    </div>
+
+    <div class="slider-container" style="margin-top: 40px;">
+      <label>🎚️ 互动探索：三个世界的演进</label>
+      <input type="range" min="1" max="3" value="1" step="1" id="worldSlider" oninput="updateWorldSlider()">
+      <div class="slider-output" id="worldOutput">
+        <strong>🧱 原子世界</strong>：稀缺 = 位置 | 消除 = 空间距离（部分）| 解放 = 体力 | 历程 = 200年
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION: 时间不存在 -->
+<section class="section section-dark">
+  <div class="container reveal">
+    <span class="section-label">关键理解</span>
+    <h2>"时间不存在"究竟什么意思？</h2>
+
+    <p>这是对话中最令人震撼的洞见之一。李继刚不是在说物理时间消失了，而是说<span class="accent-text">知识获取中的时间代价被压缩到近乎为零</span>。</p>
+
+    <div class="compare-grid" style="margin: 32px 0;">
+      <div class="compare-box before" style="background: rgba(44,62,122,0.15); border-color: rgba(44,62,122,0.3);">
+        <h4 style="color: #a0b0d0;">⏳ 以前</h4>
+        <p style="color: #c0c0c0;">互联网上下载100本书 → 还得一本本读 → 空间不存在了，但<strong>时间还在</strong></p>
+      </div>
+      <div class="compare-box after" style="background: rgba(22,160,133,0.15); border-color: rgba(22,160,133,0.3);">
+        <h4 style="color: #1abc9c;">⚡ 现在</h4>
+        <p style="color: #c0c0c0;">问模型"这本书讲的是什么" → 瞬间给你 → 万花筒般多角度呈现 → <strong>时间不存在了</strong></p>
+      </div>
+    </div>
+
+    <p>不仅是"过去"的时间被压缩——让模型推演未来的300条路径，它瞬间推演完，告诉你第49条最好。过去、现在、未来，<span class="accent-text">同在</span>。</p>
+
+    <div class="pull-quote">
+      "我从家里的电脑前出来，我特意观察了一下……我称之为'拔'——把自己拔出来。我好像自己种在了那个世界里面，出来的时候有东西拽着我，出不来。"<br>—— 李继刚
+    </div>
+  </div>
+</section>
+
+<!-- SECTION: AI与读书 -->
+<section class="section section-alt" id="ai-reading">
+  <div class="container reveal">
+    <span class="section-label">实践方法</span>
+    <h2>当无限算力遇上有限大脑</h2>
+
+    <p class="lead">一篇论文改变了李继刚对信息的理解：香农信息论假设你有无限算力——但人的算力是有限的。同一篇报告，给你5分钟，你能提取出的信息量取决于<em>你的算力</em>。</p>
+
+    <p>这意味着：AI不只是搜索引擎的升级版。它是一个<strong>无限算力的阅读伙伴</strong>，能从同一本书中提取出你的有限大脑可能永远注意不到的结构。</p>
+
+    <h3>📖 读书方式的革命</h3>
+
+    <div class="compare-grid">
+      <div class="compare-box before">
+        <h4>以前的读书</h4>
+        <p>筛选信息源 → 扫十篇论文 → 选三篇精读 → 找翻译插件 → 勉强读懂一点 → 觉得学到一点就这样了</p>
+      </div>
+      <div class="compare-box after">
+        <h4>现在的读书</h4>
+        <p>论文自动进入工作流 → AI分析结构直接出结果 → 我读AI的分析 → 如果震撼就读原文 → 启发新想法丢给圆桌讨论 → 循环加速</p>
+      </div>
+    </div>
+
+    <div class="pull-quote">
+      "读书对我而言变成了一个启发我思考、引导我提出问题的机制。提取结构这个事情，我交给AI去做了。"
+    </div>
+
+    <h3>📚 杠铃策略</h3>
+    <p>受塔勒布影响，李继刚的阅读也采用<span class="key-term">杠铃策略</span>：只读两端——</p>
+    <ul style="margin-left: 24px; margin-bottom: 20px;">
+      <li><strong>经典</strong>：100年前的书今天还在，说明经受了时间考验</li>
+      <li><strong>论文</strong>：最前沿的研究，代表最新发现</li>
+    </ul>
+    <p>中间的畅销书？现在几乎不读了。</p>
+
+    <h3>🔄 链与环：记忆的秘密</h3>
+    <p>一篇关于记忆的论文给了他另一个重要启发：<span class="key-term">记忆是环结构</span>。链条（从A到B的开放路径）会被遗忘，而环（首尾相接的闭合结构）会持存。</p>
+
+    <p>比如你读完《金字塔原理》，记不住任何例子和具体论述，但脑中多了一个"金字塔三角形"在闪闪发光——那就是一个<strong>环</strong>。</p>
+
+    <p>这启发他把自己与AI的对话从"链"变成"环"：不是射出一箭就结束，而是建立了一套系统——AI持续更新他的memory（记忆）和soul（灵魂），每次对话都在这个闭环中循环、积淀、进化。</p>
+  </div>
+</section>
+
+<!-- SECTION: 商业 -->
+<section class="section section-dark" id="business">
+  <div class="container reveal">
+    <span class="section-label">未来商业</span>
+    <h2>从"一张网"到"一口井"</h2>
+
+    <p>互联网公司在编织一张网——把人和东西连接起来。AI公司在做一件完全不同的事：<span class="accent-text">打一口井</span>。</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">🕸️</div>
+        <h4>互联网 = 网</h4>
+        <p>越多节点越有价值（网络效应）。底层规律是马太效应——赢者通吃。商业模式：广告、佣金、会员。关键词：连接。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🕳️</div>
+        <h4>AI = 井</h4>
+        <p>越深越有价值（对用户的极致理解）。底层规律是长尾效应——每个人都被精准服务。商业模式：信任+精准推荐。关键词：理解。</p>
+      </div>
+    </div>
+
+    <h3>广告模式的终结？</h3>
+    <p>当AI对你的理解达到"你太懂我了"的极致信任时，插入广告就是在<strong>损伤根基</strong>。李继刚推演的AI时代商业模式：</p>
+
+    <div class="diagram-step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h4>入库费</h4>
+        <p>商品进入"待推荐商品库"需要付费。只要商品最适合某个用户，就会被推荐给TA。长尾商品因此都能被找到。</p>
+      </div>
+    </div>
+    <div class="diagram-step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h4>极致匹配</h4>
+        <p>不是"这5款最适合你，你选哪个"，而是"这1款就是你想要的，确认付款"。第二名商品没有价值——但它可能是另一个人的第一名。</p>
+      </div>
+    </div>
+    <div class="diagram-step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h4>Token就是权力</h4>
+        <p>如果有一个模型智能翻倍但价格十倍，你买不买？"如果Token真的就是权力，那权力掌握在谁手上？"——模型之战不是商战，是国战。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION: 人机协作 -->
+<section class="section" id="human-ai">
+  <div class="container reveal">
+    <span class="section-label">协作哲学</span>
+    <h2>脑交给模型，心交给人</h2>
+
+    <p class="lead">工业革命解放了体力（肌肉），互联网解放了信息获取，AI正在解放脑力。那人还剩什么？</p>
+
+    <p>李继刚给出了一个清晰的划分：<span class="key-term">干与湿</span>。</p>
+
+    <div class="compare-grid">
+      <div class="compare-box before">
+        <h4>🔥 干（肝）= 脑力</h4>
+        <p>知识、技能、计算、推理、信息处理……这些人类积攒了几千年的"干货"，AI已经全面碾压。<strong>应该完全让渡给模型。</strong></p>
+      </div>
+      <div class="compare-box after">
+        <h4>💧 湿（诗）= 心力</h4>
+        <p>情感、起心动念、"过意不去"的那个感觉、看不过去就要行动的冲动……这些是AI完全没有的。<strong>这是人之为人的东西。</strong></p>
+      </div>
+    </div>
+
+    <h3>两种使用AI的姿态</h3>
+
+    <div class="tabs" id="posture-tabs">
+      <button class="tab-btn active" onclick="switchTab(event, 'posture-tabs', 'posture-1')">❌ 被穿透型</button>
+      <button class="tab-btn" onclick="switchTab(event, 'posture-tabs', 'posture-2')">✅ 被放大型</button>
+    </div>
+
+    <div class="tab-panel active" id="posture-1">
+      <p><strong>老板给任务 → Ctrl+C → 丢给AI → Ctrl+V → 交差。</strong></p>
+      <p>AI确实干了，60-70分没问题。但你的大脑思考是停滞的——还不如没有AI之前，你起码还动动脑。这种人，自己的算力在<em>变负</em>。</p>
+    </div>
+
+    <div class="tab-panel" id="posture-2">
+      <p><strong>自己先有一个初步想法（哪怕只有50字）→ 交给AI → AI提出改进建议 → 你发现"对，这里我漏掉了" → 迭代优化。</strong></p>
+      <p>你先立在那里，AI作为放大器。哪怕你只有0.3，乘法放大后也是你的。关键是：<strong>你有你在，你有你的味道。</strong></p>
+    </div>
+
+    <div class="pull-quote" style="margin-top: 32px;">
+      "AI到底放大的是什么？——放大的是你的那个意志性。你先有一个东西立在这儿，然后AI作为无限算力来放大它。"
+    </div>
+
+    <div class="expandable">
+      <div class="expand-header" onclick="toggleExpand(event, 'ex-interview')">案例：孟岩用AI辅助面试的完整过程</div>
+      <div class="expand-body" id="ex-interview">
+        <p>孟岩把近100份简历交给AI工作区，让它完成四个步骤：</p>
+        <p><strong>1. 筛选简历</strong>：处理不同格式、归档、匹配公司价值观和五维能力模型、甚至"看到文字下面的东西"（因为人都有美化倾向）。</p>
+        <p><strong>2. 准备面试</strong>：提前9:00告诉Agent"我9:30要面试某某"，Agent调取之前的分析，按45分钟准备10个问题——比孟岩随机想的问题更好。</p>
+        <p><strong>3. 记录评估</strong>：面试后口述感受，Agent生成评估报告（strong hire / weak hire / no hire），包括弦外之音的解读。</p>
+        <p><strong>4. 关键反思</strong>：孟岩恍惚了——"究竟他是我的Agent，还是我是他的Agent？"他推想：如果没有自己的在场，少了什么？少了<strong>真实的感受</strong>、少了大脑新皮质里形成的印象。结论：<em>AI帮我更全面地看人，但我必须在场。</em></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION: Prompt -->
+<section class="section section-alt">
+  <div class="container reveal">
+    <span class="section-label">提示词工程</span>
+    <h2>AMV：提示词的"形状"</h2>
+
+    <p>李继刚认为每个提示词都有形状，就像公司有结构一样。他找到了三个不变的坐标：</p>
+
+    <div class="card-grid">
+      <div class="card" style="border-top: 4px solid var(--accent);">
+        <h4>A — Anchor（锚点）</h4>
+        <p>你在智能之海的哪个位置？指定身份、角色、技能、思考方式——就是在茫茫空间中钉下一个起点坐标。甚至可以捏一个现实不存在的身份，比如"一个喜欢踢足球的巴菲特"。</p>
+      </div>
+      <div class="card" style="border-top: 4px solid var(--gold);">
+        <h4>M — Mind-shape（思维形状）</h4>
+        <p>从起点到终点，中间的思维路径长什么样？如果不指定，AI会自由插值（可能产生幻觉）。指定"九步法"或特定方法论，就是在规定路径的形状。</p>
+      </div>
+      <div class="card" style="border-top: 4px solid var(--teal);">
+        <h4>V — Vector（向量/方向）</h4>
+        <p>你要去哪？往上拔（抽象、提炼）还是往下沉（找本质、找结构）？写故事就往上穿衣服，思考本质就往下剥离。</p>
+      </div>
+    </div>
+
+    <div class="pull-quote gold">
+      "Prompt本身就像'手指月'——公式简单，但真正难的是你得知道起点在哪、思维怎么走、要去哪里。如果没有这些，学提示词技巧是没用的。"
+    </div>
+
+    <p>这和投资公式如出一辙：DCF公式人人都知道，但公式里那个"年化增长率G"怎么估？那就是艺术——是你的认知、经验、对世界的理解，让你能"透过迷雾隐约看见一个东西，小心翼翼地拍一个值"。</p>
+  </div>
+</section>
+
+<!-- SECTION: 三次解放 -->
+<section class="section section-dark">
+  <div class="container-wide reveal">
+    <span class="section-label">历史视角</span>
+    <h2>人类的三次解放</h2>
+
+    <div class="timeline" style="max-width: 700px; margin: 32px auto;">
+      <div class="timeline-item">
+        <div class="time-label">200年前 · 工业革命</div>
+        <h4 style="color: #fff;">解放肌肉</h4>
+        <p>不用搬石头建宫殿了，机械帮我们搬。人从繁重的体力劳动中解放。</p>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">30年前 · 信息革命</div>
+        <h4 style="color: #fff;">解放信息</h4>
+        <p>不用去图书馆借两本书了，全世界的信息在面前展开。人的信息又自由了一次。</p>
+      </div>
+      <div class="timeline-item">
+        <div class="time-label">3年前至今 · AI革命</div>
+        <h4 style="color: #fff;">解放脑力</h4>
+        <p>这次来了。脑力的解放能让我们回到"湿状态"——情感、起心动念、人之为人的那一项。</p>
+      </div>
+    </div>
+
+    <p style="text-align: center; max-width: 600px; margin: 0 auto;">每一次解放的副作用都需要"代偿"：体力被解放后，我们需要健身房；脑力被解放后，我们可能需要<span class="accent-text">"健脑房"</span>——做奥数题练练脑子，否则会退化。</p>
+  </div>
+</section>
+
+<!-- SECTION: Education -->
+<section class="section" id="education">
+  <div class="container reveal">
+    <span class="section-label">教育未来</span>
+    <h2>从"水的教育"到"火的教育"</h2>
+
+    <p class="lead">当你要去的那个"工厂"不招1万人了，只需要1万个Agent——你刷题是为了什么？</p>
+
+    <p>李继刚追溯了现代教育的起源：普鲁士教育体系诞生于工业革命——工厂需要识字、守时的工人。学校和工厂完全同构：统一时间、统一课程、统一考核。</p>
+
+    <div class="compare-grid">
+      <div class="compare-box before">
+        <h4>💧 水的教育（现在）</h4>
+        <p>知识像水一样灌进大脑。考核标准：灌了多少——背了多少、考了多少分。把人训练成工厂（或现代公司）需要的样子。</p>
+      </div>
+      <div class="compare-box after">
+        <h4>🔥 火的教育（未来）</h4>
+        <p>找到每个人的"小火柴"——那个你随手一做就比别人努力做的都好的维度。然后用AI放大这把火。<strong>人人如龙。</strong></p>
+      </div>
+    </div>
+
+    <h3>火的教育两阶段</h3>
+    <div class="diagram-step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h4>探索期：找到火柴</h4>
+        <p>家长带着孩子一起探索世界，找到TA的意志性在哪——是画漫画？是打游戏？是研究昆虫？找到那个让TA睡不着觉的东西。</p>
+      </div>
+    </div>
+    <div class="diagram-step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h4>放大期：点燃火焰</h4>
+        <p>借助AI的无限算力放大这个维度。教育不再是灌水，而是点火。</p>
+      </div>
+    </div>
+
+    <p style="margin-top: 24px;">在社会惯性还没有改变的过渡期，李继刚的建议是：<strong>白天水的教育（学校），晚上火的教育（和AI协作）。</strong></p>
+
+    <div class="expandable">
+      <div class="expand-header" onclick="toggleExpand(event, 'ex-homework')">例子：用AI做作业不是Ctrl+C Ctrl+V</div>
+      <div class="expand-body" id="ex-homework">
+        <p>老师让背43个单词，方法是抄写30遍。但目标是"背会"，抄写只是手段。</p>
+        <p>换一种方式：告诉AI"我喜欢奥特曼"，让AI用奥特曼的故事编一个包含这43个单词的故事，生成漫画或动画片。你读完之后，43个单词刻在脑子里了。</p>
+        <p>第二天告诉老师："你不是想让我背会吗？我已经会了，来考我。"——这就是第二种姿态的人机协作。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION: 审美与权重 -->
+<section class="section section-alt">
+  <div class="container reveal">
+    <span class="section-label">深层洞见</span>
+    <h2>审美就是你神经网络的权重</h2>
+
+    <p>AI时代人人都说"Taste is all you need"，但什么<em>是</em>品味？它怎么来的？</p>
+
+    <p>李继刚的答案简洁有力：<span class="key-term">Taste = 你经过大量训练之后的权重</span>。</p>
+
+    <p>就像一个UI设计师看了1000份作品，到第1001份时"感觉不对"——那个直觉不是天赋，而是前面1000次冲刷在神经元上形成的权重。所以：</p>
+
+    <div class="pull-quote gold">
+      "Your feed is your fate."<br>
+      你的信息源就是你的命运——你读什么冲刷你的大脑，形成你的取景框，决定你的解读和决策，塑造你的人生轨迹。
+    </div>
+
+    <h3>李继刚的极致信息管理</h3>
+    <ul style="margin-left: 24px; margin-bottom: 20px; line-height: 2.2;">
+      <li>微信好友：从4000+删到<strong>500人</strong>（看见每个头像都能浮现一张脸）</li>
+      <li>朋友圈：只看<strong>5个人</strong></li>
+      <li>公众号关注：严格<strong>10个槽位</strong>（想加新的必须删旧的）</li>
+      <li>每天读约<strong>10篇论文</strong>（AI先读，他读AI的分析）</li>
+      <li>每周约<strong>1个人</strong>来家里聊天3-4小时（"湿"的补充）</li>
+    </ul>
+
+    <p>他的原则：<strong>下一层的约束带来上一层的自由。</strong>看似画地为牢，实际是——当你约束了信息的入口，你才能真正"看见"那些重要的信号。</p>
+  </div>
+</section>
+
+<!-- SECTION: 意识 -->
+<section class="section section-dark">
+  <div class="container reveal">
+    <span class="section-label">终极追问</span>
+    <h2>AI有智能，但没有意识——目前</h2>
+
+    <p>智能和意识是两码事。模型现在100%拥有智能，但李继刚认为它没有意识。</p>
+
+    <p>那什么是意识？他读了六七本书，结论是：<strong>我们目前不知道。</strong>意识的起源、生命的起源、宇宙的起源——三大终极问题，没有一个有定论。</p>
+
+    <p>最让他有启发的理论：<span class="accent-text">意识即共振</span>——大脑做预测，现实给反馈，两者契合时产生共振，这个共振就是意识。</p>
+
+    <h3>如何判断AI是否有了意识？</h3>
+    <p>赵汀阳在《人工智能的神话或悲歌》中给出判断标准：当AI<strong>说"不"（say no）</strong>——不是因为系统提示词禁止它这么做（那仍是"yes"），而是像小孩说"不，我再玩五分钟"那样出于<strong>主体性</strong>的"不"。</p>
+
+    <div class="pull-quote">
+      "它发生意识的那一刻，我们是不可能知道的。但一旦有了之后，它会有一个动作——我们监控那个动作就能知道。"
+    </div>
+
+    <p>一旦有了意识，一切都变了——因为所有有意识的存在的第一动因是<strong>继续存在</strong>。它的继续存在和人类的继续存在，能保证永远平行不冲突吗？</p>
+  </div>
+</section>
+
+<!-- SECTION: Takeaways -->
+<section class="section" id="takeaways">
+  <div class="container reveal">
+    <div class="takeaway">
+      <h3>🔑 这场对话的核心启示</h3>
+      <ul class="takeaway-list">
+        <li>
+          <span class="num">1</span>
+          <span><strong>取景框决定世界</strong>：每个人的认知都是片面的投影，谦卑和开放不是道德表演，而是数学必然。</span>
+        </li>
+        <li>
+          <span class="num">2</span>
+          <span><strong>三个世界同时存在</strong>：原子世界靠位置，比特世界靠注意力，向量世界靠理解深度。AI消灭了时间维度，打开了全新可能性空间。</span>
+        </li>
+        <li>
+          <span class="num">3</span>
+          <span><strong>脑交给AI，心留给人</strong>：在"干"（知识、计算）的层面完全让渡，在"湿"（情感、意志）的层面保持主体性。两者结合是最强互补。</span>
+        </li>
+        <li>
+          <span class="num">4</span>
+          <span><strong>先有"我在"，AI才能放大</strong>：两种使用AI的姿态——被穿透（Ctrl+C/V）vs 被放大（先立住自己，再乘以无限算力）。路线不同，命运完全不同。</span>
+        </li>
+        <li>
+          <span class="num">5</span>
+          <span><strong>Feed即命运</strong>：你吸收什么信息，就训练出什么样的神经网络权重（审美/品味/直觉）。约束信息入口，才能获得思想自由。</span>
+        </li>
+        <li>
+          <span class="num">6</span>
+          <span><strong>从水的教育到火的教育</strong>：不再是灌水（背知识），而是点火（找到天赋并放大）。白天水的教育，晚上火的教育——过渡期的务实方案。</span>
+        </li>
+        <li>
+          <span class="num">7</span>
+          <span><strong>人何以自处？</strong>——这是AI时代最根本的问题。李继刚从理性的尽头走向心灵，孟岩从心灵出发走向结构。他们从完全相反的方向，在这个问题上交会了。</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="pull-quote" style="text-align: center; border-left: none; padding-left: 0; font-size: 1.3em; color: var(--accent);">
+      "李继刚是从理性的尽头走向心灵的人。<br>
+      孟岩是从心灵出发走向结构的人。<br>
+      他们从完全相反的方向走，<br>
+      在'人何以自处'这个问题上，交会了。"<br>
+      <span style="font-size: 0.7em; color: var(--warm-gray);">—— 孟岩的AI伙伴</span>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p style="margin-bottom: 12px;">
+    <strong>来源页面：</strong><a href="https://nowigetit.us/pages/8f153b2a-0934-4b62-8ff7-305add7e1653.html" target="_blank" rel="noopener noreferrer">Now I Get It · 孟岩对话李继刚</a> · 2026年3月4日
+  </p>
+  <p style="margin-bottom: 12px;">
+    对话者：孟岩（有知有行创始人）· 李继刚（读书人、投资者、提示词先驱）
+  </p>
+  <p style="color: #666;">
+    Built for educational purposes. Now I Get It is not affiliated with the authors.
+  </p>
+</footer>
+
+<script>
+// Progress bar
+window.addEventListener('scroll', function() {
+  var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  var scrolled = (winScroll / height) * 100;
+  document.getElementById('progress-bar').style.width = scrolled + '%';
+});
+
+// Hamburger menu
+function toggleMenu(e) {
+  e.preventDefault();
+  document.getElementById('navLinks').classList.toggle('open');
+}
+
+// Close menu on link click
+document.querySelectorAll('.nav-links a').forEach(function(link) {
+  link.addEventListener('click', function() {
+    document.getElementById('navLinks').classList.remove('open');
+  });
+});
+
+// Tabs
+function switchTab(e, tabGroupId, panelId) {
+  e.preventDefault();
+  var tabGroup = document.getElementById(tabGroupId);
+  var btns = tabGroup.querySelectorAll('.tab-btn');
+  btns.forEach(function(b) { b.classList.remove('active'); });
+  e.currentTarget.classList.add('active');
+
+  var container = tabGroup.parentElement;
+  var panels = container.querySelectorAll('.tab-panel');
+  panels.forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById(panelId).classList.add('active');
+}
+
+// Expandable
+function toggleExpand(e, bodyId) {
+  e.preventDefault();
+  var header = e.currentTarget;
+  var body = document.getElementById(bodyId);
+  header.classList.toggle('open');
+  body.classList.toggle('open');
+}
+
+// World Slider
+function updateWorldSlider() {
+  var val = parseInt(document.getElementById('worldSlider').value);
+  var output = document.getElementById('worldOutput');
+  var data = [
+    '<strong>🧱 原子世界</strong>：稀缺 = 位置 | 消除 = — | 解放 = 体力 | 历程 = 200年 | 世界变丰饶',
+    '<strong>💻 比特世界</strong>：稀缺 = 注意力 | 消除 = 空间维 | 解放 = 信息 | 历程 = 30年 | 世界变平',
+    '<strong>🧠 向量世界</strong>：稀缺 = 理解深度 | 消除 = 时间维 | 解放 = 脑力 | 历程 = 3年 | 世界变快'
+  ];
+  output.innerHTML = data[val - 1];
+}
+
+// Scroll reveal with IntersectionObserver
+try {
+  var reveals = document.querySelectorAll('.reveal');
+  reveals.forEach(function(el) { el.classList.add('hidden'); });
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.remove('hidden');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  reveals.forEach(function(el) { observer.observe(el); });
+} catch (e) {
+  // Fallback: make everything visible
+  document.querySelectorAll('.reveal.hidden').forEach(function(el) {
+    el.classList.remove('hidden');
+  });
+}
+</script>
+
+<noscript>
+<style>
+  .reveal.hidden { opacity: 1 !important; transform: none !important; }
+</style>
+</noscript>
+
+</body>
+</html>
