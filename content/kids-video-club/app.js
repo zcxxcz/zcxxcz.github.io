@@ -10,16 +10,26 @@ const watchNote = document.querySelector("#watch-note");
 const screen = document.querySelector("#screen");
 const ageButtons = document.querySelectorAll("[data-age]");
 const topicButtons = document.querySelectorAll("[data-topic]");
+const isAndroid = /\bAndroid\b/i.test(navigator.userAgent);
 let age = "all";
 let topic = "all";
 
-function openVideo(video) {
+function openVideo(video, unavailable) {
   watchTitle.textContent = video.title;
-  watchNote.textContent = video.note ?? video.description;
+  watchNote.textContent = unavailable ?? video.note ?? video.description;
 
-  if (video.source) {
+  if (video.source && !unavailable) {
     const url = new URL("https://player.bilibili.com/player.html");
-    url.search = new URLSearchParams({ ...video.source, autoplay: "0", danmaku: "0" });
+    url.search = new URLSearchParams({
+      ...video.source,
+      autoplay: "false",
+      danmaku: "0",
+      // Bilibili's phone player uses separate settings after the redirect.
+      danmakuClosed: "true",
+      danmakuBtn: "0",
+      noRecommend: "true",
+      hasSendbar: "false",
+    });
 
     const frame = document.createElement("iframe");
     frame.title = video.title + " · 视频播放器";
@@ -53,19 +63,21 @@ function render() {
   cards.replaceChildren(...visible.map(video => {
     const card = template.content.firstElementChild.cloneNode(true);
     const label = topics[video.topic] + " · " + ages[video.age];
+    const unavailable = video.unavailable ?? (isAndroid ? video.androidNote : undefined);
+    const runtime = unavailable ? "暂不可播" : video.runtime;
     card.classList.add(video.color);
     card.querySelector(".poster-age").textContent = ages[video.age];
     card.querySelector(".poster-icon").textContent = video.icon;
-    card.querySelector(".runtime").textContent = video.runtime;
+    card.querySelector(".runtime").textContent = runtime;
     card.querySelector(".category").textContent = topics[video.topic];
     card.querySelector(".card-title").textContent = video.title;
     card.querySelector(".card-desc").textContent = video.description;
-    card.setAttribute("aria-label", `${video.title}，${label}，${video.runtime}`);
-    if (!video.source) {
+    card.setAttribute("aria-label", `${video.title}，${label}，${runtime}`);
+    if (unavailable) {
       card.setAttribute("data-unavailable", "");
       card.querySelector(".play-mark").textContent = "ⓘ";
     }
-    card.addEventListener("click", () => openVideo(video));
+    card.addEventListener("click", () => openVideo(video, unavailable));
     return card;
   }));
 }

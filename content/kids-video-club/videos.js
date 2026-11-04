@@ -43,7 +43,9 @@ export const videos = [
   {
     title: "奔跑的奇奇猫", age: "older", topic: "make", color: "sun", icon: "🐱", runtime: "7:59",
     description: "跟着 Scratch 第 2 集，做一个会跑的小猫动画。",
-    source: { bvid: "BV1wJ411s7nD", aid: 80727850, cid: 138123148, p: 2 },
+    androidNote: "B 站的安卓外链播放器无法播放这一集。可以在电脑上打开片单观看。",
+    // The iOS embed needs HLS for this upload; MP4 mode substitutes a default clip.
+    source: { bvid: "BV1wJ411s7nD", aid: 80727850, cid: 138123148, p: 2, useHls: "true" },
   },
   {
     title: "罗小黑战记 · 喵", age: "young", topic: "story", color: "rose", icon: "🐈‍⬛", runtime: "5:04",
@@ -92,8 +94,8 @@ export const videos = [
     note: "B 站外链播放器提供试看。",
   },
   {
-    title: "大闹天宫", age: "both", topic: "story", color: "peach", icon: "👑", runtime: "暂不可播",
+    title: "大闹天宫", age: "both", topic: "story", color: "peach", icon: "👑",
     description: "上美影经典动画，孙悟空闯龙宫、上天庭。",
-    note: "这部电影的正片受 B 站地区及会员限制，暂时无法在这里播放。",
+    unavailable: "这部电影的正片受 B 站地区及会员限制，暂时无法在这里播放。",
   },
 ];
