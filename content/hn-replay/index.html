@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="在 Hacker News 上相隔至少一年仍被独立投稿的 YouTube 视频。每条都附可核对的 HN 原帖。">
+  <meta name="theme-color" content="#101113">
+  <title>HN Replay · 跨年视频档案</title>
+  <link rel="icon" href="mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 4.5 20 12 8 19.5Z" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4.3 4.3"/></symbol>
+    <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6.5 4h11a.5.5 0 0 1 .5.5V21l-6-4-6 4V4.5a.5.5 0 0 1 .5-.5Z"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="6" height="6" rx="1"/><rect x="14.5" y="3.5" width="6" height="6" rx="1"/><rect x="3.5" y="14.5" width="6" height="6" rx="1"/><rect x="14.5" y="14.5" width="6" height="6" rx="1"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M13 5h6v6m0-6-8 8m7 0v6H5V6h6"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3.5v4m8-4v4"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11.5v5m0-9h.01"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="m10 14 4-4m-5 6-1 1a3.5 3.5 0 0 1-5-5l4-4a3.5 3.5 0 0 1 5 0m3 0 1-1a3.5 3.5 0 0 1 5 5l-4 4a3.5 3.5 0 0 1-5 0"/></symbol>
+  </svg>
+  <a class="skip-link" href="#main">跳到视频内容</a>
+  <header class="topbar">
+    <a class="wordmark" href="./" aria-label="HN Replay 首页">
+      <img src="mark.svg" width="34" height="34" alt="">
+      <span>HN<span class="wordmark-accent">Replay</span><small>VIDEO ARCHIVE</small></span>
+    </a>
+    <form class="search" role="search">
+      <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+      <label for="search" class="sr-only">搜索视频</label>
+      <input id="search" type="search" placeholder="搜索视频、频道或关键词" autocomplete="off">
+      <kbd aria-hidden="true">/</kbd>
+    </form>
+    <button type="button" class="top-save" data-view="saved" aria-label="稍后看" aria-pressed="false">
+      <svg class="icon" aria-hidden="true"><use href="#i-bookmark"/></svg>
+      <span>稍后看</span>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" aria-label="视频导航">
+      <div class="sidebar-top">
+        <p class="nav-label">浏览</p>
+        <nav class="views" aria-label="视频列表">
+          <button class="nav-button" type="button" data-view="all" aria-pressed="true">
+            <svg class="icon" aria-hidden="true"><use href="#i-grid"/></svg> 全部视频
+          </button>
+          <button class="nav-button" type="button" data-view="saved" aria-pressed="false">
+            <svg class="icon" aria-hidden="true"><use href="#i-bookmark"/></svg> 稍后看 <span id="saved-count">0</span>
+          </button>
+        </nav>
+      </div>
+      <div class="sidebar-top topics">
+        <p class="nav-label">主题</p>
+        <nav id="topic-nav" aria-label="视频主题"></nav>
+      </div>
+      <div class="sidebar-bottom">
+        <button type="button" id="about-button" class="about-link">
+          <svg class="icon" aria-hidden="true"><use href="#i-info"/></svg> 收录规则
+        </button>
+        <a class="about-link" href="https://news.ycombinator.com/" target="_blank" rel="noopener">
+          <span class="hn-icon">Y</span> Hacker News
+          <svg class="icon external-small" aria-hidden="true"><use href="#i-external"/></svg>
+        </a>
+      </div>
+    </aside>
+
+    <main id="main" tabindex="-1">
+      <section class="intro" aria-labelledby="page-title">
+        <div class="eyebrow"><span></span> HACKER NEWS VIDEO ARCHIVE</div>
+        <h1 id="page-title">HN 反复推荐的视频</h1>
+        <p>每部视频都曾在相隔至少一年的 HN 投稿中再次获得支持。</p>
+      </section>
+
+      <section id="spotlight" class="spotlight" aria-labelledby="spotlight-title" hidden>
+        <div class="spotlight-art">
+          <img id="spotlight-image" alt="" fetchpriority="high">
+        </div>
+        <div class="spotlight-content">
+          <div class="spotlight-label"><span>01</span> 档案精选</div>
+          <h2 id="spotlight-title" lang="en">The UNIX<br>Operating System</h2>
+          <p id="spotlight-description"></p>
+          <div class="spotlight-actions">
+            <button type="button" id="spotlight-play" class="primary">
+              <svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> 观看视频
+            </button>
+            <span class="spotlight-meta" id="spotlight-meta"></span>
+          </div>
+        </div>
+        <div class="spotlight-credit">AT&amp;T ARCHIVES <span>／</span> UNIX</div>
+      </section>
+
+      <section class="catalog" aria-labelledby="catalog-title">
+        <div id="topic-chips" class="chips" aria-label="筛选视频主题"></div>
+        <div class="catalog-heading">
+          <div>
+            <p class="eyebrow catalog-eyebrow">THE COLLECTION</p>
+            <h2 id="catalog-title">视频档案</h2>
+            <p id="result-count" class="result-count" role="status" aria-live="polite">正在读取档案…</p>
+          </div>
+          <div class="sort-control">
+            <label for="sort" class="sr-only">排序</label>
+            <select id="sort">
+              <option value="repeat">按推荐次数</option>
+              <option value="score">按最高 HN 得分</option>
+              <option value="recent">按最近投稿</option>
+            </select>
+            <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
+          </div>
+        </div>
+        <noscript><p>请启用 JavaScript 以浏览视频档案。</p></noscript>
+        <div id="grid" class="video-grid"></div>
+        <div id="empty" class="empty" hidden>
+          <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+          <p id="empty-message"></p>
+          <button type="button" id="reset" class="secondary">查看全部视频</button>
+        </div>
+        <button type="button" id="more" class="secondary more" hidden>
+          显示更多 <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
+        </button>
+      </section>
+      <footer class="site-footer"><span>HN REPLAY <span class="accent">/</span> 跨年视频档案</span><button type="button" id="footer-about" class="about-link">数据来源与收录规则 <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button></footer>
+    </main>
+  </div>
+
+  <template id="card">
+    <article class="card">
+      <a class="card-open">
+        <div class="thumbnail">
+          <img alt="" width="320" height="180" loading="lazy" decoding="async">
+          <span class="card-play"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg></span>
+          <span class="repeat"></span>
+        </div>
+        <div class="card-body">
+          <div class="card-category"></div>
+          <h3></h3>
+          <p class="card-channel"></p>
+          <p class="card-meta"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><span class="years"></span><span aria-hidden="true">·</span><span class="score"></span></p>
+        </div>
+      </a>
+      <button type="button" class="card-save icon-button" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-bookmark"/></svg></button>
+    </article>
+  </template>
+
+  <dialog id="watch" aria-labelledby="watch-title">
+    <div class="dialog-top"><span class="eyebrow"><span></span> NOW WATCHING</span>
+      <button type="button" class="icon-button" data-close aria-label="关闭视频"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <div id="player" class="player"></div>
+    <div class="watch-body">
+      <p id="watch-category" class="eyebrow"></p>
+      <h2 id="watch-title"></h2>
+      <p id="watch-channel" class="card-channel"></p>
+      <p id="watch-description"></p>
+      <div class="watch-actions">
+        <a id="youtube-link" class="primary" target="_blank" rel="noopener">在 YouTube 观看 <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></a>
+        <button type="button" id="watch-save" class="secondary" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-bookmark"/></svg><span></span></button>
+        <button type="button" id="share" class="secondary"><svg class="icon" aria-hidden="true"><use href="#i-link"/></svg><span>复制链接</span></button>
+      </div>
+      <p id="notice" class="notice" role="status"></p>
+      <h3>HN 投稿记录 <span id="thread-count"></span></h3>
+      <p class="thread-note">以下得分为采集时的快照。打开原帖可查看讨论和最新得分。</p>
+      <ol id="threads" class="threads"></ol>
+    </div>
+  </dialog>
+
+  <dialog id="about" aria-labelledby="about-title">
+    <div class="dialog-top"><span class="eyebrow"><span></span> ABOUT THE ARCHIVE</span>
+      <button type="button" class="icon-button" data-close aria-label="关闭收录规则"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="watch-body">
+      <h2 id="about-title">收录规则</h2>
+      <p>按 YouTube 视频 ID 合并同一视频的链接。收录的每部视频至少有两条来自不同 HN 用户、分属不同年份、相隔至少 365 天的直接投稿。每条列出的投稿至少 5 分，其中至少一条达到 30 分。日期按 UTC 计算。</p>
+      <p>这是精选快照。候选来自截至 2023 年 8 月的 HN 公开存档，再用 HN Search 补查入选视频的后续投稿，并逐条用 HN 官方 API 核对。评论里的视频链接未计入。频道名称和封面来自 YouTube。</p>
+      <p id="snapshot" class="thread-note"></p>
+      <ul class="source-list">
+        <li><a href="https://clickhouse.com/docs/get-started/sample-datasets/hacker-news" target="_blank" rel="noopener">ClickHouse · Hacker News 数据集</a></li>
+        <li><a href="https://hn.algolia.com/" target="_blank" rel="noopener">Algolia · Hacker News Search</a></li>
+        <li><a href="https://github.com/HackerNews/API" target="_blank" rel="noopener">Hacker News 官方 API</a></li>
+      </ul>
+    </div>
+  </dialog>
+</body>
+</html>
