@@ -1,0 +1,38 @@
+AT&T Archives: The UNIX Operating System · AT&T Tech Channel · 计算机历史 · 一段贝尔实验室的档案影像。看 Brian Kernighan 如何用 UNIX 管道把小工具组合成工作流。
+Richard Feynman Computer Science Lecture - Hardware, Software and Heuristics · Muon Ray · 科学与数学 · 费曼从硬件、软件和启发式方法出发，讲解计算机如何解决问题。
+Sega Saturn CD - Cracked after 20 years · debuglive · 工程与硬件 · Sega Saturn 的光盘保护沉寂二十年后，研究者从光驱通信协议找到了突破口。
+Painting a Character with Maths · Inigo Quilez · 设计与创造 · Inigo Quilez 用有符号距离函数写出人物的形状、光线和材质。
+Conway's Game Of Life in APL · Dyalog · 软件开发 · 用一行 APL 表达康威生命游戏的演化规则，再逐段拆开每个符号。
+Walt Disney's MultiPlane Camera (Filmed: Feb. 13, 1957) · fireurgunz · 设计与创造 · 迪士尼在 1957 年演示如何用分层的玻璃画片为动画创造景深。
+"Uptime 15,364 days - The Computers of Voyager" by Aaron Cummings · Strange Loop Conference · 工程与硬件 · 看看旅行者号如何靠有限的内存、遥测和容错设计持续工作数十年。
+Bret Victor - Inventing on Principle · Rui Oliveira · 设计与创造 · Bret Victor 演示程序和设计工具如何把修改的结果即时反馈给创作者。
+Non-Euclidean Worlds Engine · CodeParade · 科学与数学 · CodeParade 用可漫游的游戏空间展示非欧几何如何挑战人的方向感。
+APL demonstration 1975 · Imperial College London · 计算机历史 · 一段 1975 年的 APL 档案，保留了交互式计算早期的操作现场。
+Tech Talk: Linus Torvalds on git · Google · 软件开发 · Linus Torvalds 在 Google 分享 Git 的来历，以及他对分布式版本控制的看法。
+Here's What Happens When an 18 Year Old Buys a Mainframe · SHARE Association · 工程与硬件 · 一位年轻爱好者分享自己把大型机搬回家、通电并运行起来的经历。
+How Crash Bandicoot Hacked The Original Playstation | War Stories | Ars Technica · Ars Technica · 工程与硬件 · 《古惑狼》的开发者回顾团队如何在初代 PlayStation 的硬件限制下实现他们想要的关卡。
+"The Mess We're In" by Joe Armstrong · Strange Loop Conference · 软件开发 · Erlang 联合创作者 Joe Armstrong 从依赖、复杂性和时间尺度审视现代软件。
+Joe Armstrong & Alan Kay - Joe Armstrong interviews Alan Kay · Erlang Solutions · 计算机历史 · Joe Armstrong 对谈 Alan Kay，回顾个人计算和编程语言发展的早期设想。
+Ted Nelson struggles with uncomprehending radio interviewer, 1979 · TheTedNelson · 计算机历史 · Ted Nelson 在 1979 年的广播访谈中试着解释超文本及其出版愿景。
+Using a 1930 Teletype as a Linux Terminal · CuriousMarc · 工程与硬件 · CuriousMarc 把 1930 年的机械电传打字机接入 Linux，让它重新成为可用的终端。
+Functional programming design patterns by Scott Wlaschin · Ivan Plyusnin · 软件开发 · Scott Wlaschin 用类型和函数组合重新讲解常见的程序设计模式。
+ASCII fluid dynamics -- IOCCC2012 endoh1.c · Yusuke Endoh · 软件开发 · 一段 IOCCC 获奖程序用 ASCII 字符显示流体模拟，还能读入纯文本来设置粒子的初始位置。
+YouTube's copyright system isn't broken. The world's is. · Tom Scott · 文化与社会 · Tom Scott 以 YouTube 为例，解释网络平台如何在不同的版权制度之间运作。
+New York City in 1993 in HD -  DTheater DVHS Demo Tape · Youtube Pedant · 文化与社会 · 一盘演示录像留下了 1993 年纽约街头少见的高清影像。
+Mechanical Computer (All Parts) - Basic Mechanisms In Fire Control Computers · Excelsior10000 · 工程与硬件 · 训练影片拆解机械火控计算机里的齿轮、凸轮和连杆，展示它们怎样完成运算。
+How to Speak · MIT OpenCourseWare · 设计与创造 · MIT 的 Patrick Winston 用课堂演示讲解演讲如何开场、建立重点和收尾。
+The man with 1,000 Klein Bottles UNDER his house - Numberphile · Numberphile · 科学与数学 · Numberphile 随 Cliff Stoll 走进藏着上千个克莱因瓶的房子，观察这种曲面的实体模型。
+Cities Aren't Loud: Cars Are Loud · Not Just Bikes · 文化与社会 · Not Just Bikes 用城市街道的声音讨论交通设计如何影响噪音。
+The History of Unix, Rob Pike · Stephanie Borgman · 计算机历史 · Rob Pike 回顾 UNIX 在贝尔实验室的发展，以及工具和协作文化的来历。
+How I Made My Own iPhone - in China · Strange Parts · 工程与硬件 · Strange Parts 走访深圳电子市场，寻找组装一部 iPhone 所需的零件。
+How Differential Gear works (BEST Tutorial) · ConceptVBS · 工程与硬件 · 这部档案影片用逐步搭出的机械模型演示差速器怎样让两个车轮以不同速度旋转。
+AlphaGo - The Movie | Full award-winning documentary · Google DeepMind · 科学与数学 · 纪录片跟拍 AlphaGo 与李世石的五局对弈，记录棋手和工程团队的反应。
+Randy Pausch's Last Lecture: Achieving Your Childhood Dreams · Carnegie Mellon University · 文化与社会 · 兰迪·波许在卡内基梅隆大学回顾自己的童年梦想，以及它们如何影响他教书和做项目。
+Meet the Engineer Preserving The Last Analog Motion Graphics Machine · VICE TV · 设计与创造 · 认识维护 Scanimate 的工程师，看看模拟设备如何生成电视动态图形。
+!!Con 2019- Tail Call Optimization: The Musical!! by Anjana Vakil & Natalia Margolis · Confreaks · 软件开发 · 两位讲者用音乐剧演示尾调用和栈空间，来自 !!Con 2019。
+OOPSLA Conference: Growing a Language · Computer History Museum · 软件开发 · Guy Steele 用一场受词汇约束的演讲说明编程语言怎样长出新能力。
+Hamming, "You and Your Research" (June 6, 1995) · securitylectures · 科学与数学 · Richard Hamming 从个人经历出发，讨论研究者怎样选择值得长期投入的问题。
+Project Code Rush - The Beginnings of Netscape / Mozilla Documentary · The Documentary Network · 计算机历史 · 纪录片记录 Netscape 开放浏览器源码前后的工作，以及 Mozilla 的起点。
+How does a USB keyboard work? · Ben Eater · 工程与硬件 · Ben Eater 用实际测量追踪 USB 键盘的信号，拆解设备与主机的通信。
+Carl Sagan testifying before Congress in 1985 on climate change · carlsagandotcom · 科学与数学 · 卡尔·萨根在 1985 年的美国国会听证会上解释温室效应与全球变暖。
+Welcome to Life: the singularity, ruined by lawyers · Tom Scott · 文化与社会 · Tom Scott 的科幻短片，想象人在商业化的数字来世会遇到哪些限制。
