@@ -277,51 +277,27 @@
     ]
   },
   {
-    "id": "YdHTlUGN1zw",
-    "title": "Walt Disney's MultiPlane Camera (Filmed: Feb. 13, 1957)",
-    "channel": "fireurgunz",
+    "id": "xDxjbXAqTPg",
+    "title": "Automatic 3Dification of Nintendo games: The glEnd() of Zelda",
+    "channel": "suckerpinch",
     "category": "设计与创造",
-    "description": "迪士尼在 1957 年演示如何用分层的玻璃画片为动画创造景深。",
+    "description": "Tom Murphy 用《塞尔达传说》等 NES 游戏演示如何把二维游戏场景自动转换为可旋转观看的 3D 场景。",
     "threads": [
       {
-        "id": 2605831,
-        "by": "there",
-        "title": "Walt Disney's MultiPlane Camera (Filmed: Feb. 13, 1957)",
-        "date": "2011-06-01",
+        "id": 11411054,
+        "by": "phoboslab",
+        "title": "Automatic 3Dification of Nintendo Games: The GlEnd() of Zelda",
+        "date": "2016-04-02",
+        "score": 214,
+        "comments": 16
+      },
+      {
+        "id": 19721831,
+        "by": "caspervonb",
+        "title": "Automatic 3Dification of Nintendo Games: The GlEnd() of Zelda",
+        "date": "2019-04-22",
         "score": 6,
-        "comments": 1
-      },
-      {
-        "id": 3633366,
-        "by": "flaviojuvenal",
-        "title": "Walt Disney's MultiPlane Camera (1957)",
-        "date": "2012-02-25",
-        "score": 6,
-        "comments": 1
-      },
-      {
-        "id": 11550779,
-        "by": "jschwartz11",
-        "title": "Walt Disney's MultiPlane Camera (1957) [video]",
-        "date": "2016-04-22",
-        "score": 126,
-        "comments": 21
-      },
-      {
-        "id": 16768953,
-        "by": "madethemcry",
-        "title": "Walt Disney's MultiPlane Camera (1957) [video]",
-        "date": "2018-04-05",
-        "score": 163,
-        "comments": 62
-      },
-      {
-        "id": 48362636,
-        "by": "imnot404",
-        "title": "Walt Disney's MultiPlane Camera (1957) [video]",
-        "date": "2026-06-01",
-        "score": 5,
-        "comments": 1
+        "comments": 0
       }
     ]
   },
@@ -940,35 +916,51 @@
     ]
   },
   {
-    "id": "fT4lDU-QLUY",
-    "title": "New York City in 1993 in HD -  DTheater DVHS Demo Tape",
-    "channel": "Youtube Pedant",
+    "id": "TZb0avfQme8",
+    "title": "AT&T 1993 \"You Will\" Ads",
+    "channel": "appealing",
     "category": "文化与社会",
-    "description": "一盘演示录像留下了 1993 年纽约街头少见的高清影像。",
+    "description": "一组 1993 年的 AT&T 广告，想象当时尚未普及的视频通话、远程会议和电子导航。",
     "threads": [
       {
-        "id": 13019591,
-        "by": "chaosmachine",
-        "title": "HD video in 1993: NYC shot at 1080p, 60fps",
-        "date": "2016-11-23",
-        "score": 20,
+        "id": 503709,
+        "by": "nickb",
+        "title": "AT&T's 1993 \"You Will\" Ads (excellent foresight) [vid]",
+        "date": "2009-03-05",
+        "score": 11,
+        "comments": 1
+      },
+      {
+        "id": 1444866,
+        "by": "tortilla",
+        "title": "AT&T 1993 \"You Will\" Ads",
+        "date": "2010-06-19",
+        "score": 73,
+        "comments": 39
+      },
+      {
+        "id": 6817735,
+        "by": "tosh",
+        "title": "AT&T 1993 \"You Will\" Ads",
+        "date": "2013-11-29",
+        "score": 7,
         "comments": 0
       },
       {
-        "id": 16085603,
-        "by": "dsego",
-        "title": "New York City in 1993 in HD – DTheater DVHS Demo Tape [video]",
-        "date": "2018-01-06",
-        "score": 91,
-        "comments": 34
+        "id": 11246081,
+        "by": "ascorbic",
+        "title": "AT&T's 1993 “You Will” ads were remarkably accurate",
+        "date": "2016-03-08",
+        "score": 12,
+        "comments": 4
       },
       {
-        "id": 34540248,
-        "by": "doener",
-        "title": "New York City in 1993 in HD – DTheater DVHS Demo Tape",
-        "date": "2023-01-26",
-        "score": 22,
-        "comments": 2
+        "id": 19504544,
+        "by": "tosh",
+        "title": "AT&T 1993 “You Will” Ads [video]",
+        "date": "2019-03-27",
+        "score": 154,
+        "comments": 100
       }
     ]
   },
