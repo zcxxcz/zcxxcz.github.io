@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="浏览 Hacker News 上被推荐、投稿或提及的 YouTube 视频。按领域、主题、年份和证据筛选。">
+  <meta name="description" content="浏览 Hacker News 上被推荐或提及的 YouTube 视频。按领域、主题、年份和证据筛选。">
   <meta name="theme-color" content="#101113">
   <title>HN Replay · Hacker News 视频档案</title>
   <link rel="icon" href="mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css">
-  <script type="module" src="app.js"></script>
+  <link rel="stylesheet" href="style.css?v=3">
+  <script type="module" src="library-app.js"></script>
 </head>
 <body>
   <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -34,7 +34,7 @@
     <form class="search" role="search">
       <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
       <label for="search" class="sr-only">搜索视频</label>
-      <input id="search" type="search" placeholder="搜索视频、频道或主题" autocomplete="off">
+      <input id="search" type="search" disabled placeholder="搜索视频、频道或主题" autocomplete="off">
       <kbd aria-hidden="true">/</kbd>
     </form>
     <button type="button" class="top-save" data-view="saved" aria-label="稍后看" aria-pressed="false">
@@ -50,9 +50,6 @@
         <nav class="views" aria-label="视频列表">
           <button class="nav-button" type="button" data-view="all" aria-pressed="true">
             <svg class="icon" aria-hidden="true"><use href="#i-grid"/></svg> 全部视频 <span class="nav-count" id="library-count"></span>
-          </button>
-          <button class="nav-button" type="button" data-view="curated" aria-pressed="false">
-            <svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg> 跨年投稿 <span class="nav-count" id="curated-count"></span>
           </button>
           <button class="nav-button" type="button" data-view="saved" aria-pressed="false">
             <svg class="icon" aria-hidden="true"><use href="#i-bookmark"/></svg> 稍后看 <span id="saved-count">0</span>
@@ -78,32 +75,13 @@
       <section class="intro" aria-labelledby="page-title">
         <div class="eyebrow"><span></span> HACKER NEWS VIDEO ARCHIVE</div>
         <h1 id="page-title">Hacker News 视频档案</h1>
-        <p id="intro-count">浏览 HN 上被推荐、投稿或提及的 YouTube 视频。</p>
+        <p id="intro-count">浏览 HN 上被推荐或提及的 YouTube 视频。</p>
       </section>
 
       <nav class="scope" aria-label="浏览范围">
         <button type="button" class="chip" data-view="all" aria-pressed="true">完整视频库</button>
-        <button type="button" class="chip" data-view="curated" aria-pressed="false">跨年投稿</button>
         <button type="button" class="chip" data-view="saved" aria-pressed="false">稍后看</button>
       </nav>
-
-      <section id="spotlight" class="spotlight" aria-labelledby="spotlight-title" hidden>
-        <div class="spotlight-art">
-          <img id="spotlight-image" alt="" fetchpriority="high">
-        </div>
-        <div class="spotlight-content">
-          <div class="spotlight-label"><span>01</span> 档案精选</div>
-          <h2 id="spotlight-title" lang="en">The UNIX<br>Operating System</h2>
-          <p id="spotlight-description"></p>
-          <div class="spotlight-actions">
-            <button type="button" id="spotlight-play" class="primary">
-              <svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> 观看视频
-            </button>
-            <span class="spotlight-meta" id="spotlight-meta"></span>
-          </div>
-        </div>
-        <div class="spotlight-credit">AT&amp;T ARCHIVES <span>／</span> UNIX</div>
-      </section>
 
       <section class="catalog" aria-labelledby="catalog-title">
         <fieldset class="filters" id="filters" disabled>
@@ -112,7 +90,6 @@
             <option value="">全部证据</option>
             <option value="comment">有评论推荐</option>
             <option value="across">跨年评论推荐</option>
-            <option value="story">跨年独立投稿</option>
             <option value="mention">仅在评论提及</option>
           </select></label>
           <label>领域<select id="area"><option value="">全部领域</option></select></label>
@@ -133,11 +110,14 @@
               <option value="auto">默认排序</option>
               <option value="recommend">评论推荐热度</option>
               <option value="recent">最近讨论</option>
-              <option value="score">最高投稿得分</option>
               <option value="title">标题 A–Z</option>
             </select>
             <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
           </div>
+        </div>
+        <div id="library-error" class="empty" hidden>
+          <p id="library-error-message" role="status"></p>
+          <button type="button" id="library-retry" class="secondary">重试加载</button>
         </div>
         <noscript><p>请启用 JavaScript 以浏览视频档案。</p></noscript>
         <div id="grid" class="video-grid"></div>
@@ -146,11 +126,12 @@
           <p id="empty-message"></p>
           <button type="button" id="reset" class="secondary">查看全部视频</button>
         </div>
-        <nav id="pagination" class="pagination" aria-label="结果分页" hidden>
+        <form id="pagination" class="pagination" aria-label="结果分页" hidden>
           <button type="button" id="previous" class="secondary">上一页</button>
           <label>第 <input type="number" id="page-number" min="1" value="1" inputmode="numeric" aria-label="页码"> 页 <span id="page-total"></span></label>
+          <button type="submit" class="secondary">跳转</button>
           <button type="button" id="next" class="secondary">下一页</button>
-        </nav>
+        </form>
       </section>
       <footer class="site-footer"><span>HN REPLAY <span class="accent">/</span> Hacker News 视频档案</span><button type="button" id="footer-about" class="about-link">数据来源与收录规则 <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button></footer>
     </main>
@@ -192,14 +173,11 @@
         <button type="button" id="share" class="secondary"><svg class="icon" aria-hidden="true"><use href="#i-link"/></svg><span>复制链接</span></button>
       </div>
       <p id="notice" class="notice" role="status"></p>
-      <section id="story-evidence" hidden>
-        <h3>HN 独立投稿 <span id="thread-count"></span></h3>
-        <p class="thread-note">得分为采集时的快照。打开原帖可查看完整讨论。</p>
-        <ol id="threads" class="threads"></ol>
-      </section>
+      <p class="thread-note">视频由 YouTube 提供。若站内播放器无法播放，可以打开 YouTube 原视频。</p>
       <section id="comment-evidence" hidden>
         <h3>HN 评论记录 <span id="comment-count"></span></h3>
         <p id="comment-note" class="thread-note" role="status"></p>
+        <button type="button" id="comment-retry" class="secondary" hidden>重试加载评论</button>
         <ol id="comments" class="threads"></ol>
       </section>
       <section id="related-section" hidden>
@@ -216,9 +194,9 @@
     </div>
     <div class="watch-body">
       <h2 id="about-title">收录规则</h2>
-      <p>完整视频库合并 HackerTube 快照与原有跨年投稿精选，按 YouTube 视频 ID 去重。评论标签区分推荐、强推荐、引用、玩笑与批评。标签与英文简介来自源数据的模型整理，每部最多保留 20 条评论链接。评论推荐热度按获得推荐的月份计算，有强推荐的月份权重更高。</p>
-      <p>跨年评论推荐要求至少一对不同用户的推荐相隔 13 个自然月。跨年投稿精选要求至少两条来自不同用户、分属不同年份且相隔至少 365 天的直接投稿，每条至少 5 分，其中至少一条达到 30 分。</p>
-      <p>讨论年份取自已收录的投稿和评论，采用 UTC。视频能否播放取决于 YouTube 的当前状态。系列链接有时指向该系列的一集。</p>
+      <p>完整视频库收录 HackerTube 快照中的全部视频，按 YouTube 视频 ID 去重。评论标签区分推荐、强推荐、引用、玩笑与批评。标签与英文简介来自源数据的模型整理，每部最多保留 20 条评论链接。评论推荐热度按获得推荐的月份计算，有强推荐的月份权重更高。</p>
+      <p>跨年评论推荐要求至少一对不同用户的推荐相隔 13 个自然月。</p>
+      <p>讨论年份取自已收录的评论，采用 UTC。视频能否播放取决于 YouTube 的当前状态。系列链接有时指向该系列的一集。</p>
       <p id="snapshot" class="thread-note"></p>
       <ul class="source-list">
         <li><a href="https://hackertube.org/" target="_blank" rel="noopener">HackerTube · 视频目录与评论标注</a></li>
