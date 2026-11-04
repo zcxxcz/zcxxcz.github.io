@@ -4,7 +4,7 @@
   "type": "资料",
   "format": "html",
   "status": "published",
-  "summary": "浏览 Hacker News 上被推荐、投稿或提及的 6,460 部 YouTube 视频。支持中英文搜索和多条件筛选，附 HN 原帖及评论链接。",
+  "summary": "浏览 Hacker News 评论提到的 6,454 部 YouTube 视频。支持中英文搜索和多条件筛选，附 HN 原评论链接。",
   "tags": [
     "文章与资料",
     "Hacker News",
