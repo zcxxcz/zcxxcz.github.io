@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="给 6–12 岁小朋友的卡通放映厅。挑一张卡片，在这里看一部喜欢的影片。">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; frame-src https://player.bilibili.com/player.html https://www.bilibili.com/blackboard/webplayer/mbplayer.html; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>小小放映厅 · 给小朋友的 17 个好故事</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <div class="brand"><img src="./favicon.svg" width="43" height="43" alt="">小小放映厅</div>
+      <span class="top-note"><span aria-hidden="true">✦</span> 给 6–12 岁的好奇宝宝</span>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <span class="eyebrow"><span aria-hidden="true">✦</span> 好奇心片单</span>
+        <h1 id="hero-title">今天，<br>想看<span>什么？</span></h1>
+        <p>去太空喝口水，和小黑猫做朋友。<br>挑一张喜欢的卡片，电影时间开始！</p>
+        <a class="start" href="#library"><span aria-hidden="true">▶</span> 去挑一部</a>
+      </div>
+      <img class="hero-art" src="./cinema.svg" width="620" height="370" alt="">
+    </section>
+
+    <section id="library" class="library" aria-labelledby="library-title">
+      <div class="library-header">
+        <div>
+          <span class="section-kicker"><span aria-hidden="true">✦</span> 选个喜欢的主题</span>
+          <h2 id="library-title">影片架</h2>
+        </div>
+        <div class="age-picker" role="group" aria-label="按年龄筛选">
+          <button type="button" data-age="all" aria-pressed="true">全年龄</button>
+          <button type="button" data-age="young" aria-pressed="false">6–8 岁</button>
+          <button type="button" data-age="older" aria-pressed="false">9–12 岁</button>
+        </div>
+      </div>
+      <div class="topics" role="group" aria-label="按主题筛选">
+        <button type="button" data-topic="all" aria-pressed="true"><span aria-hidden="true">✦</span> 全部</button>
+        <button type="button" data-topic="story" aria-pressed="false"><span aria-hidden="true">🎬</span> 动画故事</button>
+        <button type="button" data-topic="nature" aria-pressed="false"><span aria-hidden="true">🌿</span> 自然科学</button>
+        <button type="button" data-topic="make" aria-pressed="false"><span aria-hidden="true">✂️</span> 动手创造</button>
+        <button type="button" data-topic="culture" aria-pressed="false"><span aria-hidden="true">🎨</span> 人文艺术</button>
+        <button type="button" data-topic="music" aria-pressed="false"><span aria-hidden="true">🎵</span> 音乐英语</button>
+      </div>
+      <p id="count" class="count" role="status"></p>
+      <div class="cards" id="cards"></div>
+      <div id="empty" class="empty" hidden>
+        <span aria-hidden="true">🎟️</span>
+        <p>这个组合还没有影片，换个主题看看吧。</p>
+        <button type="button" class="start" id="reset">看全部影片</button>
+      </div>
+      <noscript>打开 JavaScript 后，就能在这里挑选影片。</noscript>
+    </section>
+  </main>
+
+  <footer class="wrap footer"><span aria-hidden="true">✦</span> 小小放映厅 <span class="footer-dot">·</span> 精选 B 站片单</footer>
+
+  <dialog id="watch" aria-labelledby="watch-title" aria-describedby="watch-note">
+    <header class="watch-header">
+      <div>
+        <div class="watch-kicker">小小放映厅</div>
+        <h2 id="watch-title"></h2>
+      </div>
+      <button type="button" class="close" id="close" autofocus><span aria-hidden="true">×</span> 返回片单</button>
+    </header>
+    <div id="screen" class="screen"></div>
+    <p id="watch-note"></p>
+  </dialog>
+
+  <template id="card-template">
+    <button class="card" type="button">
+      <span class="poster" aria-hidden="true">
+        <span class="poster-age"></span>
+        <span class="poster-spark">✦</span><span class="poster-star">✧</span>
+        <span class="poster-icon"></span>
+        <span class="runtime"></span>
+      </span>
+      <span class="card-text">
+        <span class="category"></span>
+        <span class="card-title"></span>
+        <span class="card-desc"></span>
+        <span class="play-mark" aria-hidden="true">▶</span>
+      </span>
+    </button>
+  </template>
+</body>
+</html>
