@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6 岁英语启蒙 · 一年计划表</title>
+<style>
+:root{
+  --paper:#FAF8F4; --card:#FFFFFF; --ink:#15191B; --sub:#6E6A62; --faint:#A9A294;
+  --line:#E9E3D7; --line-soft:#F1ECE2;
+  --accent:#0E6B57; --accent-deep:#0A4F41; --accent-soft:#EAF2EE;
+  --ember:#B4530A; --ember-soft:#FBEEE0;
+  --mark:#FCE7A2;
+  --shadow:0 1px 2px rgba(21,25,27,.04), 0 8px 24px -12px rgba(21,25,27,.14);
+  --serif:"Songti SC","Noto Serif SC","Source Han Serif SC",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* ---------- 顶栏 ---------- */
+.bar{
+  position:sticky;top:0;z-index:50;background:rgba(250,248,244,.92);
+  backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line);
+}
+.bar-in{max-width:1080px;margin:0 auto;padding:11px 24px;display:flex;align-items:center;gap:16px}
+.bar-t{font-family:var(--serif);font-size:14.5px;letter-spacing:.02em;white-space:nowrap}
+.bar-t b{color:var(--accent);font-weight:600}
+.nav{display:flex;gap:2px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{
+  font-size:12.5px;color:var(--sub);text-decoration:none;padding:5px 9px;
+  border-radius:6px;white-space:nowrap;
+}
+.nav a:hover{background:var(--accent-soft);color:var(--accent-deep)}
+.print-btn{
+  font:inherit;font-size:12.5px;color:var(--sub);background:var(--card);
+  border:1px solid var(--line);border-radius:7px;padding:5px 11px;cursor:pointer;white-space:nowrap;
+}
+.print-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ---------- 头图 ---------- */
+.hero{padding:56px 0 8px}
+.kicker{
+  display:inline-flex;align-items:center;gap:7px;font-size:11.5px;letter-spacing:.13em;
+  color:var(--ember);text-transform:uppercase;font-weight:600;margin-bottom:16px;
+}
+.kicker::before{content:"";width:22px;height:1px;background:var(--ember)}
+h1{
+  font-family:var(--serif);font-size:42px;line-height:1.28;font-weight:600;
+  margin:0 0 16px;letter-spacing:-.01em;
+}
+h1 em{font-style:normal;color:var(--accent);border-bottom:3px solid var(--mark);padding-bottom:2px}
+.lede{font-size:15.5px;color:var(--sub);max-width:720px;margin:0 0 26px}
+.lede b{color:var(--ink);font-weight:600}
+
+/* ---------- 起点诊断 ---------- */
+.diag{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:30px 0 14px;
+}
+.diag>div{background:var(--card);padding:16px 16px 18px}
+.diag .k{font-size:11.5px;color:var(--faint);letter-spacing:.06em;margin-bottom:7px}
+.diag .v{font-size:14.5px;font-weight:600;line-height:1.45}
+.diag .v span{display:block;font-size:12px;font-weight:400;color:var(--sub);margin-top:4px;line-height:1.5}
+.diag .lv{
+  display:inline-block;font-size:10.5px;font-weight:600;padding:2px 6px;border-radius:4px;
+  margin-top:7px;letter-spacing:.02em;
+}
+.lv.g{background:var(--accent-soft);color:var(--accent-deep)}
+.lv.o{background:var(--ember-soft);color:var(--ember)}
+
+.concl{
+  display:flex;gap:14px;padding:18px 20px;background:var(--accent-soft);
+  border-radius:12px;border:1px solid #D8E6DF;margin-bottom:10px;
+}
+.concl .ico{font-family:var(--serif);font-size:19px;color:var(--accent);line-height:1.35}
+.concl p{margin:0;font-size:14px;line-height:1.72}
+.concl b{color:var(--accent-deep)}
+
+/* ---------- 区块 ---------- */
+section{padding:52px 0 8px}
+.sec-h{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+.sec-n{
+  font-family:var(--serif);font-size:13px;color:var(--accent);font-weight:600;
+  letter-spacing:.08em;padding-top:3px;
+}
+h2{font-family:var(--serif);font-size:26px;font-weight:600;margin:0;letter-spacing:-.005em}
+.sec-d{font-size:13.5px;color:var(--sub);margin:0 0 26px 38px;line-height:1.7}
+.sec-d b{color:var(--ink);font-weight:600}
+
+/* ---------- 目标 ---------- */
+.goals{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.goal{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 22px 18px}
+.goal-t{
+  display:flex;align-items:center;gap:9px;font-size:12px;font-weight:600;
+  letter-spacing:.08em;color:var(--faint);margin-bottom:16px;
+}
+.goal-t .dot{width:7px;height:7px;border-radius:50%}
+.goal.a .dot{background:var(--accent)}
+.goal.b .dot{background:var(--ember)}
+.goal-t .tag{
+  margin-left:auto;font-size:10.5px;font-weight:500;letter-spacing:0;
+  padding:2px 7px;border-radius:4px;
+}
+.goal.a .tag{background:var(--accent-soft);color:var(--accent-deep)}
+.goal.b .tag{background:var(--ember-soft);color:var(--ember)}
+.goal ul{list-style:none;margin:0;padding:0}
+.goal li{
+  display:flex;gap:9px;font-size:13.8px;line-height:1.7;padding:7px 0;
+  border-bottom:1px dashed var(--line-soft);
+}
+.goal li:last-child{border-bottom:0}
+.goal li::before{content:"·";color:var(--faint);font-weight:700}
+.goal li b{font-weight:600}
+
+/* ---------- 阶段 ---------- */
+.phases{display:grid;gap:14px}
+.ph{
+  background:var(--card);border:1px solid var(--line);border-radius:12px;
+  overflow:hidden;transition:box-shadow .2s,border-color .2s;
+}
+.ph:hover{box-shadow:var(--shadow);border-color:#DCD4C4}
+.ph-top{
+  display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;
+  user-select:none;
+}
+.ph-n{
+  flex:0 0 auto;width:34px;height:34px;border-radius:9px;background:var(--accent-soft);
+  color:var(--accent-deep);font-family:var(--serif);font-size:15px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+}
+.ph-h{flex:1;min-width:0}
+.ph-name{font-size:16px;font-weight:600;line-height:1.4}
+.ph-date{font-size:12px;color:var(--faint);margin-top:2px;letter-spacing:.02em}
+.ph-arrow{
+  font-size:12px;color:var(--faint);transition:transform .22s;
+}
+.ph.open .ph-arrow{transform:rotate(90deg)}
+.ph-body{display:none;padding:0 20px 20px;border-top:1px solid var(--line-soft)}
+.ph.open .ph-body{display:block}
+.ph-goal{
+  font-size:13.5px;color:var(--sub);line-height:1.7;margin:16px 0 18px;
+  padding-left:12px;border-left:2px solid var(--mark);
+}
+.ph-goal b{color:var(--ink)}
+.ph-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.ph-cell{background:var(--paper);border-radius:9px;padding:13px 14px}
+.ph-cell .ck{
+  font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--faint);margin-bottom:7px;
+}
+.ph-cell .cv{font-size:13.5px;line-height:1.72}
+.ph-cell .cv b{color:var(--accent-deep)}
+.check-line{
+  display:flex;gap:8px;margin-top:16px;padding:11px 14px;background:var(--accent-soft);
+  border-radius:9px;font-size:13px;line-height:1.65;color:var(--accent-deep);
+}
+.check-line::before{content:"✓";font-weight:700;flex:0 0 auto}
+
+/* ---------- 月表 ---------- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{
+  text-align:left;font-weight:600;font-size:11.5px;letter-spacing:.06em;color:var(--faint);
+  padding:12px 14px;background:var(--paper);border-bottom:1px solid var(--line);white-space:nowrap;
+}
+td{padding:11px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top;line-height:1.6}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#FDFCF9}
+td.m{font-family:var(--serif);font-weight:600;white-space:nowrap;font-size:13.5px}
+td.raz b{color:var(--accent-deep);font-weight:600}
+td.ph-tag{white-space:nowrap}
+.pill{
+  display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:4px;
+  background:var(--accent-soft);color:var(--accent-deep);font-weight:600;letter-spacing:.02em;
+}
+.pill.p2{background:#EEF1F8;color:#3C4C7A}
+.pill.p3{background:#F7EFE6;color:#8A5A16}
+.pill.p4{background:#F0EEF7;color:#5B4A82}
+
+/* ---------- 周课表 ---------- */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:9px;margin-bottom:18px}
+.day{
+  background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:13px 11px 14px;min-height:172px;display:flex;flex-direction:column;
+}
+.day.wknd{background:#FCFBF7;border-color:#E3DCCB}
+.day-h{
+  font-size:12px;font-weight:600;letter-spacing:.06em;margin-bottom:9px;
+  padding-bottom:7px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;
+}
+.day-h .n{font-family:var(--serif);color:var(--accent);margin-right:5px}
+.day-h .t{font-size:10.5px;color:var(--faint);margin-left:auto;font-weight:400}
+.day ul{list-style:none;margin:0;padding:0;flex:1}
+.day li{
+  font-size:12px;line-height:1.55;color:var(--sub);padding:4px 0 4px 11px;position:relative;
+}
+.day li::before{
+  content:"";position:absolute;left:0;top:10px;width:4px;height:4px;border-radius:50%;
+  background:var(--line);border:1px solid #D6CEBE;
+}
+.day li b{color:var(--ink);font-weight:600}
+.day li.hot{color:var(--ember)}
+.day li.hot::before{background:var(--ember);border-color:var(--ember)}
+.day .dur{
+  margin-top:9px;padding-top:8px;border-top:1px dashed var(--line-soft);
+  font-size:10.5px;color:var(--faint);letter-spacing:.02em;
+}
+
+.timebox{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:10px;overflow:hidden;
+}
+.timebox>div{background:var(--card);padding:13px 14px}
+.timebox .tk{font-size:11px;color:var(--faint);letter-spacing:.04em;margin-bottom:5px}
+.timebox .tv{font-size:12.5px;line-height:1.6}
+.timebox .tv b{color:var(--accent-deep);font-size:13.5px}
+
+/* ---------- 打卡 ---------- */
+.ck-head{
+  display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap;
+}
+.progress{flex:1;min-width:180px;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.ck-num{font-size:12.5px;color:var(--sub);white-space:nowrap}
+.ck-num b{color:var(--accent);font-weight:600;font-size:14px}
+.reset{
+  font:inherit;font-size:11.5px;color:var(--faint);background:none;border:1px solid var(--line);
+  border-radius:6px;padding:4px 9px;cursor:pointer;
+}
+.reset:hover{color:var(--ember);border-color:#E3C4A8}
+
+.wks{display:grid;gap:20px}
+.wk-set{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.wk-set-h{
+  display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--paper);
+  border-bottom:1px solid var(--line);font-size:12.5px;font-weight:600;
+}
+.wk-set-h .range{font-family:var(--serif);color:var(--sub);font-weight:400;font-size:11.5px}
+.wk-set-h .cnt{margin-left:auto;font-size:11px;color:var(--faint);font-weight:400}
+.wk-row{
+  display:flex;align-items:flex-start;gap:11px;padding:9px 16px;
+  border-bottom:1px solid var(--line-soft);cursor:pointer;
+}
+.wk-row:last-child{border-bottom:0}
+.wk-row:hover{background:#FDFCF9}
+.wk-row .bx{
+  flex:0 0 auto;width:15px;height:15px;border:1.5px solid #D6CEBE;border-radius:4px;
+  margin-top:3px;display:flex;align-items:center;justify-content:center;transition:.15s;
+}
+.wk-row .bx::after{content:"✓";font-size:10px;color:#fff;opacity:0;font-weight:700}
+.wk-row.on .bx{background:var(--accent);border-color:var(--accent)}
+.wk-row.on .bx::after{opacity:1}
+.wk-row.on .wk-txt{color:var(--faint);text-decoration:line-through;text-decoration-color:#D6CEBE}
+.wk-n{
+  flex:0 0 40px;font-family:var(--serif);font-size:12px;color:var(--faint);
+  padding-top:2px;letter-spacing:.02em;
+}
+.wk-txt{flex:1;font-size:12.8px;line-height:1.6;min-width:0}
+.wk-txt b{font-weight:600;color:var(--ink)}
+.wk-d{flex:0 0 auto;font-size:11px;color:var(--faint);padding-top:3px;white-space:nowrap}
+
+/* ---------- 检查问题 / 坑 ---------- */
+.qs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.q{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:17px 18px}
+.q .qn{font-family:var(--serif);font-size:12px;color:var(--ember);font-weight:600;margin-bottom:8px}
+.q .qt{font-size:13.8px;font-weight:600;line-height:1.55;margin-bottom:7px}
+.q .qd{font-size:12.5px;color:var(--sub);line-height:1.65}
+
+.pits{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pit{
+  display:flex;gap:11px;background:var(--card);border:1px solid var(--line);
+  border-radius:10px;padding:13px 15px;
+}
+.pit .x{
+  flex:0 0 auto;font-size:12px;font-weight:700;color:#C0392B;line-height:1.5;margin-top:1px;
+}
+.pit .pt{font-size:13.2px;line-height:1.62}
+.pit .pt b{font-weight:600;display:block;margin-bottom:2px}
+.pit .pt span{font-size:12.2px;color:var(--sub)}
+
+/* ---------- 材料 ---------- */
+.mats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.mat{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:16px 17px}
+.mat .mk{font-size:11px;letter-spacing:.08em;color:var(--faint);font-weight:600;margin-bottom:9px}
+.mat .mv{font-size:13.2px;line-height:1.7}
+.mat .mv b{font-weight:600;color:var(--accent-deep)}
+.mat .mn{font-size:12px;color:var(--sub);margin-top:7px;line-height:1.6}
+
+footer{
+  margin-top:60px;padding:26px 0 54px;border-top:1px solid var(--line);
+  font-size:12.2px;color:var(--faint);line-height:1.8;
+}
+footer b{color:var(--sub);font-weight:600}
+
+.note-sm{
+  font-size:12px;color:var(--faint);margin-top:10px;line-height:1.7;
+}
+
+/* ---------- 响应式 ---------- */
+@media(max-width:900px){
+  .diag{grid-template-columns:repeat(2,1fr)}
+  .goals{grid-template-columns:1fr}
+  .ph-grid{grid-template-columns:1fr}
+  .week{grid-template-columns:repeat(2,1fr)}
+  .day{min-height:auto}
+  .timebox{grid-template-columns:repeat(2,1fr)}
+  .qs{grid-template-columns:1fr}
+  .pits{grid-template-columns:1fr}
+  .mats{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .tbl-wrap{border:0;background:transparent;overflow:visible;border-radius:0}
+  table,tbody,tr,td{display:block}
+  thead{display:none}
+  tbody tr{
+    background:var(--card);border:1px solid var(--line);border-radius:11px;
+    margin-bottom:10px;padding:12px 14px 10px;
+  }
+  tbody tr:hover{background:var(--card)}
+  td{border:0;padding:3px 0;display:flex;gap:9px;line-height:1.6}
+  td::before{
+    content:attr(data-label);flex:0 0 42px;font-size:10.5px;color:var(--faint);
+    padding-top:3px;letter-spacing:.04em;
+  }
+  td.m{
+    font-size:15px;padding:0 0 7px;margin-bottom:7px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  td.m::before{content:none}
+  td.ph-tag{padding-bottom:6px}
+  td.ph-tag::before{padding-top:2px}
+}
+@media(max-width:560px){
+  .wrap{padding:0 16px}
+  h1{font-size:28px}
+  .hero{padding:34px 0 4px}
+  .nav{display:none}
+  .sec-d{margin-left:0}
+  .week{grid-template-columns:1fr}
+  .diag{grid-template-columns:1fr}
+  .wk-d{display:none}
+  .wk-n{flex-basis:34px}
+  section{padding:38px 0 4px}
+  h2{font-size:22px}
+}
+
+/* ---------- 打印 ---------- */
+@media print{
+  .bar,.print-btn,.reset{display:none!important}
+  body{background:#fff;font-size:11pt}
+  .wrap{max-width:100%;padding:0}
+  section{padding:16px 0 2px}
+  .ph-body{display:block!important}
+  .ph-arrow{display:none}
+  .ph-top{cursor:default}
+  .ph,.goal,.day,.q,.pit,.mat,.wk-set-h{box-shadow:none;break-inside:avoid}
+  .wk-row{break-inside:avoid}
+  .week{grid-template-columns:repeat(4,1fr)}
+  .day{min-height:auto}
+  .ph-date,.wk-d{color:#777}
+  h1{font-size:23pt}
+  h2{font-size:14pt}
+  .hero{padding-top:0}
+  a{color:inherit;text-decoration:none}
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <div class="bar-t">6 岁英语启蒙 · <b>一年计划</b></div>
+    <nav class="nav">
+      <a href="#start">起点</a>
+      <a href="#goal">目标</a>
+      <a href="#phase">四阶段</a>
+      <a href="#month">月度</a>
+      <a href="#weekly">每周节奏</a>
+      <a href="#track">52 周打卡</a>
+      <a href="#pit">九个坑</a>
+      <a href="#mat">材料</a>
+    </nav>
+    <button class="print-btn" onclick="window.print()">打印 / 存 PDF</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="kicker">基于「翻译官妙爸」200 篇方法论整理</div>
+    <h1>听力已经跑在前面，<br>这一年把<em>「读」</em>接上</h1>
+    <p class="lede">
+      孩子现在的状态很有意思：<b>耳朵跑得比眼睛快</b>。能听懂佩奇，说明听力词汇已经有了一定储备；
+      但一个字母都不认识，属于「阅读零基础」而不是「英语零基础」。
+      这两个身份差别很大——后者要磨两年耳朵，前者可以直接把耳朵里的词转成纸上的字。这一年的全部任务，就是<b>完成这次转换</b>。
+    </p>
+
+    <div class="diag" id="start">
+      <div>
+        <div class="k">听力</div>
+        <div class="v">能懂佩奇大意
+          <span>处在动画片阶梯第 4 档，约 800–1500 听力词汇</span>
+        </div>
+        <div class="lv g">优势项</div>
+      </div>
+      <div>
+        <div class="k">口语</div>
+        <div class="v">能说一点
+          <span>会零散短句，还不能成段表达</span>
+        </div>
+        <div class="lv o">待推</div>
+      </div>
+      <div>
+        <div class="k">阅读</div>
+        <div class="v">零接触
+          <span>不认识字母，没有音形对应概念</span>
+        </div>
+        <div class="lv o">主战场</div>
+      </div>
+      <div>
+        <div class="k">书写</div>
+        <div class="v">零接触
+          <span>不着急，本年度只需末段轻微触及</span>
+        </div>
+        <div class="lv g">延后</div>
+      </div>
+    </div>
+
+    <div class="concl">
+      <div class="ico">→</div>
+      <p>
+        他给自然拼读定的启动条件是两条，<b>满足其一即可</b>：① 听力积累够了；② 学校开始教英语。
+        你家孩子第 ① 条已经达标。所以这一年不是「要不要学自拼」，而是<b>「怎样用最短时间学完规则、再用最长的时间去练」</b>——
+        他自己说的「三分学、七分练」，规则本身两三个月就能过完，剩下十个月都在练。
+      </p>
+    </div>
+    <div class="concl" style="background:#FCF6EC;border-color:#EFE0C8">
+      <div class="ico" style="color:var(--ember)">!</div>
+      <p style="color:#7A5010">
+        <b style="color:var(--ember)">一个必须提前处理的冲突：拼音。</b>
+        他明确建议自然拼读和拼音<b style="color:var(--ember)">错开一年</b>，理想顺序是先自拼、后拼音。
+        孩子明年秋天若进一年级，正好赶上学拼音——所以这份计划把自拼主体压在 <b style="color:var(--ember)">2027 年 1–4 月</b> 完成，
+        到学拼音时规则已经熟练，混淆的代价最小。
+      </p>
+    </div>
+    <p class="note-sm">
+      说明：本计划以 2026 年 11 月为起点往后推 12 个月。若孩子已在 2026 年 9 月入读一年级，「校内线」要整体提前到第 1 周开始，其余不变。
+    </p>
+  </div>
+
+  <!-- 目标 -->
+  <section id="goal">
+    <div class="sec-h"><div class="sec-n">01</div><h2>一年后站在哪里</h2></div>
+    <p class="sec-d">分两档定，避免用一个「理想值」把全家逼疯。底线是必须守住的，目标是可以跳一跳的。</p>
+
+    <div class="goals">
+      <div class="goal a">
+        <div class="goal-t"><span class="dot"></span>底线 · 保下限<span class="tag">必须达成</span></div>
+        <ul>
+          <li>RAZ 自读推进到 <b>H 级</b></li>
+          <li>牛津自然拼读 OPW <b>1–5 册过完</b>，能拼读没见过的 CVC 与常见组合词</li>
+          <li>看到简单分级能<b>脱口读出</b>，不靠背、不靠图猜</li>
+          <li>动画片能看懂 <b>《卡由》</b> 这一档</li>
+          <li>口语能回答日常问题，说出 <b>3–5 句连贯的话</b></li>
+        </ul>
+      </div>
+      <div class="goal b">
+        <div class="goal-t"><span class="dot"></span>目标 · 跳一跳<span class="tag">冲一冲</span></div>
+        <ul>
+          <li>RAZ 推进到 <b>J–K 级</b></li>
+          <li>能独立读<b>解码书</b>与低级别桥梁书</li>
+          <li>动画片能跟上 <b>《布鲁伊》《汪汪队》</b></li>
+          <li>开始试水<b>初章书音频</b>（《神奇树屋》）</li>
+          <li>口语能跟外教/AI 做 <b>5 轮以上</b>来回</li>
+          <li>能写 26 个字母 + <b>简单句</b>（I like… / This is…）</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note-sm">
+      对标他的口径：他给「小学英语自由」定的锚点是 RAZ 通关 + FCE + 能读《哈利波特》+ 蓝思 1000L。
+      这份一年计划只是走到半山腰的 <b>H–J 级</b>，不必焦虑——他自己的大女儿从一升二暑假起步，RAZ 听力通关用了 4 年、阅读通关用了 5 年。
+    </p>
+  </section>
+
+  <!-- 四阶段 -->
+  <section id="phase">
+    <div class="sec-h"><div class="sec-n">02</div><h2>四个阶段，各自只干一件事</h2></div>
+    <p class="sec-d">每个阶段都有一个<b>唯一重心</b>，其余动作都是配角。点开看细节。</p>
+    <div class="phases" id="phases"></div>
+  </section>
+
+  <!-- 月度 -->
+  <section id="month">
+    <div class="sec-h"><div class="sec-n">03</div><h2>12 个月，逐月看进度</h2></div>
+    <p class="sec-d">RAZ 级别是<b>推进目标</b>，不是硬指标——卡住了就停在原地多读几周，降级不丢人，硬推才伤兴趣。</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:80px">月份</th><th style="width:86px">阶段</th>
+            <th style="width:96px">RAZ 目标</th><th>本月重点</th><th style="width:152px">验收</th>
+          </tr>
+        </thead>
+        <tbody id="monthBody"></tbody>
+      </table>
+    </div>
+    <p class="note-sm">
+      RAZ 各级别大致 80 本。aa 级基本是单词卡，作用是建立「字」的概念，不适合停留太久；B 级以上开始成句，是自读的真正起点。
+      按他的说法，听力底子好的孩子可以跳过 aa 直接从 B 起步——但孩子完全没接触过字，建议 aa 走 3–4 周当作过渡，不要恋战。
+    </p>
+  </section>
+
+  <!-- 每周 -->
+  <section id="weekly">
+    <div class="sec-h"><div class="sec-n">04</div><h2>每周固定节奏</h2></div>
+    <p class="sec-d">把动作固定在星期几，比每天临时决定「今天干什么」有效得多。<b>周一到周五是推进日，周六是加量日，周日只复习不推新。</b></p>
+    <div class="week" id="weekGrid"></div>
+
+    <div class="sec-h" style="margin-top:36px"><div class="sec-n">05</div><h2>一个工作日长什么样</h2></div>
+    <p class="sec-d">坐定时间控制在 <b>40–45 分钟</b>，加上碎片听力。6 岁孩子的注意力撑不住更长，宁短而稳。</p>
+    <div class="timebox">
+      <div>
+        <div class="tk">碎片 · 20–30 分钟</div>
+        <div class="tv">起床/上学路上<br><b>裸听看过的动画音频</b></div>
+      </div>
+      <div>
+        <div class="tk">晚饭后 · 10–15 分钟</div>
+        <div class="tv">自然拼读<br><b>新规则 + 拼读练习</b></div>
+      </div>
+      <div>
+        <div class="tk">随后 · 15–20 分钟</div>
+        <div class="tv">分级自读<br><b>朗读出声，记下不会的词</b></div>
+      </div>
+      <div>
+        <div class="tk">睡前 · 15 分钟</div>
+        <div class="tv">亲子共读<br><b>孩子挑书，纯享受不考核</b></div>
+      </div>
+    </div>
+    <p class="note-sm">
+      碎片听力是这份计划里<b>最容易被砍掉、也最不该砍掉</b>的一环。他反复强调「先看懂、再盲听」——
+      所以音频必须是孩子已经看过的集数，否则只是在放背景音。<br>
+      「分级自读」这一格的<b>册数随阶段变</b>：S1 每天 3–5 本 → S2 可到 8–10 本 → S3 回到 3–5 本 → S4 落到 2–3 本。
+      册数是结果，不是目标——孩子读得动就多读，读不动就减，别为了完成数量牺牲理解。
+    </p>
+  </section>
+
+  <!-- 打卡 -->
+  <section id="track">
+    <div class="sec-h"><div class="sec-n">06</div><h2>52 周，一周一行</h2></div>
+    <p class="sec-d">点一行就是打勾，进度会存在这台设备上。<b>漏一周不用补，直接跳到本周</b>——连续性比完美更重要。</p>
+    <div class="ck-head">
+      <div class="progress"><i id="pbar"></i></div>
+      <div class="ck-num">已完成 <b id="pnum">0</b> / 52 周</div>
+      <button class="reset" id="resetBtn">清空</button>
+    </div>
+    <div class="wks" id="wks"></div>
+  </section>
+
+  <!-- 检查问题 -->
+  <section>
+    <div class="sec-h"><div class="sec-n">07</div><h2>每周日晚上问自己三句话</h2></div>
+    <p class="sec-d">不需要写成长篇总结，三个问题各答一句就够。答不上来，说明这周其实没在推进。</p>
+    <div class="qs">
+      <div class="q">
+        <div class="qn">问题一</div>
+        <div class="qt">这周读了几本？卡在哪个词上？</div>
+        <div class="qd">只记数量没用。要记下「反复卡住的那个词」——它往往不是生词，而是拼读规则还没练熟的地方。</div>
+      </div>
+      <div class="q">
+        <div class="qn">问题二</div>
+        <div class="qt">孩子有没有主动要求看或读？</div>
+        <div class="qd">这是唯一的兴趣指标。如果连续两周都是被推着走，先降难度，而不是加督促。</div>
+      </div>
+      <div class="q">
+        <div class="qn">问题三</div>
+        <div class="qt">有没有一本书读五遍还读不顺？</div>
+        <div class="qd">他说过：<b>五遍还读不熟，大概率是这本书不适合孩子</b>。个别现象可以放过，普遍出现就果断降级。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 坑 -->
+  <section id="pit">
+    <div class="sec-h"><div class="sec-n">08</div><h2>九个坑，提前避开</h2></div>
+    <p class="sec-d">这些全是他文章里明确反对的做法，有些跟主流说法正好相反，但都有具体理由。</p>
+    <div class="pits">
+      <div class="pit"><div class="x">×</div><div class="pt"><b>不要背 220 个高频词</b><span>to / make / get 这类词根本没法定一个中文意思，背了也是假的。靠听力和分级阅读自然内化。</span></div></div>
+      <div class="pit"><div class="x">×</div><div class="pt"><b>不要一本书读十遍</b><span>换成同难度十本书。前者是给一个词建一条神经连接，后者是建十条。</span></div></div>
+      <div class="pit"><div class="x">×</div><div class="pt"><b>不要用艾宾浩斯复习表</b><span>分级读物本身就是重复系统，再叠一层复习表，孩子会先崩。</span></div></div>
+      <div class="pit"><div class="x">×</div><div class="pt"><b>看动画不要开中文字幕</b><span>看字幕时耳朵会自动关闭。90% 的情况不开任何字幕，中文字幕绝对禁止。</span></div></div>
+      <div class="pit"><div class="x">×</div><div class="pt"><b>不要报短期自拼班</b><span>自拼班的节奏是统一的，但每个孩子的「练」快慢完全不同。教材 + 解码书在家就够。</span></div></div>
+      <div class="pit"><div class="x">×</div><div class="pt"><b>不要一开始就裸听</b><span>零基础直接听音频等于没输入。必须「先看懂画面，再盲听音频」。</span></div></div>
+      <div class="pit"><div class="x">×</div><div class="pt"><b>不要零基础报外教班</b><span>外教课的门槛约 500 听力词汇且会用短句。你们已经过了门槛，但建议放到第 3 阶段再上。</span></div></div>
+      <div class="pit"><div class="x">×</div><div class="pt"><b>不要把分级当课本教</b><span>不要求每本都吃透。分级的设计前提就是「不可能一次掌握」，靠不同上下文反复出现。</span></div></div>
+      <div class="pit"><div class="x">×</div><div class="pt"><b>不要照搬牛娃路径</b><span>6 岁裸听《哈利波特》的孩子存在，但极少。照搬只会压垮兴趣，兴趣一垮全盘归零。</span></div></div>
+    </div>
+  </section>
+
+  <!-- 材料 -->
+  <section id="mat">
+    <div class="sec-h"><div class="sec-n">09</div><h2>要买的东西，其实不多</h2></div>
+    <p class="sec-d">一份主线 + 一套自拼，其余都是可选。他说过「如果只选一套分级，那非 RAZ 莫属」。</p>
+    <div class="mats">
+      <div class="mat">
+        <div class="mk">分级主线</div>
+        <div class="mv"><b>RAZ</b> aa → J</div>
+        <div class="mn">坡度缓、数量多，低级别反复出现高频词。缺点是趣味性一般，孩子排斥可换《红火箭》低级别过渡。</div>
+      </div>
+      <div class="mat">
+        <div class="mk">自然拼读（三分学）</div>
+        <div class="mv"><b>牛津自然拼读 OPW</b> 1–5 册</div>
+        <div class="mn">美系，按字母顺序推进。1 册 26 个字母音，2 册起进短元音，5 册收组合音。他的首选。</div>
+      </div>
+      <div class="mat">
+        <div class="mk">自拼练习（七分练）</div>
+        <div class="mv"><b>BookLife 解码书</b> 或《牛津阅读树》自拼礼盒</div>
+        <div class="mn">解码书专为练规则设计，生词不会太离谱。听力底子好的话，直接用低级别 RAZ 练也行。</div>
+      </div>
+      <div class="mat">
+        <div class="mk">动画阶梯</div>
+        <div class="mv"><b>佩奇 › 卡由 › 布鲁伊 › 汪汪队 › 螺丝钉 › 苏菲亚</b></div>
+        <div class="mn">这是他的原序。孩子已在第 4 档，下一个是《卡由》，之后《布鲁伊》语速更快、澳音，是一个台阶。</div>
+      </div>
+      <div class="mat">
+        <div class="mk">免费定级</div>
+        <div class="mv"><b>新东方小书童</b> 测蓝思</div>
+        <div class="mn">6 岁可能做不了测试，就用主观标准：不认识的词句<b>不超过 10%</b>，整体理解不受影响。</div>
+      </div>
+      <div class="mat">
+        <div class="mk">可选</div>
+        <div class="mv">倾听者 / 手机音频库 / 小小优趣</div>
+        <div class="mn">碎片听力的关键是「随时能放」。把看过的动画转成音频存进去，比买什么设备都重要。</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <b>方法与引用</b>：全部结论来自「翻译官妙爸」公众号 200 余篇原创（2026-11 抓取存档，含《英语分级，从入门到精通》《自然拼读十问十答》《有基础的孩子英语分级怎么刷》《每天3本RAZ两年通关》等）。
+    <br>
+    <b>两句提醒</b>：① 他的文章几乎每篇都带团购和课程推广，具体推荐的品牌、教材要打个折看，<b>方法逻辑比选品可靠</b>；
+    ② 「能拼 CVC = 可以升级」这类判断标准是他的经验值，无法真正测评，当参考线用，别当录取线。
+    <br><br>
+    这份计划是模板，不是处方。真正的调整依据只有一个：<b>孩子这周还想不想读</b>。
+  </footer>
+</div>
+
+<script>
+/* ============ 阶段数据 ============ */
+const PHASES = [
+  {
+    n:'01', name:'听力加固 + 自拼点火', date:'2026.11 — 2027.01 · 第 1–12 周',
+    focus:'把耳朵上的优势稳下来，同时用最轻的方式把「字母有声音」这件事种进去。',
+    cells:[
+      {k:'听力', v:'佩奇<b>精听+裸听</b>已看过的集数，月中引入<b>《卡由》</b>（语速更慢、句子更短，是天然的过渡）'},
+      {k:'自然拼读', v:'<b>OPW 1–2 册</b>：26 个字母音 + 短元音 CVC。每周 2 个单元，宁可慢，务必把音节切分练熟'},
+      {k:'分级自读', v:'RAZ <b>aa → B</b>，每天 3–5 本。<b>aa 只走 3–4 周</b>，作用是建立「字」的概念，不要求背'},
+      {k:'口语', v:'<b>影子跟读</b>：一句一句模仿佩奇台词，不纠正发音细节，先把嘴动起来'}
+    ],
+    check:'孩子能拼出 cat / dog / sun 这类 CVC 词，RAZ B 级能自己读出整句——第一阶段就算过。'
+  },
+  {
+    n:'02', name:'自拼攻坚（含寒假窗口）', date:'2027.02 — 2027.04 · 第 13–25 周',
+    focus:'全年唯一一段「集中攻规则」的时间。寒假是黄金窗口，规则必须在这几个月过完七成。',
+    cells:[
+      {k:'自然拼读', v:'<b>OPW 3–5 册</b>：长元音、辅音组合、元音组合。<b>寒假两周每天 1–2 个单元</b>，配合解码书同步练'},
+      {k:'分级自读', v:'RAZ <b>B → D</b>，低级别可<b>一天 10 本以上</b>——听力底子好，这个阶段是全年最快的加速期'},
+      {k:'听力', v:'<b>《布鲁伊》《汪汪队》</b>，继续「先看后听」，把已看集数的音频放进碎片时间循环'},
+      {k:'口语', v:'从跟读升级到<b>复述</b>：读完一本分级，用 2–3 句话讲发生了什么，中英混着说也行'}
+    ],
+    check:'看到没见过的词能尝试拼出来（哪怕拼错），RAZ D 级能独立读完——第二阶段过关。'
+  },
+  {
+    n:'03', name:'自读爬坡 + 口语开门', date:'2027.05 — 2027.07 · 第 26–38 周',
+    focus:'规则学完就停止系统学，转入「七分练」。这个阶段的主线从「学自拼」变成「用自拼读」。',
+    cells:[
+      {k:'自然拼读', v:'<b>停止新规则</b>，转入纯练习。遇到卡壳的词再单独讲，不再按册推进'},
+      {k:'分级自读', v:'RAZ <b>D → G</b>，每天 3–5 本。开始接触<b>非虚构</b>，认知跟不上就会卡在这里'},
+      {k:'口语', v:'启动<b>AI 对话或外教</b>（每周 2 次，25 分钟）。门槛已过，现在上性价比最高'},
+      {k:'听力', v:'<b>《螺丝钉》《小公主苏菲亚》</b>。同时用中文科普阅读补认知——这是他点名的 RAZ 瓶颈主因'}
+    ],
+    check:'能读完一本 RAZ G 并讲出大意，口语能跟外教来回 3–5 轮——第三阶段过关。'
+  },
+  {
+    n:'04', name:'衔接校内 + 拼音错峰', date:'2027.08 — 2027.10 · 第 39–52 周',
+    focus:'把「原版能力」接到校内这条线上，同时给拼音让路，避免两套拼读系统打架。',
+    cells:[
+      {k:'分级自读', v:'RAZ <b>G → J</b>，节奏回落到<b>每天 2–3 本</b>——这是长期可持续的速度，别指望一直高速'},
+      {k:'拼音错峰', v:'若一年级开始学拼音，<b>暂停一切新自拼规则</b>。自拼已熟练，混淆是暂时的，靠熟练度化解'},
+      {k:'校内线', v:'26 字母<b>规范书写</b> + 每周 5–8 个单词默写。单词默写、语法、写作必须另补，原版能力迁不过去'},
+      {k:'听力', v:'试水<b>初章书音频</b>（《神奇树屋》）。听不下去就退回动画片，不勉强'}
+    ],
+    check:'RAZ J 能自读、能写 I like… 这类简单句、拼音和自拼没出现严重混淆——这一年收工。'
+  }
+];
+
+/* ============ 月度数据 ============ */
+const MONTHS = [
+  ['2026.11','①','aa → A','定级 + 装音频库 + OPW1 起步（s/a/t/p/i/n）','能认 8–10 个字母音'],
+  ['2026.12','①','A','OPW1 收尾（26 字母音全过）+ 佩奇音频进碎片时间','能拼 2–3 个 CVC 词'],
+  ['2027.01','①','A → B','OPW2 短元音 + CVC 拼读游戏；寒假前总评估','RAZ B 能自读整句'],
+  ['2027.02','②','B','<b>寒假集中期</b>：OPW3 长元音，每天 1–2 单元 + 解码书','能读 a_e / i_e 类词'],
+  ['2027.03','②','B → C','OPW4 辅音组合 sh/ch/th/wh/ck；RAZ 提速到每天 8 本','能拼 sh/ch 组合词'],
+  ['2027.04','②','C → D','OPW5 元音组合 + 解码书；引入《布鲁伊》','RAZ D 独立读完'],
+  ['2027.05','③','D → E','自拼转纯练习；RAZ 每天 5 本；口语启动 AI 对话','能复述一本分级'],
+  ['2027.06','③','E → F','口语加外教（每周 2 次）；补中文科普提认知','外教课能跟上 20 分钟'],
+  ['2027.07','③','F → G','《螺丝钉》；写作起步只做抄写，不要求原创','RAZ G 能读非虚构'],
+  ['2027.08','④','G → H','暑假加量；26 字母规范书写；听力试初章','字母书写规范'],
+  ['2027.09','④','H → I','开学对接校内；单词默写每周 5 个；拼音错峰','校内英语不费劲'],
+  ['2027.10','④','I → J','年度总评估，对标底线/目标；定下一年计划','RAZ J 自读达标']
+];
+
+/* ============ 周课表 ============ */
+const WEEK = [
+  {d:'周一', t:'推进', items:['<b>自拼 1 单元</b>','分级自读','碎片裸听'], dur:'坐定 30 分钟'},
+  {d:'周二', t:'巩固', items:['<b>自拼练习</b>','分级自读','碎片裸听'], dur:'坐定 25 分钟'},
+  {d:'周三', t:'动画', items:['<b>动画 1 集</b>','分级自读','转发音频'], dur:'坐定 35 分钟'},
+  {d:'周四', t:'推进', items:['<b>自拼 1 单元</b>','分级自读','碎片裸听'], dur:'坐定 30 分钟'},
+  {d:'周五', t:'口语', items:['<b>口语 15 分钟</b>','分级自读','碎片裸听'], dur:'坐定 30 分钟'},
+  {d:'周六', t:'加量', w:1, items:['<b>动画 + 共读</b>','分级加量','自拼游戏'], dur:'坐定 50–60 分钟'},
+  {d:'周日', t:'复习', w:1, items:['<b>只复习</b>','自由选书','本周三问'], dur:'坐定 20 分钟'}
+];
+
+/* ============ 52 周 ============ */
+const WEEKS = [
+  [1,'①','定级：测蓝思或试读 aa–B，确定起点；把佩奇看过的集数转成音频'],
+  [2,'①','OPW1 Unit1–2（s a t p）；RAZ aa 每天 3 本'],
+  [3,'①','OPW1 Unit3–4（i n m d）；RAZ aa'],
+  [4,'①','OPW1 Unit5–6（g o c k）；RAZ aa → A；开始裸听佩奇音频'],
+  [5,'①','OPW1 Unit7–8（e u r h）；RAZ A'],
+  [6,'①','<b>复习周</b>：OPW1 全册回顾 + CVC 拼读卡片游戏；引入《卡由》'],
+  [7,'①','OPW2 Unit1–2（b f l ll ss）；RAZ A'],
+  [8,'①','OPW2 Unit3–4（j v w x）；RAZ A → B'],
+  [9,'①','OPW2 Unit5–6（y z zz qu）；RAZ B'],
+  [10,'①','<b>复习周</b>：CVC 拼读闯关；RAZ B；口语影子跟读佩奇'],
+  [11,'①','阶段评估：能拼 CVC 吗？RAZ B 能自读吗？'],
+  [12,'①','定寒假计划：自拼集中攻的具体安排；补齐材料'],
+  [13,'②','<b>寒假集中期</b>：OPW3 长元音 a_e / i_e，每天 2 个单元'],
+  [14,'②','<b>寒假集中期</b>：OPW3 o_e / u_e / e_e + 解码书 L1'],
+  [15,'②','OPW3 收尾与复习；RAZ B → C'],
+  [16,'②','OPW4 辅音组合 sh / ch / th / wh；RAZ C'],
+  [17,'②','OPW4 ck / ng / nk；RAZ C → D；RAZ 提速到每天 8 本'],
+  [18,'②','<b>复习周</b>：解码书 L2–3；RAZ D'],
+  [19,'②','OPW5 元音组合 ai / ay / ee / ea；RAZ D'],
+  [20,'②','OPW5 oa / ow / oo / ou；RAZ D → E'],
+  [21,'②','OPW5 ar / or / er / ir / ur；RAZ E；引入《布鲁伊》'],
+  [22,'②','<b>复习周</b>：解码书 L4；RAZ E；口语复述练习'],
+  [23,'②','自拼总复习 + 不规则词顺带认（<b>不背</b>，靠阅读重复）'],
+  [24,'②','期中评估：能拼读生词吗？RAZ E 是否流畅？'],
+  [25,'②','阶段小结：调整第 3 阶段的分级节奏与口语安排'],
+  [26,'③','RAZ E → F；自拼转入「七分练」，不再按册推进'],
+  [27,'③','RAZ F；口语启动 AI 对话，每天 10 分钟'],
+  [28,'③','RAZ F → G；复述练习：读完用 3 句话讲'],
+  [29,'③','RAZ G；引入《螺丝钉》；补中文非虚构阅读'],
+  [30,'③','RAZ G；外教课启动（每周 2 次 × 25 分钟）'],
+  [31,'③','<b>复习周</b>：孩子自由选书；RAZ G'],
+  [32,'③','RAZ G → H；非虚构专项（科普类 RAZ 集中读）'],
+  [33,'③','RAZ H；口语角色扮演《布鲁伊》片段'],
+  [34,'③','RAZ H；听力进《小公主苏菲亚》'],
+  [35,'③','<b>复习周</b>；RAZ H；检查有没有「读五遍还读不顺」的书'],
+  [36,'③','RAZ H → I；写作起步：抄写单词与短句'],
+  [37,'③','RAZ I；口语：讲一个完整小故事'],
+  [38,'③','阶段评估 + 暑假规划'],
+  [39,'④','<b>暑假</b>：RAZ I 加量；听力尝试初章音频'],
+  [40,'④','<b>暑假</b>：RAZ I → J；《神奇树屋》试水（听不下去就退）'],
+  [41,'④','<b>暑假</b>：RAZ J；26 字母规范书写'],
+  [42,'④','暑假收尾：RAZ J；口语维持每周 2 次'],
+  [43,'④','开学：对接校内英语；RAZ J 每天 2–3 本'],
+  [44,'④','RAZ J；单词默写每周 5 个（先默已认识的）'],
+  [45,'④','RAZ J → K；<b>拼音与自拼错峰</b>，暂停一切新规则'],
+  [46,'④','RAZ K；简单句写作（I like… / This is…）'],
+  [47,'④','<b>复习周</b>；RAZ K；观察拼音混淆情况'],
+  [48,'④','RAZ K；听力裸听初章书'],
+  [49,'④','RAZ K；口语目标：能来回 5 轮以上'],
+  [50,'④','<b>复习周</b>；整年回顾'],
+  [51,'④','年度总评估：逐条对标底线与目标'],
+  [52,'④','定下一年计划（目标：进初章、RAZ 到 M–N）']
+];
+
+/* ============ 渲染 ============ */
+const PH_CSS = {'①':'', '②':'p2', '③':'p3', '④':'p4'};
+const PH_LABEL = {'①':'S1','②':'S2','③':'S3','④':'S4'};
+
+// 阶段卡片
+const phBox = document.getElementById('phases');
+PHASES.forEach((p,i)=>{
+  const el = document.createElement('div');
+  el.className = 'ph' + (i===0?' open':'');
+  el.innerHTML = `
+    <div class="ph-top">
+      <div class="ph-n">${p.n}</div>
+      <div class="ph-h">
+        <div class="ph-name">${p.name}</div>
+        <div class="ph-date">${p.date}</div>
+      </div>
+      <div class="ph-arrow">▶</div>
+    </div>
+    <div class="ph-body">
+      <div class="ph-goal">${p.focus}</div>
+      <div class="ph-grid">
+        ${p.cells.map(c=>`<div class="ph-cell"><div class="ck">${c.k}</div><div class="cv">${c.v}</div></div>`).join('')}
+      </div>
+      <div class="check-line">${p.check}</div>
+    </div>`;
+  el.querySelector('.ph-top').addEventListener('click', ()=> el.classList.toggle('open'));
+  phBox.appendChild(el);
+});
+
+// 月度表
+const mb = document.getElementById('monthBody');
+MONTHS.forEach(m=>{
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="m">${m[0]}</td>
+    <td class="ph-tag" data-label="阶段"><span class="pill ${PH_CSS[m[1]]}">阶段 ${PH_LABEL[m[1]]}</span></td>
+    <td class="raz" data-label="RAZ"><b>${m[2]}</b></td>
+    <td data-label="重点">${m[3]}</td>
+    <td data-label="验收">${m[4]}</td>`;
+  mb.appendChild(tr);
+});
+
+// 周课表
+const wg = document.getElementById('weekGrid');
+WEEK.forEach(w=>{
+  const el = document.createElement('div');
+  el.className = 'day' + (w.w ? ' wknd' : '');
+  el.innerHTML = `
+    <div class="day-h"><span class="n">${w.d}</span><span class="t">${w.t}</span></div>
+    <ul>${w.items.map((x,i)=>`<li class="${i===0?'hot':''}">${x}</li>`).join('')}</ul>
+    <div class="dur">${w.dur}</div>`;
+  wg.appendChild(el);
+});
+
+// 52 周打卡
+const START = new Date(2026,10,9); // 2026-11-09 周一
+function weekDate(n){
+  const d = new Date(START.getTime() + (n-1)*7*86400000);
+  return (d.getMonth()+1) + '/' + d.getDate();
+}
+const SET_NAME = {'①':'S1 · 听力加固 + 自拼点火','②':'S2 · 自拼攻坚','③':'S3 · 自读爬坡','④':'S4 · 衔接校内'};
+
+const wkBox = document.getElementById('wks');
+const groups = {};
+WEEKS.forEach(w=>{ (groups[w[1]] = groups[w[1]] || []).push(w); });
+
+const STORE = 'miao6y_weeks_v1';
+let done = {};
+try { done = JSON.parse(localStorage.getItem(STORE) || '{}'); } catch(e){ done = {}; }
+
+Object.keys(groups).forEach(k=>{
+  const arr = groups[k];
+  const set = document.createElement('div');
+  set.className = 'wk-set';
+  const r0 = weekDate(arr[0][0]), r1 = weekDate(arr[arr.length-1][0]);
+  set.innerHTML = `
+    <div class="wk-set-h">
+      <span class="pill ${PH_CSS[k]}">阶段 ${PH_LABEL[k]}</span>
+      ${SET_NAME[k]}
+      <span class="range">${r0} — ${r1}</span>
+      <span class="cnt">${arr.length} 周</span>
+    </div>`;
+  arr.forEach(w=>{
+    const row = document.createElement('div');
+    row.className = 'wk-row' + (done[w[0]] ? ' on' : '');
+    row.dataset.w = w[0];
+    row.innerHTML = `
+      <div class="bx"></div>
+      <div class="wk-n">W${String(w[0]).padStart(2,'0')}</div>
+      <div class="wk-txt">${w[2]}</div>
+      <div class="wk-d">${weekDate(w[0])}</div>`;
+    row.addEventListener('click', ()=>{
+      row.classList.toggle('on');
+      if(row.classList.contains('on')) done[w[0]] = 1; else delete done[w[0]];
+      try { localStorage.setItem(STORE, JSON.stringify(done)); } catch(e){}
+      updateProgress();
+    });
+    set.appendChild(row);
+  });
+  wkBox.appendChild(set);
+});
+
+function updateProgress(){
+  const n = Object.keys(done).length;
+  document.getElementById('pnum').textContent = n;
+  document.getElementById('pbar').style.width = (n/52*100).toFixed(1) + '%';
+}
+updateProgress();
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  done = {};
+  try { localStorage.removeItem(STORE); } catch(e){}
+  document.querySelectorAll('.wk-row.on').forEach(r=>r.classList.remove('on'));
+  updateProgress();
+});
+</script>
+</body>
+</html>
