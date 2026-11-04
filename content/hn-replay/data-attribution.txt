@@ -1,0 +1,6 @@
+HN Replay includes adapted catalog and comment reference data from HackerTube (https://hackertube.org/), export dated 2026-10-31, based on OpenIndex's Hacker News archive (https://huggingface.co/datasets/open-index/hacker-news).
+
+Source database license: Open Data Commons Attribution License 1.0.
+https://opendatacommons.org/licenses/by/1-0/
+
+The catalog includes all 6,454 HackerTube video IDs. Data was reorganized for search and filtering, subject areas and topics were translated into Chinese, and the catalog was joined to HN Replay's independently verified direct submissions. Comment evidence links to the originals on Hacker News. Hacker News is provided by Y Combinator and comments remain the work of their authors.

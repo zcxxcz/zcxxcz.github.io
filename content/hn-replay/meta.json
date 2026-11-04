@@ -1,10 +1,10 @@
 {
   "id": "hn-replay",
-  "title": "HN Replay · 跨年视频档案",
+  "title": "HN Replay · Hacker News 视频档案",
   "type": "资料",
   "format": "html",
   "status": "published",
-  "summary": "一个 YouTube 风格的视频档案，精选在 Hacker News 上相隔至少一年再次被独立投稿并获得支持的视频。每部视频附有可核对的原帖。",
+  "summary": "浏览 Hacker News 上被推荐、投稿或提及的 6,460 部 YouTube 视频。支持中英文搜索和多条件筛选，附 HN 原帖及评论链接。",
   "tags": [
     "文章与资料",
     "Hacker News",
