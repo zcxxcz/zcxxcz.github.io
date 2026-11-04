@@ -3,7 +3,7 @@ Richard Feynman Computer Science Lecture - Hardware, Software and Heuristics · 
 Sega Saturn CD - Cracked after 20 years · debuglive · 工程与硬件 · Sega Saturn 的光盘保护沉寂二十年后，研究者从光驱通信协议找到了突破口。
 Painting a Character with Maths · Inigo Quilez · 设计与创造 · Inigo Quilez 用有符号距离函数写出人物的形状、光线和材质。
 Conway's Game Of Life in APL · Dyalog · 软件开发 · 用一行 APL 表达康威生命游戏的演化规则，再逐段拆开每个符号。
-Walt Disney's MultiPlane Camera (Filmed: Feb. 13, 1957) · fireurgunz · 设计与创造 · 迪士尼在 1957 年演示如何用分层的玻璃画片为动画创造景深。
+Automatic 3Dification of Nintendo games: The glEnd() of Zelda · suckerpinch · 设计与创造 · Tom Murphy 用《塞尔达传说》等 NES 游戏演示如何把二维游戏场景自动转换为可旋转观看的 3D 场景。
 "Uptime 15,364 days - The Computers of Voyager" by Aaron Cummings · Strange Loop Conference · 工程与硬件 · 看看旅行者号如何靠有限的内存、遥测和容错设计持续工作数十年。
 Bret Victor - Inventing on Principle · Rui Oliveira · 设计与创造 · Bret Victor 演示程序和设计工具如何把修改的结果即时反馈给创作者。
 Non-Euclidean Worlds Engine · CodeParade · 科学与数学 · CodeParade 用可漫游的游戏空间展示非欧几何如何挑战人的方向感。
@@ -18,7 +18,7 @@ Using a 1930 Teletype as a Linux Terminal · CuriousMarc · 工程与硬件 · C
 Functional programming design patterns by Scott Wlaschin · Ivan Plyusnin · 软件开发 · Scott Wlaschin 用类型和函数组合重新讲解常见的程序设计模式。
 ASCII fluid dynamics -- IOCCC2012 endoh1.c · Yusuke Endoh · 软件开发 · 一段 IOCCC 获奖程序用 ASCII 字符显示流体模拟，还能读入纯文本来设置粒子的初始位置。
 YouTube's copyright system isn't broken. The world's is. · Tom Scott · 文化与社会 · Tom Scott 以 YouTube 为例，解释网络平台如何在不同的版权制度之间运作。
-New York City in 1993 in HD -  DTheater DVHS Demo Tape · Youtube Pedant · 文化与社会 · 一盘演示录像留下了 1993 年纽约街头少见的高清影像。
+AT&T 1993 "You Will" Ads · appealing · 文化与社会 · 一组 1993 年的 AT&T 广告，想象当时尚未普及的视频通话、远程会议和电子导航。
 Mechanical Computer (All Parts) - Basic Mechanisms In Fire Control Computers · Excelsior10000 · 工程与硬件 · 训练影片拆解机械火控计算机里的齿轮、凸轮和连杆，展示它们怎样完成运算。
 How to Speak · MIT OpenCourseWare · 设计与创造 · MIT 的 Patrick Winston 用课堂演示讲解演讲如何开场、建立重点和收尾。
 The man with 1,000 Klein Bottles UNDER his house - Numberphile · Numberphile · 科学与数学 · Numberphile 随 Cliff Stoll 走进藏着上千个克莱因瓶的房子，观察这种曲面的实体模型。
