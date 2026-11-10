@@ -1,0 +1,10 @@
+{
+  "id": "fermat-to-lean",
+  "title": "费马大定理 · 从页边到 Lean",
+  "type": "视频",
+  "format": "html",
+  "status": "published",
+  "summary": "54 秒中文动效短片。约 1637 年的页边批注，1995 年发表的证明，和 1,000 个 Claude Fable 5.2 智能体在约 30 小时内复现 Lean 形式化的实验。无旁白，原创配乐。",
+  "tags": ["文章与资料", "费马大定理", "数学史", "Lean", "Claude Fable 5.2"],
+  "updated": "2026-11-10"
+}
