@@ -1,0 +1,11 @@
+{
+  "id": "kerr-black-hole",
+  "title": "KERR / 黑洞光学实验室",
+  "type": "交互演示",
+  "format": "html",
+  "status": "published",
+  "summary": "在浏览器中逐像素积分克尔零测地线，探索吸积盘、引力透镜、多普勒增亮与引力红移。支持自旋、倾角、拖动观察和手机自适应画质。",
+  "tags": ["文章与资料", "物理", "黑洞", "广义相对论", "WebGL"],
+  "updated": "2026-11-11",
+  "featured": false
+}
