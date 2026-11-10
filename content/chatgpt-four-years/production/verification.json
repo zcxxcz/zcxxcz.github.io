@@ -1,0 +1,64 @@
+{
+  "verifiedOn": "2026-11-11",
+  "videoSha256": "f3c1b023d6827e69b6aef5d3552e3edf5b81e1dbde0ccff94005412d47afea3d",
+  "media": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 1920,
+        "height": 1080,
+        "avg_frame_rate": "30/1",
+        "nb_frames": "1620"
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "channels": 2,
+        "avg_frame_rate": "0/0",
+        "nb_frames": "2533"
+      }
+    ],
+    "format": {
+      "duration": "54.000000",
+      "size": "20961844"
+    }
+  },
+  "integratedLoudnessLUFS": -14.36,
+  "truePeakDbTP": -1.13,
+  "loudnessRangeLU": 5.8,
+  "fullDecodeErrors": 0,
+  "blackSegmentsDetected": 0,
+  "freezeSegmentsDetected": 0,
+  "visualDetection": {
+    "blackThreshold": 0.07,
+    "blackPictureRatio": 0.97,
+    "minimumBlackDurationSeconds": 0.1,
+    "freezeNoiseThresholdDb": -55,
+    "minimumFreezeDurationSeconds": 0.8
+  },
+  "browser": {
+    "metadata": true,
+    "playback": true,
+    "seeking": true,
+    "desktop": true,
+    "mobileNoOverflow": true,
+    "officialSourceEntries": 13
+  },
+  "repositoryChecks": {
+    "unitTests": "19 passed",
+    "build": "91 records, no warnings",
+    "browser": "passed"
+  },
+  "score": {
+    "bpm": 160,
+    "bars": 36,
+    "beats": 144,
+    "narration": false,
+    "externalAudioSamples": false
+  },
+  "notes": "All 18 scenes inspected as stills. Final video decoded end to end. Source ledger distinguishes model capability, API context, staged product rollout and dated audience disclosure."
+}
