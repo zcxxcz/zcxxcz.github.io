@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="从费马的页边批注到 1,000 个 Claude Fable 5.2 智能体复现 Lean 形式化。54 秒动效短片，无旁白，原创配乐。">
+  <title>费马大定理 · 从页边到 Lean</title>
+  <link rel="canonical" href="https://zcxxcz.github.io/content/fermat-to-lean/">
+  <link rel="icon" href="/favicon.svg">
+  <meta property="og:title" content="费马大定理 · 从页边到 Lean">
+  <meta property="og:type" content="video.other">
+  <meta property="og:image" content="https://zcxxcz.github.io/content/fermat-to-lean/poster.webp">
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #0e171e;
+      color: #efebdf;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; }
+    a { color: #b1f4ce; text-underline-offset: .2em; }
+    :focus-visible { outline: 2px solid #b1f4ce; outline-offset: 4px; }
+    header, main { width: min(1120px, calc(100% - 64px)); margin-inline: auto; }
+    header { border-bottom: 1px solid #374952; padding: 19px 0; font-size: .87rem; }
+    header a { text-decoration: none; }
+    main { padding: 36px 0 68px; }
+    .eyebrow { color: #b1f4ce; font: .74rem ui-monospace, monospace; letter-spacing: .15em; }
+    h1 { font: 600 clamp(1.9rem, 5vw, 3.65rem)/1.25 "Songti SC", "Noto Serif CJK SC", serif; margin: 10px 0 12px; }
+    .format { color: #bdc9cb; font-size: .88rem; margin: 0 0 22px; }
+    video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #090f13; }
+    .video-frame { border: 1px solid #4e5e63; }
+    .actions { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin: 18px 0 30px; }
+    .actions a:first-child { border: 1px solid #6ea790; border-radius: 4px; padding: 8px 13px; text-decoration: none; }
+    .actions a:hover { color: #fff; }
+    section, details { padding: 22px 0; border-top: 1px solid #374952; }
+    h2, summary { margin: 0 0 12px; font-size: 1.13rem; font-weight: 650; }
+    summary { margin-bottom: 0; cursor: pointer; }
+    li { padding: 3px 0; line-height: 1.75; overflow-wrap: anywhere; }
+    ul { margin-bottom: 0; padding-left: 1.25rem; }
+    .timeline { padding-left: 0; margin: 16px 0 0; list-style: none; }
+    .timeline li { display: grid; grid-template-columns: 3.6rem 1fr; }
+    time { color: #b1f4ce; font-variant-numeric: tabular-nums; }
+    @media (max-width: 560px) {
+      header, main { width: calc(100% - 32px); }
+      main { padding-top: 20px; }
+      .format { margin-bottom: 15px; }
+      .actions { font-size: .89rem; }
+      .timeline li { grid-template-columns: 3.15rem 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header><a href="/">Z / 内容与作品</a></header>
+  <main>
+    <p class="eyebrow" lang="en">FERMAT’S LAST THEOREM</p>
+    <h1>费马大定理 · 从页边到 Lean</h1>
+    <p class="format">54 秒 · 1080p · 16:9 · 无旁白 · 原创配乐</p>
+    <div class="video-frame">
+      <video controls playsinline preload="metadata" poster="poster.webp" width="1920" height="1080"
+             aria-label="费马大定理，从页边到 Lean，中文画面字幕和原创配乐">
+        <source src="fermat-lean.mp4" type="video/mp4">
+        <p><a href="fermat-lean.mp4" download>下载 MP4 观看</a></p>
+      </video>
+    </div>
+    <div class="actions">
+      <a href="fermat-lean.mp4" download>下载 MP4 ↓</a>
+      <a href="#sources">查看资料来源 ↓</a>
+    </div>
+
+    <details>
+      <summary>画面文字与时间轴</summary>
+      <ol class="timeline">
+        <li><time datetime="PT0S">00:00</time><span>约 1637 年，费马在丢番图的《算术》页边写下批注，大意是他找到了一个绝妙的证明，可惜页边太窄，写不下。</span></li>
+        <li><time datetime="PT8S">00:08</time><span>当整数 n &gt; 2 时，aⁿ + bⁿ = cⁿ 没有正整数解。</span></li>
+        <li><time datetime="PT14S">00:14</time><span>1993 年，安德鲁·怀尔斯公布证明，审查发现缺口。他与理查德·泰勒合作补上缺口，相关论文于 1995 年发表。</span></li>
+        <li><time datetime="PT22S">00:22</time><span>2026 年 9 月，Anthropic 公布首次端到端形式化，耗时 11 天。用 Lean 写出证明，计算机就能逐步检查推理。</span></li>
+        <li><time datetime="PT28S">00:28</time><span>2026 年 11 月，Anthropic 公布另一场实验，使用早期版本 Claude Fable 5.2 的 1,000 个智能体并行协作。</span></li>
+        <li><time datetime="PT34S">00:34</time><span>团队沿用上一次形式化中的 47 条已证引理，通过共享数据库认领任务、同步进度，并把难点拆成更小的证明。</span></li>
+        <li><time datetime="PT40S">00:40</time><span>团队在约 30 小时内复现费马大定理的 Lean 形式化，技术复盘记录为 28.7 小时。结果通过 Lean 内核检查。</span></li>
+        <li><time datetime="PT48S">00:48</time><span>从页边到 Lean。</span></li>
+      </ol>
+    </details>
+
+    <section id="sources">
+      <h2>资料来源</h2>
+      <ul>
+        <li>Anthropic 模型发布文，采用 30 小时的概述。<a lang="en" href="https://www.anthropic.com/claude-fable-and-mythos-5-2">Introducing Claude Fable 5.2 and Claude Mythos 5.2</a></li>
+        <li>Claude 工程复盘，记载实验条件和 28.7 小时的完成时间。<a lang="en" href="https://claude.dev/blog/safely-scaling-multi-agent-teams-with-fable-5-2/">Safely scaling multi-agent teams with Claude Fable 5.2</a></li>
+        <li>费马的页边批注与怀尔斯的证明历程。<a href="https://www.maths.ox.ac.uk/node/16338">牛津大学数学研究所</a></li>
+        <li>怀尔斯及怀尔斯与泰勒的原始论文。<a lang="en" href="https://annals.math.princeton.edu/1995/141-3">Annals of Mathematics, Volume 141, Issue 3, May 1995</a></li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
