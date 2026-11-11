@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>假如油价中长期维持高位 · 事件同心圆推演</title>
+<style>
+  :root{
+    --ink:#0F172A; --ink2:#334155; --ink3:#64748B; --line:#E2E8F0;
+    --bg:#FBFCFE; --card:#FFFFFF;
+    --bull:#DC2626; --bear:#16A34A; --unk:#94A3B8;
+    --c-high:#3730A3; --c-mid:#2563EB; --c-midlow:#D97706; --c-low:#94A3B8;
+    --accent:#1E3A8A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1080px;margin:0 auto;padding:44px 32px 90px;}
+  header{border-bottom:3px solid var(--ink);padding-bottom:22px;margin-bottom:34px;}
+  .kicker{font-size:12px;letter-spacing:.18em;color:var(--ink3);text-transform:uppercase;margin-bottom:14px;}
+  h1{font-size:31px;line-height:1.32;margin:0 0 16px;font-weight:700;letter-spacing:-.01em;}
+  h1 em{font-style:normal;color:var(--accent);}
+  .sub{font-size:15px;color:var(--ink2);margin:0;}
+  .meta{font-size:12.5px;color:var(--ink3);margin-top:16px;display:flex;gap:20px;flex-wrap:wrap;}
+  h2{font-size:20px;margin:52px 0 6px;font-weight:700;letter-spacing:-.01em;}
+  h2 .num{color:var(--ink3);font-weight:600;margin-right:10px;font-variant-numeric:tabular-nums;}
+  .h2note{font-size:13px;color:var(--ink3);margin:0 0 18px;}
+  h3{font-size:15.5px;margin:26px 0 10px;font-weight:700;color:var(--ink);}
+  p{margin:0 0 14px;}
+  .lead{font-size:17px;line-height:1.8;color:var(--ink);background:#fff;border-left:4px solid var(--accent);
+    padding:20px 24px;margin:0 0 8px;border-radius:0 8px 8px 0;box-shadow:0 1px 2px rgba(15,23,42,.04);}
+  .lead b{color:var(--accent);}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:14px 0 8px;background:var(--card);
+    box-shadow:0 1px 2px rgba(15,23,42,.05);border-radius:6px;overflow:hidden;}
+  th{background:#F1F5F9;text-align:left;padding:9px 11px;font-weight:600;color:var(--ink2);
+    border-bottom:1px solid var(--line);white-space:nowrap;font-size:12.5px;}
+  td{padding:9px 11px;border-bottom:1px solid #F1F5F9;vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#FAFBFC;}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
+    background:#F1F5F9;padding:1px 5px;border-radius:3px;color:var(--ink2);}
+  .bull{color:var(--bull);font-weight:600;}
+  .bear{color:var(--bear);font-weight:600;}
+  .unk{color:var(--unk);font-weight:600;}
+  .src{font-size:11.5px;color:var(--ink3);margin:6px 0 22px;line-height:1.6;}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:1px;}
+  .d-high{background:var(--c-high);} .d-mid{background:var(--c-mid);}
+  .d-midlow{background:var(--c-midlow);} .d-low{background:var(--c-low);}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0 10px;}
+  .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:18px 0 10px;}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px 18px;}
+  .box .t{font-size:12px;letter-spacing:.1em;color:var(--ink3);margin-bottom:8px;font-weight:600;}
+  .box ul{margin:0;padding-left:17px;font-size:13px;}
+  .box li{margin-bottom:6px;}
+  .pill{display:inline-block;font-size:11.5px;padding:2px 9px;border-radius:20px;font-weight:600;
+    background:#F1F5F9;color:var(--ink2);margin:0 6px 6px 0;}
+  .pill.r{background:#FEF2F2;color:#991B1B;} .pill.g{background:#F0FDF4;color:#166534;}
+  .pill.b{background:#EFF6FF;color:#1E40AF;} .pill.a{background:#FFFBEB;color:#92400E;}
+  .callout{background:#FFFDF5;border:1px solid #FDE68A;border-radius:8px;padding:16px 20px;margin:18px 0;}
+  .callout .t{font-weight:700;font-size:13.5px;color:#92400E;margin-bottom:6px;}
+  .callout p{font-size:13.5px;color:#78350F;margin:0;}
+  figure{margin:22px 0 8px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 14px 10px;}
+  figcaption{font-size:11.5px;color:var(--ink3);margin-top:8px;padding:0 6px;line-height:1.6;}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--ink2);margin:6px 0 0;padding:0 6px;}
+  .legend span{display:flex;align-items:center;gap:6px;}
+  .nodegrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 14px;margin:14px 4px 4px;font-size:12.5px;color:var(--ink2);}
+  .nodegrid div{background:#F8FAFC;border:1px solid #EEF2F7;border-radius:5px;padding:6px 9px;line-height:1.5;}
+  .nodegrid b{color:var(--ink);font-weight:600;}
+  .nodegrid em{font-style:normal;color:var(--ink3);font-size:11px;}
+  .disc{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);line-height:1.7;}
+  .chain{font-size:12.5px;color:var(--ink2);background:#F8FAFC;border-radius:6px;padding:9px 12px;
+    margin:6px 0 14px;line-height:1.65;border-left:2px solid #CBD5E1;}
+  .chain b{color:var(--ink);}
+  .stage{display:flex;gap:0;margin:18px 0 6px;}
+  .stage div{flex:1;text-align:center;font-size:12px;padding:11px 4px;border:1px solid var(--line);
+    background:#fff;color:var(--ink3);position:relative;}
+  .stage div:first-child{border-radius:6px 0 0 6px;}
+  .stage div:last-child{border-radius:0 6px 6px 0;}
+  .stage div.on{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;}
+  .stage div.past{background:#F1F5F9;color:var(--ink2);}
+  .stage div em{display:block;font-style:normal;font-size:10.5px;opacity:.75;margin-top:2px;}
+  @media(max-width:760px){
+    .wrap{padding:26px 16px 60px;} h1{font-size:23px;}
+    .grid3,.grid2{grid-template-columns:1fr;}
+    .nodegrid{grid-template-columns:repeat(2,1fr);}
+    table{font-size:12px;} th,td{padding:7px 8px;}
+    .stage div{font-size:10.5px;padding:8px 2px;}
+  }
+</style>
+<meta name="description" content="在 2026 年 11 月霍尔木兹通行受限的背景下，用事件驱动框架推演「油价中长期高位」：先做事实校准（已确认事实 / 概率状态 / 未决清单），再定性事件阶段，然后用四层同心圆拆解变化方向、15 个扩散节点与三市场标的映射，最后给出反向观点与监控阈值。核心结论是真正被打碎的秩序是「霍尔木兹是一条免费公共通道」，定价锚从边际生产成本漂移到边际可交付桶的通行成本。">
+<meta name="theme-color" content="#FBFCFE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="假如油价中长期维持高位：真正被打碎的是「可交付的桶」">
+<meta property="og:description" content="在 2026 年 11 月霍尔木兹通行受限的背景下，用事件驱动框架推演「油价中长期高位」：先做事实校准（已确认事实 / 概率状态 / 未决清单），再定性事件阶段，然后用四层同心圆拆解变化方向、15 个扩散节点与三市场标的映射，最后给出反向观点与监控阈值。核心结论是真正被打碎的秩序是「霍尔木兹是一条免费公共通道」，定价锚从边际生产成本漂移到边际可交付桶的通行成本。">
+<link rel="canonical" href="https://zcxxcz.github.io/content/oil-price-high-concentric-circles/">
+<style>
+  .hubbar{display:flex;justify-content:space-between;align-items:center;gap:16px;max-width:1080px;margin:0 auto;padding:14px 32px;font-size:13px;color:#64748B;border-bottom:1px solid #E2E8F0;flex-wrap:wrap;}
+  .hubbar a{color:#1E3A8A;text-decoration:none;font-weight:600;}
+  .hubbar a:hover{text-decoration:underline;}
+  .hubbar span{letter-spacing:.06em;}
+  @media (max-width:640px){.hubbar{padding:12px 20px;font-size:12.5px;}}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
+  .tw table{margin-top:0;margin-bottom:0;}
+  .tw::-webkit-scrollbar{height:6px;}
+  .tw::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:3px;}
+  @media (max-width:640px){
+    .tw table{min-width:640px;}
+    .tw{border:1px solid #E2E8F0;border-radius:8px;background:#fff;}
+  }
+  .hubfoot{max-width:1080px;margin:0 auto;padding:0 32px 60px;font-size:13px;color:#64748B;}
+  .hubfoot a{color:#1E3A8A;text-decoration:none;font-weight:600;}
+  @media (max-width:640px){.hubfoot{padding:0 20px 48px;}}
+</style>
+</head>
+<body>
+<nav class="hubbar"><a href="https://zcxxcz.github.io/">← 内容与作品</a><span>资料 · 事件驱动同心圆推演 · 2026-11-11</span></nav>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Event-Driven Framework · 事件同心圆推演</div>
+  <h1>假如油价中长期维持高位：<br>真正被打碎的不是供需表，是<em>「可交付的桶」</em></h1>
+  <p class="sub">一个把「价格判断」翻译成「结构变化」的推演：先校准事实，再定性事件，最后才落到标的。全篇严格区分<b>事件本身的不确定性</b>与<b>传导的确定性</b>两套标注。</p>
+  <div class="meta">
+    <span>基准时点：2026-11-10 收盘（北京）</span>
+    <span>信源：EIA / Kpler / CME / Polymarket / Kalshi / 中金 / 美银 / 路透 / 上海证券报 / 中国证券报</span>
+  </div>
+</header>
+
+<div class="lead">
+  <b>一句话：</b>油价中长期高位的本质，不是"油贵了"，而是<b>霍尔木兹作为"免费公共通道"的时代结束了</b>——原油定价权从"边际生产成本"转移到"边际可交付桶的通行成本"，全球原油市场从"单一价格 + 全球套利"裂解为"区域价差 + 通行溢价"结构。<br><br>
+  <span style="font-size:14.5px;color:#475569;display:block;margin-top:6px;">关键证据：全球市场 10 月已过剩 140 万桶/日（JPM），布伦特却仍在 90 美元上方。旧框架里"过剩→跌价"这条铁律，第一次失灵了。</span>
+</div>
+
+<!-- ============ 1 事实校准 ============ -->
+<h2><span class="num">01</span>事实校准：把「已发生」和「还没发生」切开</h2>
+<p class="h2note">事件仍处于进行时（无正式停火文件、无复航安排），因此必须先做三栏分离。任何把这三栏揉成一个"置信度"的说法都是自欺。</p>
+
+<div class="grid3">
+  <div class="box">
+    <div class="t">① 已确认事实（一手/主流媒体已证实）</div>
+    <ul>
+      <li>2026-02-28 美以对伊军事行动，霍尔木兹通行受阻</li>
+      <li>布伦特 10-30 收 117.64 美元（六个月高）；11-10 盘中 89.53，累计 <b>−24%</b>；WTI 84.33</li>
+      <li>Kpler：截至 11-04 七日海峡通行 1174.9 万桶/日 ≈ 战前 <b>69%</b></li>
+      <li>海峡战争险保费约 <b>8%</b>（常态 0.15%）；VLCC TD34 维持 600–900 点</li>
+      <li>美国商业原油库存 4.098 亿桶（五年均值 −4%）；馏分油 <b>9930 万桶，2003 年以来最低</b></li>
+      <li>FOMC 10-28 维持 3.75–4%，<b>2 票主张加息</b>；9 月 CPI 环比 +0.6%，汽油 +9.1%（贡献过半）</li>
+      <li>民主党赢下中期选举（11-03）</li>
+    </ul>
+  </div>
+  <div class="box">
+    <div class="t">② 概率状态（未决部分的市场定价）</div>
+    <ul>
+      <li>Polymarket（11-09 00:50 UTC）：美方宣布解除对伊封锁 <b>66.5%</b>（至 2027-03-31）</li>
+      <li>美伊霍尔木兹协议 <b>34.5%</b>（至 2026-12-31）</li>
+      <li>海峡通行恢复正常：12-31 <b>6.5%</b>；11-30 仅 <b>2.4%</b></li>
+      <li>Kalshi 复航曲线：2%(26-12)→6%(27-01)→18%(27-04)→33%(27-06)→<b>49%(27-12)</b></li>
+      <li>美国入侵伊朗 <b>12.5%</b>；伊朗政权更迭 <b>2.8%</b></li>
+      <li>CME FedWatch：12 月加息 25bp <b>74.9%</b></li>
+      <li>EIA 11 月 STEO：2026 布伦特均价 <b>97</b>、2027 <b>86</b>、2027Q4 <b>77</b></li>
+    </ul>
+  </div>
+  <div class="box">
+    <div class="t">③ 未决清单（结果未出 / 何时知道）</div>
+    <ul>
+      <li><b>是否有正式停火文本</b>——Trump 11-09 称"军事上已结束"，无文件 → 任何时点</li>
+      <li><b>制裁与封锁解除的先后顺序</b>——伊朗要求"先解封再复航"，美方要求"先复航再解封"，死结 → 无时限</li>
+      <li><b>水雷清扫与保险市场重定价</b>——即使复航，保费从 8% 回到 1% 以下需要时间</li>
+      <li><b>OPEC+ 2027 配额谈判</b>——12 月冻产到期，→ 2027Q1</li>
+      <li><b>美国页岩对高油价的产量响应</b>——EIA 预计 2027 年 1430 万桶/日，→ 季度钻井数验证</li>
+      <li><b>需求破坏的真实斜率</b>——JPM 测算消费已降约 330 万桶/日 → 月度平衡表</li>
+    </ul>
+  </div>
+</div>
+
+<div class="callout">
+  <div class="t">双轨标注规则（本篇唯一纪律）</div>
+  <p>凡涉及<b>「战争会不会结束、海峡何时复航」</b>——标注为「事件不确定性」，只给概率、不给确定性词。<br>
+  凡涉及<b>「一旦摩擦持续，谁的成本上升、谁的价差扩大」</b>——标注为「传导确定性」，可以给"高"。<br>
+  下方表格中的「确定性」列，<b>一律指传导确定性，且以"摩擦维持"为前提</b>；前提本身是概率，不是事实。</p>
+</div>
+
+<!-- ============ 2 事件定性 ============ -->
+<h2><span class="num">02</span>事件定性</h2>
+
+<h3>定义：什么秩序被打破了</h3>
+<p>不是"原油供给减少了"。而是——<b>全球原油贸易建立在一个从未被计入价格的隐含假设上：霍尔木兹是一条低摩擦、低保险成本、可自由通行的公共通道。</b>由此派生出三条被当作常识的东西：运价在到岸成本里可忽略、炼厂可以按"全球同质原油池 + 最低运费"做优化、亚洲炼厂对美湾有天然地理套利。</p>
+<p>这条通道被水雷、袭船、8% 战争险和 STS 过驳体系替代之后，<b>"桶在哪里"不再等于"桶能不能到"</b>。油的定价基准从"边际生产成本"漂移到"边际可交付桶的通行成本"。这才是需要重新认识世界的那个位移。</p>
+
+<h3>阶段判断：<span style="color:var(--accent)">确认阶段的临界点，且正在被反向验证</span></h3>
+<div class="stage">
+  <div class="past">异响<em>2–4月 · 已过</em></div>
+  <div class="past">扩散<em>5–9月 · 已过</em></div>
+  <div class="on">确认<em>10月至今 · 当前</em></div>
+  <div>共识<em>未到</em></div>
+</div>
+<p style="font-size:13.5px;color:var(--ink2);margin-top:14px;"><b>判断依据（三条，全部为已确认事实）：</b></p>
+<ul style="font-size:13.5px;color:var(--ink2);margin-top:0;">
+  <li><b>物理层未修复</b>：通行量停在山峡 69%、7 日均值 4.4 船/日（复航判定阈值 60）、保费 8%。物理面没有任何"结束"的证据。</li>
+  <li><b>政治层已转向</b>：中期选举后市场把"降级"定价为基准，布伦特单周 −16%（疫情以来最大周跌幅），再跌至 89.5。</li>
+  <li><b>基本层反常识</b>：10 月全球过剩 140 万桶/日，价格却仍在 90 上方——这是"旧框架失效"最硬的证据。</li>
+</ul>
+<p style="font-size:13.5px;color:var(--ink2);">所以当前不是"事件在消退"，而是<b>「政治预期」跑到了「物理现实」前面</b>。这构成了本篇全部赔率判断的起点。</p>
+
+<h3>置信度与证伪路径</h3>
+<div class="grid2">
+  <div class="box">
+    <div class="t">置信度分档（事件不确定性轨）</div>
+    <p style="font-size:13px;margin:0 0 8px;"><span class="pill a">中高 · 约 55–65%</span>「2027 年布伦特中枢 ≥ 85 美元」</p>
+    <p style="font-size:13px;margin:0 0 8px;"><span class="pill g">低 · 约 20%</span>「战争长期化（2027 全年冲突）」</p>
+    <p style="font-size:13px;margin:0 0 8px;"><span class="pill b">高 · 约 85%</span>「即使政治和解，物理恢复慢于文件 3–9 个月」</p>
+    <p style="font-size:13px;margin:0;"><span class="pill r">高 · 约 80%</span>「运输成本结构性抬升，不完全回退」</p>
+  </div>
+  <div class="box">
+    <div class="t">三条被证伪路径（按概率排序）</div>
+    <p style="font-size:13px;margin:0 0 9px;"><b>P1 · 政治彻底和解 + 物理快速复航</b>（约 20%）：正式协议 + 水雷清扫 + 保费回落到 1% 以下。Brent → 70–80。此路径下"高位"命题直接破产。</p>
+    <p style="font-size:13px;margin:0 0 9px;"><b>P2 · 需求破坏自我实现</b>（约 15%）：消费已降 330 万桶/日，若 Brent 长期 &gt;100，12–18 个月后破坏加速 + OPEC 增产 → 转深度过剩。EIA 的 2027Q4 = 77 就是这个世界的影子。</p>
+    <p style="font-size:13px;margin:0;"><b>P3 · 非 OPEC 供给弹性超预期</b>（约 10%）：美国 1430 万桶/日 + 圭亚那/巴西/加拿大放量，把"通行摩擦"淹没在"总量过剩"里。</p>
+  </div>
+</div>
+
+<!-- ============ 3 信源 ============ -->
+<h2><span class="num">03</span>信源校准</h2>
+<p class="h2note">五个角度、三层信源。进行中的事件必须以实时源（预测市场 + 通行数据）为准，通用关键词搜索返回的往往是事件前的预测。</p>
+<div class="tw"><table>
+<thead><tr><th style="width:15%">层级</th><th style="width:22%">信源</th><th style="width:12%">时点</th><th>关键读数</th></tr></thead>
+<tbody>
+<tr><td rowspan="4"><b>硬数据</b><br><span style="font-size:11.5px;color:#64748B;">最高可信度</span></td><td>EIA《短期能源展望》</td><td>2026-11-10</td><td>2026 均价 97 / 2027 均价 86 / 2027Q4 77；美产量 2027 创高 1430 万桶/日</td></tr>
+<tr><td>Kpler 通行量</td><td>截至 2026-11-04</td><td>海峡总通行 1174.9 万桶/日 ≈ 战前 69%</td></tr>
+<tr><td>EIA 周度库存</td><td>截至 2026-10-30</td><td>原油 4.098 亿桶（五年均值 −4%）；馏分油 9930 万桶，2003 年来最低</td></tr>
+<tr><td>CME FedWatch / FOMC</td><td>2026-11-05 / 10-28</td><td>12 月加息 25bp 概率 74.9%；利率 3.75–4%，2 票主张加息</td></tr>
+<tr><td rowspan="3"><b>预测市场</b><br><span style="font-size:11.5px;color:#64748B;">进行中事件的实时源</span></td><td>Polymarket（Hormuz 专题，30 个合约，24h 成交 109 万美元）</td><td>2026-11-09 00:50 UTC</td><td>封锁结束 66.5% / 协议 34.5% / 12-31 复航正常 6.5%</td></tr>
+<tr><td>Kalshi 复航曲线</td><td>2026-11</td><td>27-12 达 49%，即市场认为"两年内都难以完全正常"</td></tr>
+<tr><td>straits.live 通行监测</td><td>2026-11-01</td><td>7 日均 4.4 船/日 vs 判定阈值 60；中断已 252 天</td></tr>
+<tr><td rowspan="3"><b>机构研究</b><br><span style="font-size:11.5px;color:#64748B;">高可信度</span></td><td>美银利率策略（Ralph Axel）</td><td>2026-11-05</td><td>油价上涨日 2y 累计 +196bp、下跌日 −83bp；建议付固定 2y。美国能源价格同比 +20.4%</td></tr>
+<tr><td>中金大宗商品</td><td>2026-11-10</td><td>3–6 个月布油难下 90；2027 下半年若中东回归可回 80–90</td></tr>
+<tr><td>J.P. Morgan 平衡表</td><td>2026-11</td><td>9 月过剩 110 万桶/日、10 月 140 万桶/日；战事以来消费降约 330 万桶/日</td></tr>
+<tr><td rowspan="3"><b>财经媒体</b><br><span style="font-size:11.5px;color:#64748B;">中可信度，需交叉验证</span></td><td>路透（Valero / PSX 业绩会）</td><td>2026-11-06</td><td>美湾→亚洲运费 30–35 美元/桶（一年前约 5）；WCS-WTI 每走阔 1 美元，PSX 增益约 1.4 亿美元</td></tr>
+<tr><td>上海证券报</td><td>2026-11-06</td><td>11-04 布油单日 −8.67%；机构预计全年布油均价 85–90</td></tr>
+<tr><td>中国证券报</td><td>2026-11-04 / 11-06</td><td>三桶油前三季净利超 2025 全年；石油石化 9M 归母净利 +39.63%</td></tr>
+<tr><td><b>社区情绪</b><br><span style="font-size:11.5px;color:#64748B;">仅作情绪参考</span></td><td>券商/自媒体复盘</td><td>2026-11</td><td>"油运大时代"叙事扩散中；本文不采信其结论，仅用于识别拥挤度</td></tr>
+</tbody>
+</table></div>
+<p class="src">说明：预测市场概率为某一时刻快照，随事件演进快速变动；引用时务必核对最新报价。运费、裂解价差为业绩会口径（非一手财报审计数），需核实原文。</p>
+
+<!-- ============ 4 同心圆 ============ -->
+<h2><span class="num">04</span>四层同心圆</h2>
+<p class="h2note">圆心是事件，三环是变化的传播路径。环上圆点的颜色 = 该节点的<b>传导确定性</b>（前提：摩擦维持）。方向色：<span class="bull">红=利多</span> / <span class="bear">绿=利空</span> / <span class="unk">灰=不确定</span>。</p>
+
+<figure>
+<svg viewBox="0 0 940 660" width="100%" style="max-width:940px;display:block;margin:0 auto;" role="img" aria-label="油价高位事件四层同心圆">
+  <!-- 四层底色 -->
+  <circle cx="440" cy="320" r="292" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+  <circle cx="440" cy="320" r="224" fill="#F0FDFA" stroke="#99F6E4" stroke-width="1"/>
+  <circle cx="440" cy="320" r="152" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <circle cx="440" cy="320" r="80" fill="#0F172A"/>
+
+  <!-- 圆心 -->
+  <text x="440" y="306" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="700">可交付的桶</text>
+  <text x="440" y="324" text-anchor="middle" fill="#CBD5E1" font-size="10.5">通行权成为定价锚</text>
+  <text x="440" y="340" text-anchor="middle" fill="#94A3B8" font-size="10">油价 ≠ 供需平衡表</text>
+
+  <!-- 环1：变化方向 -->
+  <text x="440" y="196" text-anchor="middle" font-size="11.5" font-weight="700" fill="#B91C1C">① 什么在变贵</text>
+  <text x="440" y="210" text-anchor="middle" font-size="9" fill="#7F1D1D">可交付性 · 运力 · 炼能</text>
+
+  <text x="330" y="392" text-anchor="middle" font-size="11.5" font-weight="700" fill="#15803D">② 什么在变便宜</text>
+  <text x="330" y="406" text-anchor="middle" font-size="9" fill="#14532D">线性定价 · 库存收益</text>
+
+  <text x="552" y="392" text-anchor="middle" font-size="11.5" font-weight="700" fill="#334155">③ 什么失效</text>
+  <text x="552" y="406" text-anchor="middle" font-size="9" fill="#475569">过剩 ≠ 跌价</text>
+
+  <!-- 环2：8 个二期节点，编号与表格 #1–#8 一一对应；颜色=传导确定性 -->
+  <g stroke="#0F172A" stroke-width="0.8">
+    <circle cx="440" cy="132" r="8" fill="#3730A3"/>
+    <circle cx="573" cy="187" r="8" fill="#3730A3"/>
+    <circle cx="628" cy="320" r="8" fill="#3730A3"/>
+    <circle cx="573" cy="453" r="8" fill="#3730A3"/>
+    <circle cx="440" cy="508" r="8" fill="#3730A3"/>
+    <circle cx="307" cy="453" r="8" fill="#2563EB"/>
+    <circle cx="252" cy="320" r="8" fill="#2563EB"/>
+    <circle cx="307" cy="187" r="8" fill="#2563EB"/>
+  </g>
+  <g fill="#FFFFFF" font-size="9" font-weight="700" text-anchor="middle">
+    <text x="440" y="135">1</text><text x="573" y="190">2</text><text x="628" y="323">3</text><text x="573" y="456">4</text>
+    <text x="440" y="511">5</text><text x="307" y="456">6</text><text x="252" y="323">7</text><text x="307" y="190">8</text>
+  </g>
+
+  <!-- 环3：标的方向分组，文字颜色=方向（红多/绿空） -->
+  <text x="440" y="56" text-anchor="middle" font-size="10.5" font-weight="700" fill="#B91C1C">油运 · 炼油</text>
+  <text x="667" y="186" text-anchor="middle" font-size="10.5" font-weight="700" fill="#B91C1C">上游 · 油服</text>
+  <text x="667" y="458" text-anchor="middle" font-size="10.5" font-weight="700" fill="#B91C1C">煤化工 · 核电</text>
+  <text x="440" y="588" text-anchor="middle" font-size="10.5" font-weight="700" fill="#B91C1C">煤炭 · 高股息</text>
+  <text x="203" y="458" text-anchor="middle" font-size="10.5" font-weight="700" fill="#15803D">化工 · 可选消费</text>
+  <text x="203" y="186" text-anchor="middle" font-size="10.5" font-weight="700" fill="#15803D">航空 · 物流</text>
+  <text x="667" y="200" text-anchor="middle" font-size="9" fill="#94A3B8">受益</text>
+  <text x="203" y="200" text-anchor="middle" font-size="9" fill="#94A3B8">受损</text>
+</svg>
+
+<div class="nodegrid">
+  <div><span class="dot d-high"></span><b>1 油轮运力</b> <span class="bull">↑</span> <em>即时 · 高</em></div>
+  <div><span class="dot d-high"></span><b>2 美湾炼油</b> <span class="bull">↑</span> <em>即时 · 高</em></div>
+  <div><span class="dot d-high"></span><b>3 资金/利率</b> <span class="bull">↑</span> <em>即时 · 高</em></div>
+  <div><span class="dot d-high"></span><b>4 航空/物流</b> <span class="bear">↓</span> <em>即时 · 高</em></div>
+  <div><span class="dot d-high"></span><b>5 化工下游</b> <span class="bear">↓</span> <em>1–3 月 · 高</em></div>
+  <div><span class="dot d-mid"></span><b>6 上游（非中东）</b> <span class="bull">↑</span> <em>即时 · 中</em></div>
+  <div><span class="dot d-mid"></span><b>7 油服/工程</b> <span class="bull">↑</span> <em>3–12 月 · 中</em></div>
+  <div><span class="dot d-mid"></span><b>8 煤化工</b> <span class="bull">↑</span> <em>1–3 月 · 中</em></div>
+</div>
+
+<div class="legend">
+  <span>环 2 圆点颜色 = <b>传导确定性</b>：<span class="dot d-high"></span>高 <span class="dot d-mid"></span>中</span>
+  <span>环 3 文字颜色 = <b>方向</b>：<b style="color:#DC2626">红=利多</b> <b style="color:#16A34A">绿=利空</b></span>
+  <span>前提：通行摩擦持续（该前提本身是概率，非事实）</span>
+</div>
+<figcaption>环 1 = 变化方向（三问）；环 2 = 扩散节点（编号与下一节表格 #1–#8 严格对应，完整 15 个节点见表格）；环 3 = 标的映射层（按方向分六组，详见第七节）。</figcaption>
+</figure>
+
+<!-- ============ 5 变化方向 ============ -->
+<h2><span class="num">05</span>+1 层：变化的三个方向（逻辑推演，不跳结论）</h2>
+
+<h3>① 什么在变贵（稀缺性转移）</h3>
+<div class="chain"><b>推演链 A｜可交付性</b>：海峡通行受阻 → 绕行/STS 过驳/护航 → 吨海里需求↑ + 有效运力↓ → 运价与战争险跳升（美湾→亚洲 5→30–35 美元/桶；保费 0.15%→8%）→ 到岸成本↑ → 区域价差扩大 → <b>"离炼厂近的桶"溢价</b>。</div>
+<p style="font-size:13.5px;margin-top:0;color:var(--ink2)">→ 结论：变贵的不是"油"，是<b>把油从 A 运到 B 的权利</b>。这块成本在过去 30 年从未被单独定价，现在被单独定价了。</p>
+
+<div class="chain"><b>推演链 B｜炼能</b>：中东炼厂受损 + 俄炼厂被袭 → 全球柴油库存降至 2003 年以来最低（9930 万桶，五年均值 −13%）→ 成品油比原油更紧 → 3-2-1 裂解价差一度突破 69 美元/桶（2010–2021 均值 19）→ <b>炼厂从"加工环节"变成"瓶颈资产"</b>。</div>
+<p style="font-size:13.5px;margin-top:0;color:var(--ink2)">→ 结论：油价高不等于炼厂赚，但<b>成品油紧</b>一定让炼厂赚。这两件事在本轮被彻底分开了——这也是为什么美股炼厂涨 118–142%，而上游只涨 39–48%。</p>
+
+<div class="chain"><b>推演链 C｜资金</b>：能源价格↑（美国同比 +20.4%）→ 通胀预期↑（9 月 CPI 环比 +0.6%，汽油贡献过半）→ 短端利率↑（油价上涨日 2y 累计 +196bp，净 +113bp）→ 长端期限溢价↑（10y 一度 4.78%）→ <b>久期资产贴现率抬升</b>。</div>
+<p style="font-size:13.5px;margin-top:0;color:var(--ink2)">→ 结论：这条链是"高油价"最容易被低估的杀伤面。它不通过油价打在能源股上，而是通过利率打在所有成长股上。</p>
+
+<div class="chain"><b>推演链 D｜能源安全</b>：单一通道风险暴露 → 各国补战略库存 + 建替代管道 + 要求冗余运力（东南亚、日本已在做）→ <b>结构性新增运输与储备需求</b>，且这部分需求与油价高低无关，只与"怕"有关。</div>
+
+<h3>② 什么在变便宜（过剩性暴露）</h3>
+<div class="tw"><table>
+<thead><tr><th style="width:30%">被重新定价的"便宜"</th><th>为什么</th></tr></thead>
+<tbody>
+<tr><td><b>"油价 = 成本"的线性定价</b></td><td>上游股价与油价的 beta 在下降（已被定价为 100 美元：XLE PE 19x vs 常态 16x），炼厂与运价的 beta 在上升。买"油价"这件事本身在贬值。</td></tr>
+<tr><td><b>一次性库存收益</b></td><td>中国石化前三季净利 +30% 里有"原油上行带来的库存增利"。油价一旦横盘，这块归零；若回落，反转为减值。</td></tr>
+<tr><td><b>"需求刚性"假设</b></td><td>战事以来全球消费已降约 330 万桶/日。需求不是不敏感，是反应慢。</td></tr>
+<tr><td><b>久期资产估值</b></td><td>10y 4.78% 的环境里，远期现金流最贵。AI/成长在"高油价"叙事里是被牺牲的一方，且这个传导是即时的。</td></tr>
+<tr><td><b>下游议价能力</b></td><td>航油占营业成本 30–40%，成本即时上行、票价滞后数月。三大航前三季合计亏损 84.35 亿元就是这条的账单。</td></tr>
+<tr><td><b>"亚洲炼厂成本优势"</b></td><td>30–35 美元/桶的运费吃掉了中东原油的贴水，美湾炼厂反而因近端重油（WCS、委内瑞拉）占优。这条套利逻辑被反转了。</td></tr>
+</tbody>
+</table></div>
+
+<h3>③ 什么逻辑失效了（旧框架的裂缝）</h3>
+<div class="tw"><table>
+<thead><tr><th style="width:34%">失效的旧框架</th><th>裂缝在哪</th></tr></thead>
+<tbody>
+<tr><td><b>供过于求 → 油价下跌</b></td><td>10 月全球过剩 140 万桶/日，布伦特仍在 90 上方。因为"过剩的桶"在波斯湾里，不可交付。<b>平衡表过剩 ≠ 现货宽松</b>，这是本轮最根本的裂缝。</td></tr>
+<tr><td><b>OPEC 闲置产能 = 价格天花板</b></td><td>OPEC+ 冻产，但实际产量持续低于配额（名义配额与有效供给之间存在差距）。闲置产能可以增产，但无法替代"通行权"。天花板失效。</td></tr>
+<tr><td><b>油价与航运股反向</b></td><td>油运与油价脱钩，与"通行摩擦"同向。11 月油价崩 24% 时，中远海能年内仍 +68.91%——因为运价没跟着崩。</td></tr>
+<tr><td><b>上游是油价的最高 beta</b></td><td>本轮最大赢家是炼厂（MPC +142%、VLO +119%、PSX +98%）而非上游（XOM +39%、CVX +42%）。弹性从上游迁移到了中游。</td></tr>
+<tr><td><b>通胀→加息→衰退→油价跌（自动稳定器）</b></td><td>供给冲击型通胀，货币政策只能压需求，无法修复供给。稳定器存在，但时滞 12–18 个月，且代价是滞胀。它最终会生效，只是不救当下。</td></tr>
+<tr><td><b>"高油价对中国石化是纯利好"</b></td><td>中国成品油定价机制设 130 美元天花板与 40 美元地板（据现行《石油价格管理办法》，需核实最新版本）。超过天花板后，炼化价差被政策压缩 + 特别收益金预期上升。<b>90–100 是最舒服区间，不是越高越好。</b></td></tr>
+</tbody>
+</table></div>
+
+<!-- ============ 6 扩散节点 ============ -->
+<h2><span class="num">06</span>+2 层：扩散节点（方向 · 时滞 · 确定性）</h2>
+<p class="h2note">「确定性」= 传导确定性，四档，与本篇配图同口径。前提：通行摩擦维持。</p>
+<div class="tw"><table>
+<thead><tr><th style="width:4%">#</th><th style="width:17%">节点</th><th style="width:18%">具体环节</th><th style="width:8%">方向</th><th style="width:13%">传导时滞</th><th style="width:11%">确定性</th><th>机制一句话</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><b>油轮运力</b></td><td>VLCC / 成品油轮 / STS 过驳</td><td class="bull">强利多</td><td>即时</td><td><span class="dot d-high"></span>高</td><td>「半通不通」是运价最优态：绕行拉长吨海里，STS 吸纳运力</td></tr>
+<tr><td>2</td><td><b>炼油（美湾）</b></td><td>柴油/航煤裂解、重油贴水</td><td class="bull">强利多</td><td>即时–3 月</td><td><span class="dot d-high"></span>高</td><td>柴油库存 2003 年来最低；WCS-WTI 每走阔 1 美元 PSX +1.4 亿</td></tr>
+<tr><td>3</td><td><b>资金/利率</b></td><td>短端利率、美元、新兴市场资本流</td><td class="bull">利多 ↑</td><td>即时</td><td><span class="dot d-high"></span>高</td><td>油价→通胀预期→2y；美银：涨日 2y 累计 +196bp</td></tr>
+<tr><td>4</td><td><b>航空/物流</b></td><td>航油、公路货运、快递</td><td class="bear">利空</td><td>即时</td><td><span class="dot d-high"></span>高</td><td>航油占成本 30–40%，提价滞后；三大航 9M 亏 84.35 亿</td></tr>
+<tr><td>5</td><td><b>化工下游</b></td><td>石脑油路线、化纤、塑料</td><td class="bear">利空</td><td>1–3 月</td><td><span class="dot d-high"></span>高</td><td>原料成本↑、下游需求弱，无法顺价；基础化工 Q3 利润环比 −35.27%</td></tr>
+<tr><td>6</td><td><b>上游（非中东）</b></td><td>美国页岩、巴西、圭亚那、加拿大</td><td class="bull">利多</td><td>即时–3 月</td><td><span class="dot d-mid"></span>中</td><td>售价随行就市、成本刚性；但已被定价（XLE PE 19x vs 16x）</td></tr>
+<tr><td>7</td><td><b>油服/工程</b></td><td>钻井、FPSO、海工</td><td class="bull">利多</td><td>3–12 月</td><td><span class="dot d-mid"></span>中</td><td>资本开支滞后油价 1–2 季度；海油工程在手订单 733 亿</td></tr>
+<tr><td>8</td><td><b>煤化工/替代</b></td><td>煤制烯烃、煤制油、煤制乙二醇</td><td class="bull">利多</td><td>即时–3 月</td><td><span class="dot d-mid"></span>中</td><td>盈利看油煤价差；高油价下煤制烯烃成本优势凸显，但是周期红利</td></tr>
+<tr><td>9</td><td><b>炼油（亚洲）</b></td><td>中国/印度/日韩炼厂</td><td class="unk">中性偏多</td><td>1–3 月</td><td><span class="dot d-mid"></span>中</td><td>产品价差好，但原料到岸成本被运费吃掉，且有政策天花板</td></tr>
+<tr><td>10</td><td><b>上游（中东）</b></td><td>海湾产油国</td><td class="unk">不确定</td><td>即时</td><td><span class="dot d-low"></span>低</td><td>价格高但产量/出口受限，量价对冲；须看实现油价与产量</td></tr>
+<tr><td>11</td><td><b>天然气/LNG</b></td><td>同一海峡、同一替代逻辑</td><td class="bull">利多</td><td>即时–3 月</td><td><span class="dot d-midlow"></span>中低</td><td>LNG 与原油共享通道风险，但长协定价滞后于现货</td></tr>
+<tr><td>12</td><td><b>新能源/EV</b></td><td>电动车、光伏、储能、核电</td><td class="bull">利多（结构）</td><td>3–12 月+</td><td><span class="dot d-mid"></span>中</td><td>高油价加速替代的经济性拐点，但兑现靠政策与产能周期</td></tr>
+<tr><td>13</td><td><b>可选消费/零售</b></td><td>出行、耐用品、餐饮</td><td class="bear">利空</td><td>3–12 月</td><td><span class="dot d-midlow"></span>中低</td><td>实际购买力被能源账单挤压，传导慢且被财政补贴缓冲</td></tr>
+<tr><td>14</td><td><b>政策响应</b></td><td>美国 SPR/许可、中国保供稳价、欧盟补贴</td><td class="unk">不确定</td><td>1–6 月</td><td><span class="dot d-midlow"></span>中低</td><td>SPR 已处低位、释放空间有限；政策方向决定「高位」能持续多久</td></tr>
+<tr><td>15</td><td><b>信用/高杠杆</b></td><td>高收益能源债、航空租赁</td><td class="bear">利空</td><td>3–12 月</td><td><span class="dot d-mid"></span>中</td><td>融资成本↑ + 现金流承压，利差走阔在盈利恶化之前</td></tr>
+</tbody>
+</table></div>
+
+<!-- ============ 7 标的映射 ============ -->
+<h2><span class="num">07</span>+3 层：投资标的映射</h2>
+<p class="h2note">范围：A 股 / 港股 / 美股 的个股、ETF、衍生品；多空双向。价格为 2026-11-10 收盘（港股/美股为当地收盘）。<b>「确定性」仍是传导确定性，非事件概率。</b></p>
+
+<h3>A 股</h3>
+<div class="tw"><table>
+<thead><tr><th style="width:19%">标的</th><th style="width:10%">代码</th><th style="width:13%">节点</th><th style="width:7%">方向</th><th style="width:11%">时间框架</th><th style="width:9%">确定性</th><th>逻辑一句话</th></tr></thead>
+<tbody>
+<tr><td>中国海油</td><td><code>600938</code></td><td>上游（纯）</td><td class="bull">多</td><td>即时–12 月</td><td><span class="dot d-high"></span>高</td><td>毛利率 53.89% 为三桶油最高，油价每上行 10 美元利润弹性最直接</td></tr>
+<tr><td>中国石油</td><td><code>601857</code></td><td>上游+天然气</td><td class="bull">多</td><td>即时–12 月</td><td><span class="dot d-high"></span>高</td><td>9M 归母 1557.76 亿（+21.9%），股息 4.31% 提供下行缓冲</td></tr>
+<tr><td>中国石化</td><td><code>600028</code></td><td>炼化</td><td class="unk">中性</td><td>1–3 月</td><td><span class="dot d-midlow"></span>中低</td><td>盈利含"库存增利"一次性成分，油价横盘则消失；PB 0.82 但缺弹性</td></tr>
+<tr><td>中海油服</td><td><code>601808</code></td><td>油服</td><td class="bull">多</td><td>3–12 月</td><td><span class="dot d-mid"></span>中</td><td>资本开支滞后兑现；年内 −10.38%，是链条里少见的"未涨"环节</td></tr>
+<tr><td>海油工程</td><td><code>600583</code></td><td>油服工程</td><td class="bull">多</td><td>3–12 月</td><td><span class="dot d-mid"></span>中</td><td>在手订单 733 亿、海外超 400 亿，管理层指引 2027–28 为工作量高峰</td></tr>
+<tr><td>招商轮船</td><td><code>601872</code></td><td>油运</td><td class="bull">多</td><td>即时–12 月</td><td><span class="dot d-high"></span>高</td><td>"横竖受益"：缓和则周转提升，紧张则运距拉长，双向都赚</td></tr>
+<tr><td>中远海能</td><td><code>600026</code></td><td>油运</td><td class="bull">多</td><td>即时–12 月</td><td><span class="dot d-high"></span>高</td><td>VLCC 弹性最大；H 股年内 +68.91%，是链上最强资产之一</td></tr>
+<tr><td>宝丰能源</td><td><code>600989</code></td><td>煤化工</td><td class="bull">多</td><td>1–3 月</td><td><span class="dot d-mid"></span>中</td><td>PE 9.17，油煤价差扩大直接增厚煤制烯烃毛利；但属周期红利</td></tr>
+<tr><td>中国神华</td><td><code>601088</code></td><td>替代/高股息</td><td class="bull">多</td><td>即时–12 月</td><td><span class="dot d-mid"></span>中</td><td>年内 +26.79%，"油价→煤价→高股息"的防御型载体</td></tr>
+<tr><td>中国国航</td><td><code>601111</code></td><td>航空</td><td class="bear">空/回避</td><td>即时</td><td><span class="dot d-high"></span>高</td><td>9M 亏 20.15 亿；年内 −31.48%，但空头拥挤度需警惕</td></tr>
+<tr><td>南方航空</td><td><code>600029</code></td><td>航空</td><td class="bear">空/回避</td><td>即时</td><td><span class="dot d-high"></span>高</td><td>航油每变动 1% → 成本变动 5.25 亿，弹性最大、亏损 43.05 亿最重</td></tr>
+<tr><td>万华化学</td><td><code>600309</code></td><td>化工（一体化）</td><td class="unk">中性</td><td>3–12 月</td><td><span class="dot d-midlow"></span>中低</td><td>成本承压但有定价权与一体化对冲，受损幅度小于纯下游</td></tr>
+<tr><td>石油ETF国泰</td><td><code>561360</code></td><td>一篮子油气</td><td class="bull">多</td><td>即时–12 月</td><td><span class="dot d-mid"></span>中</td><td>年内 +8.61%，11-10 逆势净流入 4486 万元；弹性弱于个股</td></tr>
+<tr><td>能源ETF</td><td><code>159930</code></td><td>能源宽基</td><td class="bull">多</td><td>即时–12 月</td><td><span class="dot d-mid"></span>中</td><td>年内 +13.70%，A 股能源类最优；含煤炭权重，分散单一油价</td></tr>
+</tbody>
+</table></div>
+
+<h3>港 股</h3>
+<div class="tw"><table>
+<thead><tr><th style="width:19%">标的</th><th style="width:10%">代码</th><th style="width:13%">节点</th><th style="width:7%">方向</th><th style="width:11%">时间框架</th><th style="width:9%">确定性</th><th>逻辑一句话</th></tr></thead>
+<tbody>
+<tr><td>中国海洋石油</td><td><code>00883</code></td><td>上游</td><td class="bull">多</td><td>即时–12 月</td><td><span class="dot d-high"></span>高</td><td>股息率 6.55%、PB 1.10，高油价 + 高利率环境下罕见的"抗通胀票息"</td></tr>
+<tr><td>中国石油股份</td><td><code>00857</code></td><td>上游</td><td class="bull">多</td><td>即时–12 月</td><td><span class="dot d-high"></span>高</td><td>年内 +29.24%、股息 5.84%、PB 0.97，H 股折价提供安全垫</td></tr>
+<tr><td>中国石油化工股份</td><td><code>00386</code></td><td>炼化</td><td class="unk">中性</td><td>1–3 月</td><td><span class="dot d-midlow"></span>中低</td><td>PB 0.59 极低，但盈利质量依赖库存收益与政策区间</td></tr>
+<tr><td>中海油田服务</td><td><code>02883</code></td><td>油服</td><td class="bull">多</td><td>3–12 月</td><td><span class="dot d-mid"></span>中</td><td>PE 7.43、PB 0.59，估值分位低，订单周期在 2027 兑现</td></tr>
+<tr><td>中远海能</td><td><code>01138</code></td><td>油运</td><td class="bull">多</td><td>即时–12 月</td><td><span class="dot d-high"></span>高</td><td>年内 +68.91%，VLCC 一年期期租曾维持 27 万美元/天以上</td></tr>
+<tr><td>昆仑能源</td><td><code>00135</code></td><td>天然气/LNG</td><td class="bull">多</td><td>3–12 月</td><td><span class="dot d-midlow"></span>中低</td><td>受益于"去海峡化"的天然气替代，但长协定价使弹性滞后</td></tr>
+<tr><td>兖矿能源</td><td><code>01171</code></td><td>煤炭/替代</td><td class="bull">多</td><td>1–3 月</td><td><span class="dot d-mid"></span>中</td><td>油气贵→煤代油，且高股息属性契合高利率环境</td></tr>
+<tr><td>中国国航</td><td><code>00753</code></td><td>航空</td><td class="unk">多·反转</td><td>3–12 月</td><td><span class="dot d-midlow"></span>中低</td><td>年内 −42.29%，悲观定价较充分；<b>但这是做多"摩擦消失"，与本篇主线相反</b></td></tr>
+<tr><td>中国东方航空股份</td><td><code>00670</code></td><td>航空</td><td class="unk">多·反转</td><td>3–12 月</td><td><span class="dot d-midlow"></span>中低</td><td>年内 −48.41%，弹性最大；11-05 油价破 95 时单日 +8.91%，跷跷板极陡</td></tr>
+</tbody>
+</table></div>
+
+<h3>美 股</h3>
+<div class="tw"><table>
+<thead><tr><th style="width:16%">标的</th><th style="width:9%">代码</th><th style="width:14%">节点</th><th style="width:7%">方向</th><th style="width:11%">时间框架</th><th style="width:9%">确定性</th><th>逻辑一句话</th></tr></thead>
+<tbody>
+<tr><td>马拉松石油</td><td><code>MPC</code></td><td>炼油</td><td class="bull">多</td><td>即时–12 月</td><td><span class="dot d-high"></span>高</td><td>年内 +142.31%，Q4 创纪录加工加拿大重油；管理层称高毛利至少延续至 2027 年中</td></tr>
+<tr><td>瓦莱罗能源</td><td><code>VLO</code></td><td>炼油</td><td class="bull">多</td><td>即时–12 月</td><td><span class="dot d-high"></span>高</td><td>年内 +118.61%，PE 7.98；管理层直言"市场的主线就是运费"</td></tr>
+<tr><td>Phillips 66</td><td><code>PSX</code></td><td>炼油</td><td class="bull">多</td><td>即时–12 月</td><td><span class="dot d-high"></span>高</td><td>WCS-WTI 每走阔 1 美元 → 收益 +1.4 亿美元；战前锁定 40 条期租船对冲运价</td></tr>
+<tr><td>埃克森美孚</td><td><code>XOM</code></td><td>一体化</td><td class="bull">多</td><td>即时–12 月</td><td><span class="dot d-mid"></span>中</td><td>年内 +39.40%，PE 16.92；一体化平滑弹性，是"低 beta 版能源"</td></tr>
+<tr><td>康菲石油</td><td><code>COP</code></td><td>上游</td><td class="bull">多</td><td>即时–12 月</td><td><span class="dot d-mid"></span>中</td><td>年内 +48.03%，纯上游弹性最佳；但对"溢价回吐"毫无防御</td></tr>
+<tr><td>斯伦贝谢</td><td><code>SLB</code></td><td>油服</td><td class="bull">多</td><td>3–12 月</td><td><span class="dot d-midlow"></span>中低</td><td>年内 +32.16%，但 OIH 仅 +26.18%，油服盈利仍与战前持平——订单未兑现</td></tr>
+<tr><td>VanEck 炼油 ETF</td><td><code>CRAK</code></td><td>炼油一篮子</td><td class="bull">多</td><td>即时–12 月</td><td><span class="dot d-high"></span>高</td><td>年内 +49.83%，规模从 3800 万膨胀至约 1.72 亿美元，含 Reliance/Neste 等海外炼厂</td></tr>
+<tr><td>能源精选 SPDR</td><td><code>XLE</code></td><td>能源宽基</td><td class="unk">谨慎</td><td>即时–12 月</td><td><span class="dot d-midlow"></span>中低</td><td>年内 +39.14%，但 <b>PE 19x vs 常态 16x —— 已被定价为"油价长期 100"</b></td></tr>
+<tr><td>油气开采 SPDR</td><td><code>XOP</code></td><td>中小上游</td><td class="unk">谨慎</td><td>即时–12 月</td><td><span class="dot d-low"></span>低</td><td>年内 +39.01%，偏离历史估值常态最远，溢价回吐时跌幅最大</td></tr>
+<tr><td>航空 ETF</td><td><code>JETS</code></td><td>航空</td><td class="bear">空</td><td>即时–6 月</td><td><span class="dot d-mid"></span>中</td><td>年内仅 +7.55%，但 9–10 月油价破百时单月 −13%；纯粹的高油价对冲工具</td></tr>
+<tr><td>达美航空</td><td><code>DAL</code></td><td>航空</td><td class="bear">空</td><td>即时–6 月</td><td><span class="dot d-mid"></span>中</td><td>PE 18.40 是航空里最贵，油价上行时估值 + 盈利双杀</td></tr>
+<tr><td>联邦快递</td><td><code>FDX</code></td><td>物流</td><td class="bear">空</td><td>1–6 月</td><td><span class="dot d-midlow"></span>中低</td><td>燃油附加费可部分转嫁，受损幅度小于航空，做空性价比一般</td></tr>
+<tr><td>特斯拉</td><td><code>TSLA</code></td><td>EV 替代</td><td class="bull">多·结构</td><td>3–12 月+</td><td><span class="dot d-low"></span>低</td><td>逻辑成立但被高利率压制——<b>这是本篇最典型的"逻辑对、时机错"</b></td></tr>
+<tr><td>Cameco</td><td><code>CCJ</code></td><td>铀/核电</td><td class="bull">多·结构</td><td>12 月+</td><td><span class="dot d-low"></span>低</td><td>能源安全 + 脱碳双驱动，与油价相关性弱，属"叙事受益"而非"现金流受益"</td></tr>
+</tbody>
+</table></div>
+
+<h3>衍生品与跨资产（有条件才用）</h3>
+<div class="tw"><table>
+<thead><tr><th style="width:26%">工具</th><th style="width:9%">方向</th><th style="width:12%">时间框架</th><th style="width:9%">确定性</th><th>结构与触发条件</th></tr></thead>
+<tbody>
+<tr><td>Brent 看涨价差（90/110 call spread）</td><td class="bull">多波动</td><td>3–6 月</td><td><span class="dot d-mid"></span>中</td><td>现价 89.5，若跌破 85 后地缘再起，价差结构优于单腿（成本低、亏损有限）。<b>不建议裸买虚值单腿</b>——隐含波动率仍在高位。</td></tr>
+<tr><td>柴油裂解价差（Gasoil crack）</td><td class="bull">多</td><td>1–6 月</td><td><span class="dot d-high"></span>高</td><td>库存 2003 年来最低 + 俄炼厂被袭，是整条链里<b>基本面最硬</b>的一段。ICE 低硫柴油近月曾单日 −84.5 美元/吨，回撤即机会。</td></tr>
+<tr><td>VLCC 远期运价（FFA）</td><td class="bull">多</td><td>3–12 月</td><td><span class="dot d-mid"></span>中</td><td>押"半通不通"维持；一旦全面复航，STS 体系解体、运力回流西方，运价会先冲高后崩塌。</td></tr>
+<tr><td>美债 2 年期付固定（BOA 建议）</td><td class="bull">空久期</td><td>3–6 月</td><td><span class="dot d-mid"></span>中</td><td>油→通胀→短端。风险在于：若需求破坏先到，加息预期落空，这个头寸会亏。</td></tr>
+<tr><td>做空 JETS / 做多 CRAK（配对）</td><td class="bull">对冲</td><td>1–6 月</td><td><span class="dot d-mid"></span>中</td><td>两端都在定价同一件事的两面，是相对干净的"摩擦持续"表达；缺点是两端都已拥挤。</td></tr>
+<tr><td>加元 / 挪威克朗</td><td class="bull">多</td><td>3–12 月</td><td><span class="dot d-midlow"></span>中低</td><td>能源出口国货币受益，但会被美元强势对冲掉大半。</td></tr>
+<tr><td>黄金</td><td class="unk">双向</td><td>—</td><td><span class="dot d-low"></span>低</td><td><b>逻辑冲突品种</b>：避险利多 vs 实际利率上行利空。Q3 央行购金 321 吨提供底部，但不宜作为"高油价"的表达工具。</td></tr>
+</tbody>
+</table></div>
+
+<!-- ============ 8 情景赔率 ============ -->
+<h2><span class="num">08</span>概率与赔率：市场把哪个世界定价得最少</h2>
+<p class="h2note">「越早识别，赔率越高；越晚确认，概率越高但赔率已薄」——这一节就是把这句话量化。</p>
+
+<figure>
+<svg viewBox="0 0 900 300" width="100%" style="max-width:900px;display:block;margin:0 auto;" role="img" aria-label="布伦特油价路径与EIA预测">
+  <g stroke="#E2E8F0" stroke-width="1">
+    <line x1="60" y1="210" x2="800" y2="210"/><line x1="60" y1="165" x2="800" y2="165"/>
+    <line x1="60" y1="120" x2="800" y2="120"/><line x1="60" y1="75" x2="800" y2="75"/>
+    <line x1="60" y1="30" x2="800" y2="30"/>
+  </g>
+  <g font-size="10" fill="#94A3B8" text-anchor="end">
+    <text x="52" y="214">60</text><text x="52" y="169">80</text><text x="52" y="124">100</text>
+    <text x="52" y="79">120</text><text x="52" y="34">140</text>
+  </g>
+  <g font-size="10" fill="#64748B" text-anchor="middle">
+    <text x="60" y="232">26/02</text><text x="126" y="232">26/04</text><text x="224" y="232">26/07</text>
+    <text x="322" y="232">26/10</text><text x="387" y="232">26/12</text><text x="583" y="232">27/06</text><text x="780" y="232">27/12</text>
+  </g>
+  <line x1="387" y1="24" x2="387" y2="216" stroke="#CBD5E1" stroke-dasharray="3 3"/>
+  <text x="392" y="20" font-size="9.5" fill="#94A3B8">今日</text>
+
+  <!-- 历史 -->
+  <polyline fill="none" stroke="#1E3A8A" stroke-width="2.4" stroke-linejoin="round"
+    points="60,185 126,34 224,190 322,59 351,80 364,132 375,144"/>
+  <g fill="#1E3A8A">
+    <circle cx="60" cy="185" r="3"/><circle cx="126" cy="34" r="3.4"/><circle cx="224" cy="190" r="3"/>
+    <circle cx="322" cy="59" r="3.4"/><circle cx="351" cy="80" r="3"/><circle cx="364" cy="132" r="3"/><circle cx="375" cy="144" r="4"/>
+  </g>
+  <g font-size="10" fill="#1E3A8A" font-weight="600">
+    <text x="66" y="180">71</text><text x="132" y="30">138</text><text x="230" y="200">69</text>
+    <text x="328" y="55">127</text><text x="355" y="76">117.6</text><text x="308" y="148">89.5</text>
+  </g>
+
+  <!-- 预测 -->
+  <polyline fill="none" stroke="#D97706" stroke-width="2" stroke-dasharray="6 4"
+    points="375,144 430,120 583,149 780,172"/>
+  <g fill="#D97706"><circle cx="430" cy="120" r="3"/><circle cx="583" cy="149" r="3"/><circle cx="780" cy="172" r="3"/></g>
+  <g font-size="10" fill="#B45309" font-weight="600">
+    <text x="438" y="115">~100 (EIA 26Q4)</text><text x="590" y="145">87 (27Q2)</text><text x="700" y="188">77 (27Q4)</text>
+  </g>
+  <text x="66" y="256" font-size="10.5" fill="#1E3A8A" font-weight="700">━ 实际路径（布伦特，混合口径）</text>
+  <text x="290" y="256" font-size="10.5" fill="#B45309" font-weight="700">┅ EIA 11月 STEO 预测</text>
+  <text x="560" y="256" font-size="10" fill="#94A3B8">单位：美元/桶</text>
+</svg>
+<figcaption>实际路径为布伦特期货/现货混合口径（2 月底战前约 71、4 月初约 138、7 月初约 69、10-14 约 127、10-30 收 117.64、11-10 盘中 89.53），仅作形态示意，不可用于精确回测。预测段来自 EIA 2026 年 11 月《短期能源展望》（2026 均价 97 / 2027 均价 86 / 2027Q2 87 / 2027Q4 77）。注意 EIA 认为 89.5 属于超跌，年内应回到 100 附近。</figcaption>
+</figure>
+
+<div class="tw"><table>
+<thead><tr><th style="width:22%">情景</th><th style="width:9%">主观概率</th><th style="width:14%">布伦特中枢</th><th style="width:17%">市场定价程度</th><th>最优表达</th></tr></thead>
+<tbody>
+<tr><td><b>A · 政治和解 + 物理快速复航</b><br><span style="font-size:11.5px;color:#64748B;">协议落地、水雷清扫、保费回落至 1% 以下</span></td><td><b>20%</b></td><td>70–80</td><td><span class="pill b">已充分定价</span> 市场主线</td><td class="bear">空上游/ETF、多港股三大航（−42% 至 −48% 已有安全垫）</td></tr>
+<tr><td><b>B · 政治和解 + 物理半通不通</b><br><span style="font-size:11.5px;color:#64748B;">有文件，但 STS/绕行/高保费成为新常态 6–9 个月</span></td><td><b>40%</b></td><td>85–95<br><span style="font-size:11.5px">高位震荡</span></td><td><span class="pill r">定价最不充分</span> ← <b>本篇核心判断</b></td><td class="bull">多油运（招商轮船/中远海能）、多炼油（CRAK/MPC）、多裂解价差；<b>不追上游</b></td></tr>
+<tr><td><b>C · 摩擦长期化 / 再升级</b><br><span style="font-size:11.5px;color:#64748B;">谈判破裂，基础设施被袭，通行量再降</span></td><td><b>20%</b></td><td>110–130</td><td><span class="pill a">部分定价</span> 期权隐含波动率高</td><td class="bull">多上游+油服，空航空；用 call spread 而非现货</td></tr>
+<tr><td><b>D · 需求破坏 + 供给弹性</b><br><span style="font-size:11.5px;color:#64748B;">消费已降 330 万桶/日，OPEC+ 增产，页岩 1430 万桶</span></td><td><b>20%</b></td><td>65–75</td><td><span class="pill a">部分定价</span> EIA 的 2027Q4=77 已在此附近</td><td class="bear">空 XOP/XLE（估值偏离常态最远）、空高收益能源债</td></tr>
+</tbody>
+</table></div>
+<p class="src">概率为主观赋权，非模型输出；定价程度依据：XLE PE 19x vs 常态 16x（ETF Copilot，2026-10-16）、港股航空年内 −42% 至 −48%、Polymarket 复航概率 12-31 仅 6.5%。</p>
+
+<div class="callout">
+  <div class="t">赔率结论：市场在交易 A，但世界大概率是 B</div>
+  <p>Polymarket 给"12 月 31 日前海峡恢复正常"只有 6.5%，Kalshi 的复航曲线到 2027 年底才 49%——<b>预测市场明确说"不会很快恢复正常"</b>。但股价在 11 月已经按"A 情景"跑了一遍（石油股崩、航空股涨 6–9%）。<br><br>
+  这个错位就是赔率所在：<b>不是赌"油价高"，是赌"摩擦比和解活得久"</b>。前者价格已经反复交易了 20%，后者才是结构性的、单调的、没有被单独定价的东西。</p>
+</div>
+
+<!-- ============ 9 反向声音 ============ -->
+<h2><span class="num">09</span>反向声音：这个推演最可能错在哪</h2>
+
+<div class="grid2">
+  <div class="box">
+    <div class="t">① 你买的可能不是"高油价"，是"已经定价的高油价"</div>
+    <p style="font-size:13px;margin:0;color:var(--ink2)">XLE 的 PE 已到 19x（常态 16x），XOP 偏离更远；港股三大航跌 42–48%。这条链的两端都已拥挤。<br><br>
+    <b>真正没被定价的是"中间态"</b>——政治和解了但物理没恢复。这个态对油运最优（运价不跌）、对油价中性偏高、对航空是"反弹但回不到原点"。所以如果要下注，应该下在 B 情景的窄带上，而不是押"油价 120"。</p>
+  </div>
+  <div class="box">
+    <div class="t">② 买"高油价"是错的，应该买"高摩擦"</div>
+    <p style="font-size:13px;margin:0;color:var(--ink2)">油价一个月能跌 24%（117.64→89.53），但战争险保费从 8% 回落、水雷清扫、STS 体系解体，这些是<b>单调的、有物理时滞的</b>。<br><br>
+    前者是价格（可被情绪瞬间抹平），后者是结构（只能被时间抹平）。<b>把仓位建在价格上，会在一周内被消灭；建在结构上，才有"越晚确认、概率越高但赔率越薄"的演进空间。</b></p>
+  </div>
+  <div class="box">
+    <div class="t">③ 中国标的有"政策天花板"，不是越高越好</div>
+    <p style="font-size:13px;margin:0;color:var(--ink2)">现行成品油定价机制设 130 美元上限、40 美元下限。Brent 在 90–100 区间时，中国炼化价差最舒服；超过 110 会被限价压缩 + 特别收益金预期上升。<br><br>
+    → <b>"油价越高、三桶油越赚"是错的</b>。买中国石化必须同时持有"价差修复"而非"油价上涨"的假设，而价差修复里含一次性库存收益，油价横盘即消失。</p>
+  </div>
+  <div class="box">
+    <div class="t">④ 需求破坏是自我实现的空头，且已经开始了</div>
+    <p style="font-size:13px;margin:0;color:var(--ink2)">战事以来全球石油消费已降约 330 万桶/日（JPM）。若 Brent 长期 &gt;100，破坏加速，12–18 个月后转为深度过剩——那时候"高位"命题自己就破产了。<br><br>
+    EIA 的 2027Q4 = 77 不是保守，是这条逻辑的终点。<b>所以"中长期高位"必须限定为 12–24 个月，说成 3–5 年就是另一个故事，而且是错的。</b></p>
+  </div>
+  <div class="box">
+    <div class="t">⑤ 最大的单点风险：一个协议 + 一次复航</div>
+    <p style="font-size:13px;margin:0;color:var(--ink2)">Polymarket 给"3 月 31 日前宣布结束封锁"66.5%。这不是小概率。<br><br>
+    一旦达成，油价可能在一周内回到 80 以下，油运、炼油的超额收益同时消失。这是本篇所有"高确定性"标注的<b>共同前提被击穿</b>的情形，且没有任何仓位结构能完全免疫——只能靠仓位大小。</p>
+  </div>
+  <div class="box">
+    <div class="t">⑥ 反身性：市场已经在交易"降级"，会自我加速</div>
+    <p style="font-size:13px;margin:0;color:var(--ink2)">11 月 4–10 日的暴跌不是基本面变化，是预期变化。而预期变化会让：<br>• 保险公司下调保费 → 实际摩擦下降<br>• 船东愿意复航 → 通行量真恢复<br>• 炼厂去库存 → 现货更宽松<br><br>
+    <b>即"预期"本身在物理层面制造"现实"。</b>这是本推演最脆弱的一环——它假设物理面独立于预期，但现实里不是。</p>
+  </div>
+</div>
+
+<!-- ============ 10 监控 ============ -->
+<h2><span class="num">10</span>监控清单：什么信号会让上面的判断改口</h2>
+<div class="tw"><table>
+<thead><tr><th style="width:24%">信号</th><th style="width:14%">当前读数</th><th style="width:16%">阈值</th><th>改口方向</th></tr></thead>
+<tbody>
+<tr><td>霍尔木兹 7 日平均通行船数（IMF PortWatch，每周二发布）</td><td>4.4 船/日（11-01）</td><td><b>&gt;20</b> 即摩擦显著缓解</td><td>转向 A 情景：撤油运、撤炼油、加航空</td></tr>
+<tr><td>海峡战争险保费</td><td><b>约 8%</b>（常态 0.15%）</td><td><b>&lt;2%</b></td><td>保费是"物理现实"的最诚实报价，比油价可靠</td></tr>
+<tr><td>中东原油出口量</td><td>约 900 万桶/日（峰值 &gt;1000）</td><td><b>&gt;1100 万桶/日</b> 持续 4 周</td><td>供给回归，溢价失去支点</td></tr>
+<tr><td>VLCC TD34 运价</td><td>600–900 点</td><td><b>&lt;400 点</b></td><td>油运逻辑终结（先于股价）</td></tr>
+<tr><td>ICE 柴油裂解价差 / 馏分油库存</td><td>库存 9930 万桶（2003 年来最低）</td><td>库存回补至五年均值 −5% 以内</td><td>炼油超额利润结束</td></tr>
+<tr><td>全球平衡表（JPM/EIA 月度）</td><td>10 月过剩 140 万桶/日</td><td>过剩 <b>&gt;200 万桶/日</b></td><td>D 情景启动，全面转空能源</td></tr>
+<tr><td>美国 CPI 环比 / 汽油分项</td><td>9 月 +0.6%，汽油贡献过半</td><td>核心环比连续 2 月 &lt;0.2%</td><td>加息预期落空，久期资产反而受益</td></tr>
+<tr><td>Polymarket「美伊霍尔木兹协议」</td><td>34.5%（至 12-31）</td><td><b>&gt;65%</b></td><td>正式协议临近，提前减仓</td></tr>
+</tbody>
+</table></div>
+
+<div class="callout" style="background:#F8FAFC;border-color:#CBD5E1;">
+  <div class="t" style="color:#334155;">最后一句：这个事件真正的赌注不是油价</div>
+  <p style="color:#475569;">如果霍尔木兹的"免费通行"时代确实结束了，那么被重新定价的是<b>整个全球化的运输成本假设</b>——原油只是第一个被发现的。下一个可能是 LNG、是集装箱、是粮食。而这个变化的方向是确定的，速度是不确定的。<br><br>
+  投资的难点从来不在"看懂结构"，而在"结构确定、时点不确定"的区间里，<b>用多大的仓位去承担这个不确定性</b>。这部分没人能替你做。</p>
+</div>
+
+<div class="disc">
+  <b>数据口径与免责</b><br>
+  · 价格为 2026-11-10 收盘（A 股/港股为当地收盘，美股为 11-10 美东收盘）；布伦特/WTI 为期货报价。<br>
+  · 预测市场概率为 Polymarket 2026-11-09 00:50 UTC 快照、Kalshi 复航曲线同期，随时变动，引用前须核对最新报价。<br>
+  · 运费（美湾→亚洲 30–35 美元/桶）、WCS-WTI 敏感性（PSX 每 1 美元增益 1.4 亿）、VLCC 期租等为业绩会/管理层口径，属非一手来源，需核实原文。<br>
+  · 中国成品油定价机制的天花板/地板数值依据现行《石油价格管理办法》（2016 年版框架），是否已修订需核实。<br>
+  · 情景概率为主观赋权，非模型输出，不构成对未来的预测。<br><br>
+  <b>免责声明</b>：以上内容基于公开数据和量化分析，仅供参考，不构成投资建议。市场有风险，投资需谨慎。任何投资决策应结合个人风险承受能力、资金状况和投资目标独立判断，必要时咨询持牌专业机构。过往表现不预示未来收益。
+</div>
+
+</div>
+<div class="hubfoot"><p><a href="https://zcxxcz.github.io/">← 返回内容索引</a> · 全文基于公开数据推演，不构成投资建议。</p></div>
+</body>
+</html>
