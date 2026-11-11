@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#182d32">
+<meta name="description" content="以代码营造一座故宫角楼。三重檐、十字歇山、琉璃瓦与护城河，清晨、黄昏、雪夜的三维漫游。">
+<title>角楼 · 一城春秋</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23182d32'/%3E%3Cpath d='M8 44Q32 48 56 44L43 34H21ZM14 30Q32 34 50 30L38 20H26ZM22 17L32 8L42 17' fill='%23ddba79'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
+</head>
+<body>
+<main id="experience">
+  <div id="scene" role="img" aria-label="故宫角楼三维场景：鼠标拖动旋转、滚轮缩放；触屏单指旋转，双指缩放"></div>
+  <div class="vignette" aria-hidden="true"></div>
+  <header class="masthead"><a class="brand" href="/" aria-label="返回内容与作品"><span class="seal">营</span><span>以码营造 <i>ARCHITECTURE IN CODE</i></span></a><button id="about-open" class="text-button">建筑手记 <span>↗</span></button></header>
+  <section class="title-block" aria-labelledby="title"><p class="eyebrow">紫禁城 · 东北隅 <span>BEIJING, 1420</span></p><h1 id="title">角楼</h1><p class="subtitle">一城春秋，尽在檐下。</p><div class="hairline"></div><p class="intro">三重飞檐叠起六百年光阴。<br>让目光越过城垣，沿一池水慢慢走。</p></section>
+  <aside class="scene-note" aria-live="polite"><span class="note-line"></span><p id="scene-poem">晨光初上，金瓦映水。</p><small id="scene-time">卯时 · 清晨</small></aside>
+  <div class="compass" aria-hidden="true"><span>北</span><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="31"/><path d="M40 3V13M40 67V77M3 40H13M67 40H77"/><g id="compass-needle"><path class="needle" d="M40 17L45 45L40 40L35 45Z"/><path d="M40 63V43"/></g></svg></div>
+  <footer class="bottom-bar">
+    <div class="mode-picker" role="group" aria-label="选择光景"><button data-mode="morning" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="M3 17H21M6 14a6 6 0 0112 0M12 2V5M3 7L5 9M21 7L19 9M1 13H4M20 13H23"/></svg><span>清晨</span><small>DAWN</small></button><button data-mode="dusk" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M3 17H21M5 21H19M6 14a6 6 0 0112 0M12 2V5M3 7L5 9M21 7L19 9"/></svg><span>黄昏</span><small>DUSK</small></button><button data-mode="snow" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M12 2V22M3.34 7L20.66 17M3.34 17L20.66 7M9 4L12 7L15 4M9 20L12 17L15 20M4 10L8 9L7 5M20 14L16 15L17 19M4 14L8 15L7 19M20 10L16 9L17 5"/></svg><span>雪夜</span><small>SNOW</small></button></div>
+    <div class="view-controls"><button id="orbit" aria-pressed="false" title="自动环绕一周"><span class="orbit-icon">◎</span><span id="orbit-label">环游一周</span></button><span class="control-divider"></span><button id="reset" title="回到初始视角" aria-label="回到初始视角">↺</button><button id="immersive" title="切换纯净视野" aria-label="切换纯净视野" aria-pressed="false">⛶</button></div>
+  </footer>
+  <div class="interaction-hint"><span class="mouse-icon"></span>拖动环视 <b>·</b> 滚轮远近 <b>·</b> <button id="details-toggle" aria-pressed="false">看屋脊</button></div>
+  <div id="loading" role="status"><div class="loader-roof">⌃</div><p>正在起檐落瓦</p><small>以代码，重访一城春秋</small></div>
+  <div id="error" hidden role="alert"><h2>暂时无法绘制三维场景</h2><p>请使用支持 WebGL 2 的浏览器，并开启硬件加速。</p><button onclick="location.reload()">重新加载</button></div>
+  <noscript>请启用 JavaScript，以观看并操作故宫角楼三维场景。</noscript>
+</main>
+<dialog id="about"><form method="dialog"><button class="close" aria-label="关闭建筑手记">×</button></form><p class="eyebrow">FIELD NOTES / 01</p><h2>于方寸间，<br>再起一座角楼。</h2><p>这是以故宫东北角楼为对象的程序化建筑习作。建筑、瓦垄、纹样、积雪与水面均由代码生成；照片只用于观察，没有作为场景贴图。</p><div class="facts"><div><strong>三重檐</strong><span>中央十字歇山与四面抱厦交叠，内外抱厦进深不同。</span></div><div><strong>七十二脊</strong><span>模型以 72 条独立脊线组织正脊、角脊、垂脊与屋面交接；可用「看屋脊」高亮。</span></div><div><strong>斗拱与彩画</strong><span>檐下叠置斗、拱、昂，按上层七踩与中下层五踩的层次组织；梁枋绘青绿、金线旋纹。</span></div><div><strong>琉璃与水</strong><span>瓦垄逐列起伏，金黄釉色随光线变化；护城河实时反射建筑与天空。</span></div></div><p class="disclaimer">参考公开尺寸、屋顶平面与实拍建立外观模型。构件雕饰、彩画和部分脊线交接经过几何简化，不作为文物测绘或修缮依据。</p><h3>建筑资料与实拍</h3><ol class="sources"><li><a href="https://www.dpm.org.cn/explore/building/236522.html" target="_blank" rel="noopener">故宫博物院 · 角楼 <span>建筑说明 / 官方实拍 ↗</span></a></li><li><a href="https://www.dpm.org.cn/Uploads/File/2020/02/19/u5e4d00111f849.pdf" target="_blank" rel="noopener">高甜 · 故宫西南角楼明、清瓦件对比 <span>屋顶平面 / 吻兽细部 ↗</span></a></li><li><a href="https://www.dpm.org.cn/Uploads/File/pdf/ad/e0/be/ade0be6221b917ee0c05c58ff2173042.pdf" target="_blank" rel="noopener">故宫博物院刊物 · 角楼构造 <span>翼角与屋脊资料 ↗</span></a></li></ol><p class="credits">程序化建模 · Three.js / WebGL<br>单指旋转，双指缩放；方向键旋转，＋ / －缩放，Esc 退出纯净视野。</p></dialog>
+<script type="module" src="scene.js"></script>
+</body></html>

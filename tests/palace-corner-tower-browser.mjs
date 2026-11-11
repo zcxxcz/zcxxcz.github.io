@@ -1,0 +1,80 @@
+/** Focused integration checks for the code-built corner tower. Run after npm run build. */
+import { chromium } from 'playwright';
+import assert from 'node:assert/strict';
+import { spawn } from 'node:child_process';
+import { mkdir } from 'node:fs/promises';
+const port=4187, base=`http://127.0.0.1:${port}`;
+const server=spawn(process.execPath,['scripts/serve.mjs'],{env:{...process.env,PORT:String(port)},stdio:'ignore'});
+let browser;
+try{
+  for(let i=0;i<60;i++){try{if((await fetch(base)).ok)break;}catch{}await new Promise(r=>setTimeout(r,200));}
+  browser=await chromium.launch({headless:true,args:process.platform==='darwin'?['--use-angle=metal']:[]});
+  const page=await browser.newPage({viewport:{width:1440,height:1000},deviceScaleFactor:1});
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+  const requests=[];page.on('request',r=>requests.push(r.url()));
+  await page.goto(`${base}/content/palace-corner-tower/`);
+  await page.waitForFunction(()=>window.cornerTower?.state.ready,{},{timeout:60000});
+  assert.equal(await page.title(),'角楼 · 一城春秋');
+  const initial=await page.evaluate(()=>window.cornerTower.state);
+  assert.equal(initial.ridges,72);assert.equal(initial.gables,10);assert.deepEqual(initial.tiers,{1:24,2:32,3:16});assert.equal(initial.reflection,true);
+  assert.equal(initial.mode,'morning');
+  await mkdir('work/corner-tower',{recursive:true});
+  await page.screenshot({path:'work/corner-tower/morning.png'});
+  await page.getByRole('button',{name:'黄昏'}).click();
+  await page.waitForFunction(()=>document.body.dataset.mode==='dusk');
+  await page.waitForTimeout(2400);
+  await page.screenshot({path:'work/corner-tower/dusk.png'});
+  await page.getByRole('button',{name:'雪夜'}).click();
+  await page.waitForFunction(()=>window.cornerTower.state.snowCover>.99,{},{timeout:30000});
+  assert.equal(await page.evaluate(()=>window.cornerTower.state.snow),true);
+  await page.screenshot({path:'work/corner-tower/snow.png'});
+  await page.getByRole('button',{name:'看屋脊',exact:true}).click();
+  assert.equal(await page.getByRole('button',{name:'72 脊 · 收起'}).getAttribute('aria-pressed'),'true');
+  await page.getByRole('button',{name:'72 脊 · 收起'}).click();
+  console.log('Moods and roof topology verified; checking complete orbit.');
+  await page.getByRole('button',{name:/环游一周/}).click();
+  await page.waitForFunction(()=>window.cornerTower.state.orbiting);
+  await page.waitForFunction(a=>Math.abs(window.cornerTower.state.azimuth-a)>.04,initial.azimuth,{timeout:15000});
+  // The full circle must end by itself and return to its starting azimuth.
+  await page.waitForFunction(()=>!window.cornerTower.state.orbiting,{},{timeout:60000});
+  console.log('Complete orbit finished; checking manual controls and touch.');
+  const completed=await page.evaluate(()=>window.cornerTower.state);
+  assert.ok(Math.abs(completed.azimuth-initial.azimuth)<.04,'automatic orbit returns to its start');
+  await page.getByRole('button',{name:/环游一周/}).click();
+  await page.mouse.move(800,400);await page.mouse.down();await page.mouse.move(950,450,{steps:6});await page.mouse.up();
+  assert.equal(await page.evaluate(()=>window.cornerTower.state.orbiting),false);
+  assert.ok(Math.abs((await page.evaluate(()=>window.cornerTower.state)).azimuth-initial.azimuth)>.05,'manual drag rotates the camera');
+  const oldDistance=await page.evaluate(()=>window.cornerTower.state.camera);
+  await page.mouse.wheel(0,-450);await page.waitForTimeout(600);
+  const newDistance=await page.evaluate(()=>window.cornerTower.state.camera);
+  assert.notDeepEqual(newDistance,oldDistance,'wheel zoom changes camera');
+  await page.getByRole('button',{name:'回到初始视角'}).click();
+  await page.getByRole('button',{name:'切换纯净视野'}).click();assert.equal(await page.locator('body').getAttribute('class'),'clean');
+  await page.keyboard.press('Escape');assert.equal(await page.locator('body').getAttribute('class'),'');
+  await page.getByRole('button',{name:'建筑手记'}).click();assert.equal(await page.locator('dialog').evaluate(el=>el.open),true);
+  assert.equal(await page.locator('dialog a').count(),3);await page.getByRole('button',{name:'关闭建筑手记'}).click();
+  await page.getByRole('button',{name:'清晨'}).click();await page.waitForFunction(()=>window.cornerTower.state.snowCover<.01,{},{timeout:30000});
+  assert.equal(await page.evaluate(()=>window.cornerTower.state.snow),false);
+  assert.ok(requests.every(r=>r.startsWith(base)||r.startsWith('data:')),'no remote runtime assets');
+  await page.close();
+  const phone=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true,reducedMotion:'reduce'});
+  phone.on('pageerror',e=>{errors.push(e.message);console.error('Mobile page error:',e.message);});
+  assert.equal((await phone.goto(`${base}/content/palace-corner-tower/`)).status(),200);await phone.waitForFunction(()=>window.cornerTower?.state.ready,{},{timeout:60000});
+  const light=await phone.evaluate(()=>window.cornerTower.state.lighting);
+  assert.ok(Number.isFinite(light.exposure)&&light.exposure>0&&light.exposure<3,'reduced-motion first frame has bounded positive exposure');
+  for(const key of ['sun','hemi','fog','sky'])assert.ok(light[key].every(c=>Number.isFinite(c)&&c>=0&&c<=1),'lighting colors remain in gamut');
+  assert.equal(await phone.evaluate(()=>document.documentElement.scrollWidth),390);
+  for(const label of ['清晨','黄昏','雪夜']){const b=phone.getByRole('button',{name:label});assert.equal(await b.isVisible(),true);const r=await b.boundingBox();assert.ok(r.x>=0&&r.x+r.width<=390);}
+  await phone.getByRole('button',{name:'雪夜'}).click();await phone.waitForFunction(()=>window.cornerTower.state.snowCover>.99);
+  await phone.screenshot({path:'work/corner-tower/mobile.png'});
+  // A native touch drag must reach OrbitControls and rotate the camera.
+  const beforeTouch=await phone.evaluate(()=>window.cornerTower.state.azimuth);
+  const cdp=await phone.context().newCDPSession(phone);
+  await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:180,y:430}]});
+  for(let x=190;x<=270;x+=20)await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x,y:440}]});
+  await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  await phone.waitForFunction(a=>Math.abs(window.cornerTower.state.azimuth-a)>.04,beforeTouch);
+  assert.ok(requests.every(r=>r.startsWith(base)||r.startsWith('data:')),'no remote runtime assets');
+  assert.deepEqual(errors,[]);
+  console.log('Corner tower: 72 ridges, 3 moods, snow, reflection, complete orbit, drag/zoom, touch, mobile and dialog checks passed.');
+}finally{await browser?.close();server.kill();}
