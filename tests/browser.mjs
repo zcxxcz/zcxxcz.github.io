@@ -1,5 +1,6 @@
 import { checkHnReplay } from "./hn-replay-browser.mjs";
 import { checkOiAiLabs } from "./oi-ai-labs-browser.mjs";
+import { checkKerrLab } from "./kerr-browser.mjs";
 import { chromium } from "playwright";
 import { spawn } from "node:child_process";
 import assert from "node:assert/strict";
@@ -163,6 +164,7 @@ try {
   await page.locator(".featured").scrollIntoViewIfNeeded();
   await page.screenshot({ path: "work/screenshots/home-sections-desktop.png" });
   await checkOiAiLabs(browser);
+  await checkKerrLab(browser);
   await checkHnReplay(browser);
   assert.deepEqual(errors, []);
   console.log(
