@@ -12,6 +12,7 @@ let rayWidth=0, rayHeight=0, dirty=true, paint=true, dragging=false, settleTimer
 let raf=0, lastTime=0, elapsed=0, frameCount=0, fpsStart=0, solveCount=0;
 let timerExt, pendingQuery, gpuMs=null, pixelLimit=coarse ? 95000 : 230000;
 let running=false, contextLost=false;
+let solvedState=null;
 const uniforms = new WeakMap();
 function program(fragment) {
   const result=gl.createProgram();
@@ -83,6 +84,7 @@ function solve() {
   if(timerExt && !pendingQuery){pendingQuery=gl.createQuery();gl.beginQuery(timerExt.TIME_ELAPSED_EXT,pendingQuery);}
   gl.drawArrays(gl.TRIANGLES,0,3);
   if(timerExt && pendingQuery && gl.getQuery(timerExt.TIME_ELAPSED_EXT,gl.CURRENT_QUERY))gl.endQuery(timerExt.TIME_ELAPSED_EXT);
+  solvedState={spin:state.spin,inclination:state.inclination,mode:state.mode,quality:state.quality};
   solveCount++;dirty=false;paint=true;
   $('solver-status').textContent=`克尔测地线 · RK4 / ${settings[1]}`;
 }
@@ -182,8 +184,9 @@ $('diagnostic').addEventListener('click',()=>{state.diagnostic=!state.diagnostic
 $('pause').addEventListener('click',()=>{state.paused=!state.paused;paint=true;sync();});
 $('reset').addEventListener('click',()=>{Object.assign(state,{spin:.8,inclination:72,azimuth:0,zoom:1});invalidate();});
 $('fullscreen').addEventListener('click',async()=>{
-  try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else{$('model-dialog').showModal();}}catch{}
+  try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();}catch{}
 });
+if(!document.documentElement.requestFullscreen)$('fullscreen').hidden=true;
 const dialog=$('model-dialog');
 $('about').addEventListener('click',()=>dialog.showModal());$('close-dialog').addEventListener('click',()=>dialog.close());
 dialog.addEventListener('click',e=>{if(e.target===dialog){const b=dialog.getBoundingClientRect();if(e.clientX<b.left || e.clientX>b.right || e.clientY<b.top || e.clientY>b.bottom)dialog.close();}});
@@ -217,7 +220,7 @@ window.addEventListener('pageshow',()=>{if(running && !raf)raf=requestAnimationF
 canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();contextLost=true;cancelAnimationFrame(raf);$('solver-status').textContent='GPU 上下文暂时丢失，等待恢复';});
 canvas.addEventListener('webglcontextrestored',start);
 // Read-only numerical inspection for reproducible GPU/browser validation.
-window.kerrLab=Object.freeze({get state(){return {...state};},get stats(){return {rayWidth,rayHeight,solveCount,gpuMs,running,effectiveZoom:state.zoom*Math.min(1,rayWidth/rayHeight/1.5)};},
+window.kerrLab=Object.freeze({get state(){return {...state};},get stats(){return {rayWidth,rayHeight,solveCount,gpuMs,running,solvedState:solvedState ? {...solvedState} : null,effectiveZoom:state.zoom*Math.min(1,rayWidth/rayHeight/1.5)};},
   sample(x,y){
     if(!gl || contextLost)throw Error('GPU unavailable');
     const hit=new Float32Array(4),meta=new Float32Array(4);

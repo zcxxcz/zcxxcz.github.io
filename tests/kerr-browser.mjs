@@ -37,14 +37,14 @@ export async function checkKerrLab(browser,base='http://127.0.0.1:4173/content/k
   assert.equal(await page.locator('#diagnostic').getAttribute('aria-pressed'),'true');
   await page.locator('#diagnostic').click();
   await page.locator('[data-mode="2"]').click();
-  await page.waitForFunction(n=>window.kerrLab.stats.solveCount>n,count);
+  await page.waitForFunction(()=>window.kerrLab.stats.solvedState?.mode===2);
   await page.setViewportSize({width:960,height:680});
   await page.locator('#quality').selectOption('high');
+  await page.waitForFunction(()=>window.kerrLab.stats.solvedState?.quality==='high');
   // Compare GPU capture/escape decisions to an independent double-precision run.
   for(const a of [-.998,0,.998]){
-    const old=await page.evaluate(()=>window.kerrLab.stats.solveCount);
     await page.locator('#spin').evaluate((el,value)=>{el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}));},String(a));
-    await page.waitForFunction(n=>window.kerrLab.stats.solveCount>n,old);
+    await page.waitForFunction(a=>window.kerrLab.stats.solvedState?.spin===a,a);
     const data=await page.evaluate(()=>({state:window.kerrLab.state,stats:window.kerrLab.stats,
       samples:[[.35,.5],[.45,.6],[.5,.5],[.6,.6],[.7,.7]].map(([x,y])=>({x,y,...window.kerrLab.sample(x,y)}))}));
     for(const sample of data.samples){
@@ -52,7 +52,7 @@ export async function checkKerrLab(browser,base='http://127.0.0.1:4173/content/k
       const px=Math.floor(sample.x*w)+.5,py=Math.floor(sample.y*h)+.5;
       const ray=cameraRay((2*px-w)/h*12.5/z,(2*py-h)/h*12.5/z,a,data.state.inclination*Math.PI/180);
       const ref=traceRay({a,...ray,h:.0005,maxSteps:15000});
-      assert.equal(sample.meta[2],ref.kind==='captured' ? 2 : 3,`CPU/GPU capture at spin ${a}`);
+      assert.equal(sample.meta[2],ref.kind==='captured' ? 2 : 3,`CPU/GPU capture at spin ${a}, pixel (${sample.x}, ${sample.y})`);
       assert.ok(sample.meta[3]<.003);
       if(ref.kind==='escaped')assert.ok(Math.abs(sample.meta[0]-ref.z[1])<.015,'escaped sky latitude agrees');
     }
