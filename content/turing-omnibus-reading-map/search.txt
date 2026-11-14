@@ -1,0 +1,76 @@
+算法与复杂度。全书的地基：先学会“怎样衡量一个算法的好坏”，后面的 NP、可计算性都以此为前提。
+编程思想。递归、模拟、正确性、系统与逻辑式编程。64 章建议在“逻辑基础”之后回头补读。
+逻辑基础。只有三章，但哥德尔定理是后面“不可计算”的思想源头。
+数字电路与计算机体系结构。从布尔表达式一路搭到一台简化计算机，再看 VLSI 与并行。33 章是模拟计算，当作对照读。
+语言与自动机。由弱到强：有限自动机 → 乔姆斯基层级，是通往图灵机的台阶。
+可计算性。全书的理论高点：从抽象机器到停机问题，再到丘奇论题。
+NP 完备性。接在可计算性之后：问题“能算”之后，再问“算得快不快”。
+信息、编码与安全。压缩、纠错、加密、哈希、检索，彼此独立，可以挑着读。
+数值方法。偏数学的一组，和前面的离散部分关系较松。
+人工智能、学习、图形与复杂系统。应用味最浓，放在最后当作“收获”读。
+第 1 章 算法 · Cooking Up Programs · 原书第 1 页
+第 15 章 时间与空间复杂度 · The Big-O Notation · 原书第 96 页
+第 11 章 搜索树 · Traversal and Maintenance · 原书第 69 页
+第 40 章 堆与归并 · The Fastest Sorts of Sorts · 原书第 269 页
+第 35 章 顺序排序 · A Lower Bound on Speed · 原书第 237 页
+第 22 章 最小生成树 · A Fast Algorithm · 原书第 146 页
+第 30 章 划分问题 · A Pseudo-fast Algorithm · 原书第 201 页
+第 50 章 素数检测 · An Algorithm that Almost Always Works · 原书第 335 页
+第 55 章 迭代与递归 · The Towers of Hanoi · 原书第 363 页
+第 24 章 递归 · The Sierpinski Curve · 原书第 159 页
+第 4 章 模拟 · The Monte Carlo Method · 原书第 22 页
+第 10 章 程序正确性 · Ultimate Debugging · 原书第 63 页
+第 53 章 磁盘操作系统 · Bootstrapping the Computer · 原书第 351 页
+第 60 章 计算机病毒 · A Software Invasion · 原书第 396 页
+第 64 章 逻辑编程 · Prologue to Expertise · 原书第 420 页
+第 3 章 逻辑系统 · Boolean Bases · 原书第 14 页
+第 5 章 哥德尔定理 · Limits on Logic · 原书第 29 页
+第 58 章 谓词演算 · The Resolution Method · 原书第 382 页
+第 13 章 布尔逻辑 · Expressions and Circuits · 原书第 82 页
+第 20 章 卡诺图 · Circuit Minimization · 原书第 131 页
+第 28 章 编码器与多路复用器 · Manipulating Memory · 原书第 188 页
+第 38 章 时序电路 · A Computer Memory · 原书第 258 页
+第 48 章 SCRAM 简化计算机 · A Simplified Computer · 原书第 321 页
+第 56 章 VLSI 计算机 · Circuits in Silicon · 原书第 368 页
+第 62 章 并行计算 · Processors with Connections · 原书第 408 页
+第 33 章 模拟计算 · Spaghetti Computers · 原书第 223 页
+第 2 章 有限自动机 · The Black Box · 原书第 8 页
+第 7 章 乔姆斯基层级 · Four Computers · 原书第 42 页
+第 14 章 正则语言 · Pumping Words · 原书第 91 页
+第 26 章 非确定性 · Automata That Guess Correctly · 原书第 174 页
+第 23 章 生成文法 · Lindenmayer Systems · 原书第 152 页
+第 17 章 随机存取机 · An Abstract Computer · 原书第 109 页
+第 31 章 图灵机 · The Simplest Computers · 原书第 207 页
+第 51 章 通用图灵机 · Computers as Programs · 原书第 339 页
+第 39 章 不可计算函数 · The Busy Beaver Problem · 原书第 265 页
+第 59 章 停机问题 · The Uncomputable · 原书第 391 页
+第 63 章 字问题 · Dictionaries as Programs · 原书第 415 页
+第 66 章 丘奇论题 · All Computers Are Created Equal · 原书第 434 页
+第 34 章 可满足性 · A Central Problem · 原书第 231 页
+第 41 章 NP 完备性 · The Wall of Intractability · 原书第 276 页
+第 45 章 库克定理 · Nuts and Bolts · 原书第 301 页
+第 54 章 NP 完全问题 · The Tree of Intractability · 原书第 357 页
+第 49 章 香农理论 · The Elusive Codes · 原书第 329 页
+第 8 章 随机数 · The Chaitin-Kolmogoroff Theory · 原书第 49 页
+第 12 章 纠错码 · Pictures from Space · 原书第 77 页
+第 52 章 文本压缩 · Huffman Coding · 原书第 345 页
+第 43 章 哈希存储 · The Key Is The Address · 原书第 288 页
+第 61 章 字符串搜索 · The Boyer-Moore Algorithm · 原书第 403 页
+第 65 章 关系数据库 · Do-It-Yourself Queries · 原书第 427 页
+第 42 章 计算用数制 · Chinese Arithmetic · 原书第 282 页
+第 37 章 公钥密码 · Intractable Secrets · 原书第 250 页
+第 21 章 牛顿—拉弗森法 · Finding Roots · 原书第 139 页
+第 18 章 样条曲线 · Smooth Interpolation · 原书第 116 页
+第 25 章 快速乘法 · Divide and Conquer · 原书第 167 页
+第 32 章 快速傅里叶变换 · Redistributing Images · 原书第 217 页
+第 57 章 线性规划 · The Simplex Method · 原书第 374 页
+第 6 章 博弈树 · The Minimax Method · 原书第 36 页
+第 16 章 遗传算法 · Solutions That Evolve · 原书第 103 页
+第 27 章 感知机 · A Lack of Vision · 原书第 181 页
+第 36 章 会学习的神经网络 · Converting Coordinates · 原书第 241 页
+第 19 章 计算机视觉 · Polyhedral Scenes · 原书第 121 页
+第 9 章 数学研究：曼德博集 · The Mandelbrot Set · 原书第 56 页
+第 44 章 元胞自动机 · The Game of Life · 原书第 295 页
+第 46 章 自复制计算机 · Codd’s Machine · 原书第 307 页
+第 47 章 图像存储 · A Cat in a Quad Tree · 原书第 315 页
+第 29 章 CT 扫描 · Cross-Sectional X-Rays · 原书第 193 页

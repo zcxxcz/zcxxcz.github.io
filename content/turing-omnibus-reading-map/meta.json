@@ -1,0 +1,17 @@
+{
+  "id": "turing-omnibus-reading-map",
+  "title": "The New Turing Omnibus 分组阅读地图",
+  "type": "资料",
+  "format": "html",
+  "status": "published",
+  "summary": "把 A. K. Dewdney 的 66 个计算机科学专题重组为 10 站，标出推荐主线、原书页码和相关专栏，并可勾选记录阅读进度。",
+  "tags": [
+    "文章与资料",
+    "信奥",
+    "计算机科学",
+    "亲子共读",
+    "阅读路线"
+  ],
+  "updated": "2026-11-14",
+  "featured": false
+}
