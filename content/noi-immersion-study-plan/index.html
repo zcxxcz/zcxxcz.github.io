@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>信奥到 NOI 级：渗透学习法规划</title>
+<style>
+:root{--bg:#f4f7f8;--ink:#162329;--mut:#5a6b73;--ln:#cfdadd;--ac:#0e7c86;--pn:#fff;--lt:#fff;--l1:#e4f1f2;--l2:#c4e2e4;--l3:#97cdd1;--l4:#5fb0b7;--l5:#0e7c86;--ok:#e7f4ea}
+@media(prefers-color-scheme:dark){:root{--bg:#101a1e;--ink:#e3edf0;--mut:#93a6ad;--ln:#2b3c42;--ac:#4fc0c9;--pn:#16242a;--lt:#08181c;--l1:#1d3238;--l2:#21474f;--l3:#2a626d;--l4:#34808c;--l5:#4fc0c9;--ok:#173324}}
+*{box-sizing:border-box}
+html{color-scheme:light dark}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 -apple-system,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif}
+main{max-width:980px;margin:0 auto;padding:32px 18px 64px}
+h1,h2{font-family:"Noto Serif SC","Source Han Serif SC","Songti SC",SimSun,serif;line-height:1.3}
+h1{font-size:clamp(28px,5vw,42px);margin:.2em 0 .3em}
+h2{font-size:24px;margin:2.2em 0 .6em}
+p{margin:.5em 0;max-width:68ch}
+.mut{color:var(--mut);font-size:14px}
+.w{overflow-x:auto;border:1px solid var(--ln);border-radius:6px;background:var(--pn)}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--ln);text-align:left;vertical-align:top}
+thead th{position:sticky;top:0;background:var(--pn);border-bottom:2px solid var(--ln);font-size:14px;color:var(--mut)}
+td.k{font-weight:700;white-space:nowrap}
+.gh th{background:var(--l1);color:var(--ink);font-size:15px}
+tr.ok td:first-child{box-shadow:inset 4px 0 var(--ac)}
+tr.ok{background:var(--ok)}
+small{display:block;color:var(--mut);font-size:12px}
+input,select,button{font:inherit;color:inherit}
+input[type=text],input[type=date],select{width:100%;min-width:90px;padding:4px 6px;border:1px solid var(--ln);border-radius:4px;background:var(--pn)}
+select[data-c="1"]{background:var(--l1)}select[data-c="2"]{background:var(--l2)}select[data-c="3"]{background:var(--l3)}
+select[data-c="4"]{background:var(--l4);color:var(--lt)}select[data-c="5"]{background:var(--l5);color:var(--lt)}
+button{padding:6px 12px;border:1px solid var(--ac);border-radius:4px;background:transparent;color:var(--ac);cursor:pointer}
+button:hover{background:var(--ac);color:var(--lt)}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.pb{flex:1 1 200px;height:10px;background:var(--l1);border-radius:5px;overflow:hidden}
+.pb i{display:block;height:100%;width:0;background:var(--ac)}
+pre{white-space:pre-wrap;background:var(--pn);border:1px solid var(--ln);border-radius:6px;padding:12px 14px;font:inherit}
+@media print{.bar,button,.no{display:none}body{background:#fff}}
+</style>
+</head>
+<body>
+<main>
+<h1>信奥到 NOI 级：渗透学习法规划</h1>
+<p>给只有基础编码能力、没学过算法的学生。依据 CCF 大纲 2023 版全文；2025 版的变动来自二手来源，请到 noi.cn 核对原文。时长是粗估，不是数据。</p>
+
+<h2>五层深度</h2>
+<p>每个知识点用同一把尺子衡量。先广后深：先把所有板块过一遍 L1–L3，再按重要性加深；冷门点停在 L3，题里用到再下沉。</p>
+<div class="w"><table>
+<thead><tr><th>层</th><th>内容</th><th>达标检验</th></tr></thead>
+<tbody>
+<tr><td class="k" style="background:var(--l1)">L1 名字</td><td>它叫什么</td><td>看到名字能认出</td></tr>
+<tr><td class="k" style="background:var(--l2)">L2 地位</td><td>在体系中的位置，依赖谁、被谁依赖</td><td>能画出上下游</td></tr>
+<tr><td class="k" style="background:var(--l3)">L3 用途</td><td>什么题会用到它，识别特征是什么</td><td>看到题面能说“可能用 X”</td></tr>
+<tr><td class="k" style="background:var(--l4);color:var(--lt)">L4 原理</td><td>核心思想，最小例子</td><td>合上资料能给别人讲明白</td></tr>
+<tr><td class="k" style="background:var(--l5);color:var(--lt)">L5 实现</td><td>能写模板并用于做题</td><td>默写模板，并通过对拍验证</td></tr>
+</tbody></table></div>
+
+<h2>阶段总览</h2>
+<div class="w"><table>
+<thead><tr><th>阶段</th><th>内容与深度</th><th>粗估</th><th>出口</th></tr></thead>
+<tbody>
+<tr><td class="k">0 地图</td><td>读大纲，画依赖图，搭环境；全部 L1–L2</td><td>1–2 周</td><td>能用一两句话说清每个板块</td></tr>
+<tr><td class="k">1 云游</td><td>只读简介和用途，不写代码；提高级与 NOI 级 L1–L3</td><td>3–6 周</td><td>主要条目都有三行卡</td></tr>
+<tr><td class="k">2 打底</td><td>入门级到提高级前半段；题解先行，自己重写题解；L5</td><td>3–6 月</td><td>限时做 CSP-J 真题达一等水平</td></tr>
+<tr><td class="k">3 提高级深化</td><td>提高级 6–8 级；加入整卷模考、代码和调试分离练习；L5</td><td>4–8 月</td><td>CSP-S 真题稳定一等水平</td></tr>
+<tr><td class="k">4 NOI 级</td><td>8 级推到 L5，9 级停在 L3 按需下沉，10 级只到 L1–L2</td><td>6–12 月以上</td><td>能做省选难度的题</td></tr>
+</tbody></table></div>
+<p class="mut">总计约一年半到两年半，以每周 10–15 小时计。每个出口处按实际进度重估，并事先定好超期多少就重新评估。</p>
+
+<h2>地图标注表</h2>
+<p>“当前层”“检验日期”“备注”可以直接填写，目标层按规划预填：入门、提高级和 NOI 级 8 级为 L5，9 级为 L3，10 级为 L2。当前层达到目标层，整行变绿。条目是主要部分，没列到的用底部“添加条目”补。</p>
+<p class="mut">填写内容只保存在当前浏览器，不会上传，也不会在设备间同步；换设备请用导出和导入。</p>
+<div class="bar no">
+<div class="pb" role="progressbar" aria-label="达标进度"><i id="pbi"></i></div><span id="pbt"></span>
+<select id="flt" aria-label="筛选"><option value="all">全部</option><option value="todo">仅未达标</option><option value="base">仅入门与提高级</option><option value="noi">仅 NOI 级</option></select>
+<button id="exp">导出</button><button id="imp">导入</button><button id="rst">清空</button><button onclick="print()">打印</button>
+<input id="file" type="file" accept=".json" hidden>
+</div>
+<div class="w"><table>
+<thead><tr><th>条目</th><th>级别·难度</th><th>目标</th><th>当前层</th><th>检验日期</th><th>备注</th></tr></thead>
+<tbody id="tb"></tbody></table></div>
+<div class="bar no"><button id="add">添加条目</button></div>
+
+<h2>知识卡模板</h2>
+<p>每个知识点一张卡，用自己的话写，不抄题解。</p>
+<pre id="card">【知识点名称】 级别·难度：__  当前层：L__  最近检验：____
+1. 是什么：（一两句话）
+2. 位置：（依赖哪些点；哪些点依赖它）
+3. 识别特征：（题面出现什么信号，可能要用它）
+4. 核心原理：（附一个能手算的最小例子）
+5. 模板与易错点：（模板位置或代码；常见错误；复杂度）
+关联题目：（至少 3 道，难度递进，写明考查点）</pre>
+<div class="bar no"><button id="cp">复制模板</button></div>
+
+<h2>资源</h2>
+<p>地图：CCF 官方大纲 PDF（noi.cn）。讲解：OI Wiki。题目与评测：洛谷。真题：CCF 官网历年 CSP、NOIP、NOI 真题和官方测试数据。本地：Linux、C++、自己的对拍脚本。笔记：任何顺手的工具。大纲不解决选题、检验和答疑，要靠题单、自己重写题解和默写，以及能问的人。</p>
+<p class="mut">这是知识部分的规划，不含代码熟练度、思维带宽和比赛策略的训练；懂知识点不等于能拿牌。</p>
+</main>
+<script>
+const K='noi-plan-v1',$=s=>document.querySelector(s);
+const RAW=`# 策略与基础
+复杂度分析|提高·6
+贪心|入门·3
+二分与倍增|入门·4
+离散化|提高·6
+分治|提高·6
+高精度|入门·4
+排序（归并、快排、堆、桶、基数）|提高·6
+分块|NOI·8
+离线处理|NOI·8
+复杂分治|NOI·9
+平衡规划|NOI·9
+构造思想|NOI·9
+# 搜索
+DFS、BFS|入门·5
+剪枝、记忆化搜索|提高·6
+启发式、双向 BFS、迭代加深|提高·7
+# 数据结构
+栈、队列、链表|入门·3
+单调队列|提高·5
+优先队列、二叉堆|提高·6
+ST 表|提高·6
+并查集|提高·6
+树状数组|提高·6
+线段树|提高·6
+Trie|提高·6
+哈希|提高·5
+笛卡尔树|提高·7
+平衡树|提高·8
+树链剖分|NOI·8
+块状链表|NOI·8
+左偏树|NOI·8
+可持久化线段树|NOI·8
+树套树、k-d 树|NOI·9
+虚树|NOI·10|2025 版降为 8，需核对
+LCT、二项堆|NOI·10
+# 图论
+存图与遍历|入门·4
+最小生成树|提高·6
+最短路|提高·6
+Floyd|提高·6
+拓扑排序|提高·6
+欧拉路|提高·6
+二分图判定|提高·6
+树的重心、直径、DFS 序|提高·6
+LCA、树上差分|提高·6
+次小生成树、次短路|提高·7
+强连通分量|提高·7
+割点、割边、双连通|提高·7
+网络流|NOI·8
+匈牙利算法|NOI·8
+2-SAT|NOI·8
+基环树|NOI·8
+KM 算法|NOI·9|2025 版升为 10，需核对
+最小树形图、一般图匹配|NOI·10
+# 动态规划
+线性、背包、区间 DP|入门·5
+树型 DP|提高·6
+状压 DP|提高·7
+DP 常用优化|提高·8
+复杂模型构建与优化|NOI·9
+# 字符串
+KMP|提高·5
+Manacher|NOI·8|2025 版下放到提高级，需核对
+AC 自动机|NOI·8
+后缀数组|NOI·8
+有穷自动机|NOI·8
+扩展 KMP|NOI·9|2025 版降为 8，需核对
+后缀树|NOI·9
+后缀自动机|NOI·10
+# 数学
+素数筛、gcd、快速幂|入门·4
+排列组合基础|入门·4
+多重集排列组合、错排、鸽巢、二项式定理|提高·6
+同余、逆元、扩展欧几里得|提高·7
+欧拉定理、费马、威尔逊、裴蜀|提高·7
+中国剩余定理|提高·7
+容斥原理|提高·7
+卡特兰数|提高·7
+高斯消元|提高·7
+原根与 BSGS|NOI·8
+莫比乌斯反演、Dirichlet 卷积|NOI·9
+Burnside 与 Pólya|NOI·9
+母函数、斯特林数、Prüfer 序列|NOI·9
+逆矩阵、行列式|NOI·9
+FFT、二次剩余、单纯形|NOI·10
+# 概率、博弈、几何
+概率基本概念|NOI·8
+条件概率、贝叶斯|NOI·9
+期望与方差|NOI·10
+Nim 博弈、SG 函数|NOI·9
+点线面关系、面积、二维凸包|NOI·8
+半平面交|NOI·9`;
+const G=[];
+RAW.split('\n').forEach(l=>{if(l[0]=='#')G.push({g:l.slice(2),i:[]});else{const[n,v,m]=l.split('|');G[G.length-1].i.push({n,l:v,m:m||''})}});
+const tg=l=>{const m=+(l||'').split('·')[1];return /^NOI/.test(l)?(m<=8?5:m==9?3:2):5};
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let S={v:{},x:[]};
+try{const t=JSON.parse(localStorage.getItem(K));if(t&&t.v&&Array.isArray(t.x))S=t}catch(e){}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+const opts=c=>['—','L1','L2','L3','L4','L5'].map((x,i)=>`<option value="${i}"${(c|0)==i?' selected':''}>${x}</option>`).join('');
+function cells(o,a,t){return `<td>L${t}</td><td><select ${a} data-f="c" data-c="${o.c|0}" aria-label="当前层">${opts(o.c)}</select></td><td><input type="date" ${a} data-f="d" value="${esc(o.d)}" aria-label="检验日期"></td><td><input type="text" ${a} data-f="m" value="${esc(o.m)}" aria-label="备注"></td>`}
+function render(){
+ const f=$('#flt').value;let tot=0,ok=0,h='';
+ const all=G.map(g=>({g:g.g,i:g.i.map(it=>({k:g.g+'/'+it.n,n:it.n,l:it.l,note:it.m}))}));
+ all.push({g:'自己添加的条目',i:S.x.map((o,j)=>({x:j,o}))});
+ all.forEach(g=>{let d=0,r='';
+  g.i.forEach(it=>{const o=it.x!=null?it.o:(S.v[it.k]||{}),l=it.x!=null?o.l:it.l,t=tg(l),done=(o.c|0)>=t;
+   tot++;ok+=done;d+=done;
+   if(f=='todo'&&done||f=='noi'&&!/^NOI/.test(l)||f=='base'&&/^NOI/.test(l))return;
+   const a=it.x!=null?`data-x="${it.x}"`:`data-k="${esc(it.k)}"`;
+   const nm=it.x!=null?`<input type="text" ${a} data-f="n" value="${esc(o.n)}" placeholder="条目名称" aria-label="条目名称"> <button class="no" data-del="${it.x}" aria-label="删除">删除</button>`:esc(it.n)+(it.note?`<small>${esc(it.note)}</small>`:'');
+   const lv=it.x!=null?`<input type="text" ${a} data-f="l" value="${esc(o.l)}" placeholder="提高·6" aria-label="级别难度">`:esc(l);
+   r+=`<tr class="${done?'ok':''}"><td>${nm}</td><td>${lv}</td>${cells(o,a,t)}</tr>`});
+  if(r||(g.i.length&&f=='all'))h+=`<tr class="gh"><th colspan="6">${esc(g.g)}　${d}/${g.i.length}</th></tr>`+r});
+ $('#tb').innerHTML=h;
+ $('#pbi').style.width=(tot?ok/tot*100:0)+'%';$('#pbt').textContent=`达标 ${ok}/${tot}`}
+const tb=$('#tb');
+function upd(e){const t=e.target,f=t.dataset.f;if(!f)return;
+ const o=t.dataset.x!=null?S.x[+t.dataset.x]:(S.v[t.dataset.k]=S.v[t.dataset.k]||{});
+ o[f]=f=='c'?+t.value:t.value;save();
+ if(e.type=='change'&&(f=='c'||f=='l'))render()}
+tb.addEventListener('input',upd);tb.addEventListener('change',upd);
+tb.addEventListener('click',e=>{const d=e.target.dataset.del;if(d!=null&&confirm('删除这个条目？')){S.x.splice(+d,1);save();render()}});
+$('#flt').onchange=render;
+$('#add').onclick=()=>{S.x.push({n:'',l:'提高·6',c:0,d:'',m:''});save();render()};
+$('#exp').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}));a.download='noi-plan-progress.json';a.click();URL.revokeObjectURL(a.href)};
+$('#imp').onclick=()=>$('#file').click();
+$('#file').onchange=e=>{const r=new FileReader();r.onload=()=>{try{const t=JSON.parse(r.result);if(!t||typeof t.v!='object'||!Array.isArray(t.x))throw 0;S=t;save();render()}catch(x){alert('文件格式不对，请选择从本页导出的 JSON 文件。')}};if(e.target.files[0])r.readAsText(e.target.files[0]);e.target.value=''};
+$('#rst').onclick=()=>{if(confirm('清空所有已填内容？此操作不能撤销，建议先导出。')){S={v:{},x:[]};save();render()}};
+$('#cp').onclick=async()=>{try{await navigator.clipboard.writeText($('#card').textContent);$('#cp').textContent='已复制'}catch(e){$('#cp').textContent='复制失败，请手动选择'}setTimeout(()=>$('#cp').textContent='复制模板',1800)};
+render();
+</script>
+</body>
+</html>

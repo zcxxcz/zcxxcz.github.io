@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>两周学习试运行：打卡表与周复核</title>
+<style>
+:root{
+  --ink:#1d2740; --muted:#5b667d; --paper:#f6f8fb; --card:#ffffff; --line:#d3dbe7;
+  --mark:#ffd84d; --mark-soft:rgba(255,216,77,.30); --mark-ink:#1d2740; --focus:#2b63d9; --warn:#b4531a;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#e7ecf6; --muted:#9aa6bd; --paper:#121826; --card:#1a2233; --line:#2e3a52;
+    --mark:#e5b800; --mark-soft:rgba(229,184,0,.22); --mark-ink:#121826; --focus:#7aa2ff; --warn:#f0a36b;
+    color-scheme: dark;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Noto Sans SC",system-ui,sans-serif;
+  line-height:1.75; font-size:16px;
+}
+.wrap{max-width:980px; margin:0 auto; padding:28px 18px 80px}
+h1{font-size:1.75rem; line-height:1.3; margin:0 0 .4rem; letter-spacing:.02em}
+h2{font-size:1.25rem; margin:2.6rem 0 .6rem; padding-bottom:.35rem; border-bottom:2px solid var(--ink)}
+p{margin:.4rem 0; max-width:42em}
+.lead{color:var(--muted)}
+ul,ol{margin:.4rem 0 .4rem; padding-left:1.4em; max-width:44em}
+li{margin:.2rem 0}
+
+.toolbar{display:flex; flex-wrap:wrap; gap:.5rem; margin:1rem 0 .4rem}
+button, .btn{
+  font:inherit; font-size:.92rem; color:var(--ink); background:var(--card);
+  border:1px solid var(--line); border-radius:6px; padding:.4rem .8rem; cursor:pointer;
+}
+button:hover,.btn:hover{border-color:var(--ink)}
+button:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--focus); outline-offset:1px}
+.save-state{font-size:.85rem; color:var(--muted); margin:.2rem 0 0}
+.save-state.bad{color:var(--warn)}
+
+/* summary */
+.summary{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; margin:1.1rem 0 0}
+.stat{background:var(--card); border:1px solid var(--line); border-radius:8px; padding:.8rem 1rem}
+.stat .k{font-size:.88rem; color:var(--muted)}
+.stat .v{font-size:1.6rem; font-weight:700; line-height:1.3}
+.stat .hint{font-size:.82rem; color:var(--muted)}
+.bar{position:relative; height:10px; background:var(--line); border-radius:5px; margin:.4rem 0 .2rem; overflow:visible}
+.bar > i{position:absolute; left:0; top:0; bottom:0; background:var(--mark); border-radius:5px; width:0}
+.bar > b{position:absolute; top:-4px; bottom:-4px; width:2px; background:var(--ink)}
+
+/* tables */
+.scroll{overflow-x:auto; border:1px solid var(--line); border-radius:8px; background:var(--card)}
+table{border-collapse:collapse; width:100%; min-width:640px}
+th,td{padding:.35rem .5rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:middle}
+th{font-size:.88rem; font-weight:600; color:var(--muted); background:var(--paper); position:sticky; top:0}
+tr:last-child td{border-bottom:none}
+tr.done td{background:var(--mark-soft)}
+td.date{white-space:nowrap; font-weight:600}
+input[type=text],input[type=time],input[type=date],input[type=number],select,textarea{
+  font:inherit; font-size:.95rem; color:var(--ink); background:transparent;
+  border:1px solid transparent; border-bottom-color:var(--line); border-radius:4px; padding:.25rem .3rem; width:100%;
+}
+input[type=text]:hover,input[type=time]:hover,input[type=date]:hover,input[type=number]:hover,select:hover,textarea:hover{border-color:var(--line)}
+select{appearance:auto}
+input[type=checkbox]{width:1.45rem; height:1.45rem; accent-color:var(--focus); cursor:pointer}
+td.center{text-align:center}
+.t-days{min-width:720px}
+.t-err{min-width:900px}
+.row-del{padding:.15rem .5rem; font-size:.85rem; color:var(--muted)}
+.add{margin-top:.6rem}
+
+.card{background:var(--card); border:1px solid var(--line); border-radius:8px; padding:.8rem 1.1rem}
+.fields{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px 18px}
+.field label{display:block; font-size:.88rem; color:var(--muted); margin-bottom:.1rem}
+.field textarea{min-height:4.2em; border:1px solid var(--line); resize:vertical}
+.field input[type=text],.field input[type=date]{border:1px solid var(--line)}
+.example{font-size:.9rem; color:var(--muted)}
+.note{border-left:4px solid var(--mark); background:var(--card); padding:.6rem 1rem; margin:1rem 0; max-width:46em; font-size:.93rem}
+
+@media (max-width:560px){
+  .wrap{padding:20px 12px 60px}
+  h1{font-size:1.45rem}
+}
+@media print{
+  :root{--paper:#fff; --card:#fff; --ink:#000; --muted:#333; --line:#999}
+  body{background:#fff; font-size:12px}
+  .toolbar,.save-state,.noprint,.row-del,.add{display:none !important}
+  .scroll{overflow:visible; border-color:#999}
+  table{min-width:0}
+  h2{break-after:avoid; margin-top:1.4rem}
+  .scroll,.card,.stat{break-inside:avoid}
+  input,select,textarea{border:none !important; border-bottom:1px solid #999 !important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>两周学习试运行：打卡表与周复核</h1>
+  <p class="lead">第一阶段只看过程，不看分数。表格直接点击或输入即可，内容会自动保存在这台设备的浏览器里。</p>
+  <div class="field" style="max-width:260px; margin-top:.6rem">
+    <label for="start">试运行第一天</label>
+    <input type="date" id="start" data-path="start" style="border:1px solid var(--line)">
+  </div>
+  <div class="toolbar noprint">
+    <button type="button" id="btn-export">导出数据</button>
+    <label class="btn" for="file-import">导入数据</label>
+    <input type="file" id="file-import" accept="application/json,.json" hidden>
+    <button type="button" id="btn-print">打印本页</button>
+    <button type="button" id="btn-clear">清空全部</button>
+  </div>
+  <p class="save-state" id="save-state" role="status"></p>
+  <p class="note noprint">数据只保存在这台设备的这个浏览器中，不会上传到网站。换手机或电脑前，先点“导出数据”，到新设备再点“导入数据”。清除浏览器数据会丢失记录，建议每周复核后导出一次。</p>
+</header>
+
+<h2>进度一览</h2>
+<div class="summary">
+  <div class="stat">
+    <div class="k">英语背诵</div>
+    <div class="v"><span id="s-eng">0</span> / 14 天</div>
+    <div class="bar"><i id="b-eng"></i><b style="left:64.3%"></b></div>
+    <div class="hint">竖线是六成线，约 9 天</div>
+  </div>
+  <div class="stat">
+    <div class="k">理科复盘</div>
+    <div class="v"><span id="s-sci">0</span> / 6 次</div>
+    <div class="bar"><i id="b-sci"></i></div>
+    <div class="hint">每周三次，两周六次</div>
+  </div>
+  <div class="stat">
+    <div class="k">平均开始写作业的时间</div>
+    <div class="v" id="s-time">—</div>
+    <div class="hint">先观察，不设目标</div>
+  </div>
+</div>
+
+<h2>两周只做三件事</h2>
+<ul>
+  <li><strong>错题账</strong>：先做物理，再数学、化学、语文。</li>
+  <li><strong>英语背诵</strong>：每天固定时间，30 分钟倒计时，到点就停。选定新概念二或三，半年不换。</li>
+  <li><strong>理科复盘</strong>：每周三次，每次 20 到 30 分钟。先物理，再数学（速度和题型），再化学（记忆和审题）。</li>
+</ul>
+<p>完成标准是“坐满 30 分钟、读了几遍”，不是“背下来”。第一天复述困难是正常的。</p>
+
+<h2>每日打卡表</h2>
+<p class="example">学生自己填，约 30 秒。理科复盘当天做了就选科目，没做就留空。</p>
+<div class="scroll">
+  <table class="t-days">
+    <thead><tr>
+      <th>日期</th><th class="center">英语背诵<br>30 分钟</th><th>开始写作业的时间</th><th>理科复盘</th><th>一个词的卡点（可不填）</th>
+    </tr></thead>
+    <tbody id="days-body"></tbody>
+  </table>
+</div>
+
+<h2>错题账</h2>
+<p>只记丢分的题，先不改答案。原因类型只选一种：知识缺失、规范约定、审题、记忆、速度。</p>
+<p class="example">示例：物理，最后一题，等效电路图没按课上约定的画法画。原因是规范约定，改法是做题前先写“本题要求画哪种图”。</p>
+<div class="scroll">
+  <table class="t-err">
+    <thead><tr>
+      <th>日期</th><th>科目</th><th>题号</th><th>丢分</th><th>原因类型</th><th>一句话改法</th><th class="center">一周后重做</th><th class="noprint"></th>
+    </tr></thead>
+    <tbody id="err-body"></tbody>
+  </table>
+</div>
+<button type="button" class="add noprint" id="btn-add-err">添加一行</button>
+
+<h2>每周复核会</h2>
+<p>每周固定一次，例如周日晚上，不超过 20 分钟，由学生先说。</p>
+<ol>
+  <li>看打卡表和错题账，5 分钟。完成了几天？实际几点开始写作业？</li>
+  <li>学生说一个最大的卡点，5 分钟。</li>
+  <li>只改一处，写下来，5 分钟。</li>
+  <li>下周要不要加一件事？默认不加，5 分钟。</li>
+  <li>确认周末那半个自由时间落在哪个时段，并保证不被占用。</li>
+</ol>
+<div class="scroll" style="margin-top:.8rem">
+  <table style="min-width:680px">
+    <thead><tr><th>周次</th><th>完成天数</th><th>平均开始写作业时间</th><th>本周最大卡点</th><th>只改的一处</th></tr></thead>
+    <tbody id="week-body"></tbody>
+  </table>
+</div>
+
+<h2>如果……就……</h2>
+<ul>
+  <li><strong>某天没做</strong>：不补，也不叠加，第二天照常。</li>
+  <li><strong>连续 3 天没做</strong>：当天开复核会，先问原因是时间、疲劳还是不想做，不责备。</li>
+  <li><strong>想换方法</strong>：记进“待议清单”，只在周复核会谈。英语半年内不换。</li>
+  <li><strong>作业做不完或要晚睡</strong>：先压缩理科复盘的时长，不压睡眠。</li>
+  <li><strong>平时有不会的题</strong>：先标记，周复核会集中问，不临时打断。</li>
+</ul>
+
+<h2>两周后复核</h2>
+<div class="scroll">
+  <table style="min-width:640px">
+    <thead><tr><th>看什么</th><th>怎么判断</th></tr></thead>
+    <tbody>
+      <tr><td>固定锚点完成率</td><td>低于六成：停止加码，先查卡点，是睡眠、注意力还是方法。</td></tr>
+      <tr><td>物理失分的主要类型</td><td>以规范、审题、记忆为主：靠检查清单即可。以概念缺失为主：增加课本阅读，考虑外部辅导。</td></tr>
+      <tr><td>一周后重做的正确率</td><td>提高了就是看得见的进步，要让学生看到。</td></tr>
+      <tr><td>睡眠和情绪</td><td>出现持续压力或睡眠问题：先降负荷。</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>信奥重启清单</h2>
+<p>一页纸，几分钟写完。让暂停有期限，也让半年后的重启成本更低。</p>
+<div class="card">
+  <div class="fields">
+    <div class="field"><label for="r-paused">暂停日期</label><input type="date" id="r-paused" data-path="restart.pausedOn"></div>
+    <div class="field"><label for="r-progress">做到哪（章节或题单）</label><textarea id="r-progress" data-path="restart.progress"></textarea></div>
+    <div class="field"><label for="r-weak">没吃透的题型或算法</label><textarea id="r-weak" data-path="restart.weak"></textarea></div>
+    <div class="field"><label for="r-where">错题放在哪里</label><textarea id="r-where" data-path="restart.where"></textarea></div>
+    <div class="field"><label for="r-rule">学校直升口径（向班主任问清）</label><textarea id="r-rule" data-path="restart.rule" placeholder="看哪几次考试、各科权重、是否认可竞赛、时间点"></textarea></div>
+    <div class="field"><label for="r-plan">没直升时的预案（期末前约定）</label><textarea id="r-plan" data-path="restart.plan"></textarea></div>
+  </div>
+  <p class="example" style="margin-top:.8rem">重启条件：期末考试后，视直升结果决定。</p>
+</div>
+
+<h2>家长备忘</h2>
+<ul>
+  <li>平时不临时追问，不当场评论方法，只在周复核会谈。</li>
+  <li>前两周不看分数，只看过程。</li>
+  <li>看到分数没动，不要加码。</li>
+  <li>兑现周末自由时间。周末日程由学生自排，你只看一遍，不改。</li>
+</ul>
+
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var KEY = 'two-week-study-tracker-v1';
+  var DAYS = 14;
+  var WEEKDAY = ['日','一','二','三','四','五','六'];
+  var SUBJECTS = ['','物理','数学','化学','语文','英语','其他'];
+  var SCI = ['','物理','数学','化学','其他'];
+  var CAUSES = ['','知识缺失','规范约定','审题','记忆','速度'];
+
+  function blankDay(){ return {eng:false, time:'', sci:'', note:''}; }
+  function blankErr(){ return {date:'', subject:'', q:'', lost:'', cause:'', fix:'', redo:false}; }
+  function blankWeek(){ return {done:'', avg:'', block:'', change:''}; }
+  function defaults(){
+    var d = [], i;
+    for(i=0;i<DAYS;i++) d.push(blankDay());
+    return {
+      start:'',
+      days:d,
+      errors:[blankErr(), blankErr(), blankErr()],
+      weeks:[blankWeek(), blankWeek()],
+      restart:{pausedOn:'', progress:'', weak:'', where:'', rule:'', plan:''}
+    };
+  }
+
+  var state = defaults();
+  var storageOK = true;
+
+  function str(v){ return typeof v === 'string' ? v : ''; }
+  function normalize(p){
+    var base = defaults();
+    if(!p || typeof p !== 'object') return base;
+    if(typeof p.start === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(p.start)) base.start = p.start;
+    if(Array.isArray(p.days)){
+      for(var i=0;i<DAYS && i<p.days.length;i++){
+        var x = p.days[i] || {};
+        base.days[i] = {eng:!!x.eng, time:str(x.time), sci:str(x.sci), note:str(x.note)};
+      }
+    }
+    if(Array.isArray(p.errors) && p.errors.length){
+      base.errors = p.errors.slice(0,200).map(function(e){
+        e = e || {};
+        return {date:str(e.date), subject:str(e.subject), q:str(e.q), lost:str(e.lost), cause:str(e.cause), fix:str(e.fix), redo:!!e.redo};
+      });
+    }
+    if(Array.isArray(p.weeks)){
+      for(var j=0;j<2 && j<p.weeks.length;j++){
+        var w = p.weeks[j] || {};
+        base.weeks[j] = {done:str(w.done), avg:str(w.avg), block:str(w.block), change:str(w.change)};
+      }
+    }
+    if(p.restart && typeof p.restart === 'object'){
+      Object.keys(base.restart).forEach(function(k){ base.restart[k] = str(p.restart[k]); });
+    }
+    return base;
+  }
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(raw) state = normalize(JSON.parse(raw));
+    }catch(e){ storageOK = false; }
+  }
+  var saveTimer = null;
+  function setSaveState(){
+    var el = document.getElementById('save-state');
+    if(!storageOK){
+      el.textContent = '当前浏览器无法保存，请用“导出数据”保留记录。';
+      el.className = 'save-state bad';
+    }else{
+      var t = new Date();
+      el.textContent = '已自动保存 ' + pad(t.getHours()) + ':' + pad(t.getMinutes());
+      el.className = 'save-state';
+    }
+  }
+  function save(){
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function(){
+      try{ localStorage.setItem(KEY, JSON.stringify(state)); storageOK = true; }
+      catch(e){ storageOK = false; }
+      setSaveState();
+    }, 250);
+  }
+  function pad(n){ return (n<10?'0':'') + n; }
+  function esc(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function opts(list, cur){
+    return list.map(function(o){
+      return '<option value="'+esc(o)+'"'+(o===cur?' selected':'')+'>'+esc(o||'—')+'</option>';
+    }).join('');
+  }
+  function setPath(obj, path, val){
+    var parts = path.split('.'), o = obj, i;
+    for(i=0;i<parts.length-1;i++){ o = o[parts[i]]; if(o==null) return; }
+    o[parts[parts.length-1]] = val;
+  }
+  function getPath(obj, path){
+    var parts = path.split('.'), o = obj, i;
+    for(i=0;i<parts.length;i++){ if(o==null) return ''; o = o[parts[i]]; }
+    return o;
+  }
+
+  function dateLabel(i){
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(state.start);
+    if(!m) return '第' + (i+1) + '天';
+    var d = new Date(+m[1], +m[2]-1, +m[3]+i);
+    return (d.getMonth()+1) + '/' + d.getDate() + ' ' + WEEKDAY[d.getDay()];
+  }
+
+  function renderDays(){
+    var html = '';
+    state.days.forEach(function(d,i){
+      var p = 'days.'+i+'.';
+      html += '<tr data-row="'+i+'"'+(d.eng?' class="done"':'')+'>' +
+        '<td class="date">'+esc(dateLabel(i))+'</td>' +
+        '<td class="center"><input type="checkbox" aria-label="第'+(i+1)+'天英语背诵" data-path="'+p+'eng"'+(d.eng?' checked':'')+'></td>' +
+        '<td><input type="time" aria-label="第'+(i+1)+'天开始写作业的时间" data-path="'+p+'time" value="'+esc(d.time)+'"></td>' +
+        '<td><select aria-label="第'+(i+1)+'天理科复盘" data-path="'+p+'sci">'+opts(SCI,d.sci)+'</select></td>' +
+        '<td><input type="text" aria-label="第'+(i+1)+'天卡点" data-path="'+p+'note" value="'+esc(d.note)+'"></td>' +
+      '</tr>';
+    });
+    document.getElementById('days-body').innerHTML = html;
+  }
+
+  function renderErrors(){
+    var html = '';
+    state.errors.forEach(function(e,i){
+      var p = 'errors.'+i+'.';
+      html += '<tr>' +
+        '<td><input type="date" aria-label="日期" data-path="'+p+'date" value="'+esc(e.date)+'"></td>' +
+        '<td><select aria-label="科目" data-path="'+p+'subject">'+opts(SUBJECTS,e.subject)+'</select></td>' +
+        '<td><input type="text" aria-label="题号" data-path="'+p+'q" value="'+esc(e.q)+'"></td>' +
+        '<td><input type="text" inputmode="decimal" aria-label="丢分" data-path="'+p+'lost" value="'+esc(e.lost)+'" style="max-width:5em"></td>' +
+        '<td><select aria-label="原因类型" data-path="'+p+'cause">'+opts(CAUSES,e.cause)+'</select></td>' +
+        '<td><input type="text" aria-label="一句话改法" data-path="'+p+'fix" value="'+esc(e.fix)+'"></td>' +
+        '<td class="center"><input type="checkbox" aria-label="一周后已重做" data-path="'+p+'redo"'+(e.redo?' checked':'')+'></td>' +
+        '<td class="noprint"><button type="button" class="row-del" data-del="'+i+'" aria-label="删除这一行">删除</button></td>' +
+      '</tr>';
+    });
+    document.getElementById('err-body').innerHTML = html;
+  }
+
+  function renderWeeks(){
+    var html = '';
+    state.weeks.forEach(function(w,i){
+      var p = 'weeks.'+i+'.';
+      html += '<tr><td class="date">第'+(i+1)+'周</td>' +
+        '<td><input type="text" aria-label="完成天数" data-path="'+p+'done" value="'+esc(w.done)+'" style="max-width:6em"></td>' +
+        '<td><input type="time" aria-label="平均开始写作业时间" data-path="'+p+'avg" value="'+esc(w.avg)+'"></td>' +
+        '<td><input type="text" aria-label="本周最大卡点" data-path="'+p+'block" value="'+esc(w.block)+'"></td>' +
+        '<td><input type="text" aria-label="只改的一处" data-path="'+p+'change" value="'+esc(w.change)+'"></td></tr>';
+    });
+    document.getElementById('week-body').innerHTML = html;
+  }
+
+  function fillStatic(){
+    document.querySelectorAll('[data-path^="restart."], #start').forEach(function(el){
+      var v = getPath(state, el.getAttribute('data-path'));
+      el.value = v == null ? '' : v;
+    });
+  }
+
+  function updateSummary(){
+    var eng = state.days.filter(function(d){ return d.eng; }).length;
+    var sci = state.days.filter(function(d){ return d.sci; }).length;
+    var mins = [];
+    state.days.forEach(function(d){
+      var m = /^(\d{1,2}):(\d{2})$/.exec(d.time);
+      if(m) mins.push(+m[1]*60 + +m[2]);
+    });
+    document.getElementById('s-eng').textContent = eng;
+    document.getElementById('s-sci').textContent = sci;
+    document.getElementById('b-eng').style.width = Math.min(100, eng/DAYS*100) + '%';
+    document.getElementById('b-sci').style.width = Math.min(100, sci/6*100) + '%';
+    var t = document.getElementById('s-time');
+    if(mins.length){
+      var avg = Math.round(mins.reduce(function(a,b){return a+b;},0)/mins.length);
+      t.textContent = pad(Math.floor(avg/60)) + ':' + pad(avg%60);
+    }else{
+      t.textContent = '—';
+    }
+  }
+
+  document.addEventListener('input', function(e){
+    var t = e.target;
+    var path = t.getAttribute && t.getAttribute('data-path');
+    if(!path) return;
+    var val = t.type === 'checkbox' ? t.checked : t.value;
+    setPath(state, path, val);
+    if(path === 'start'){ renderDays(); }
+    var tr = t.closest ? t.closest('tr[data-row]') : null;
+    if(tr && /\.eng$/.test(path)) tr.classList.toggle('done', !!val);
+    updateSummary();
+    save();
+  });
+
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if(t.getAttribute && t.getAttribute('data-del') !== null){
+      var i = +t.getAttribute('data-del');
+      state.errors.splice(i,1);
+      if(!state.errors.length) state.errors.push(blankErr());
+      renderErrors(); save();
+    }
+  });
+
+  document.getElementById('btn-add-err').addEventListener('click', function(){
+    state.errors.push(blankErr());
+    renderErrors(); save();
+  });
+  document.getElementById('btn-print').addEventListener('click', function(){ window.print(); });
+  document.getElementById('btn-clear').addEventListener('click', function(){
+    if(!window.confirm('确定清空所有记录吗？建议先导出数据。')) return;
+    state = defaults();
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    renderAll();
+    setSaveState();
+  });
+  document.getElementById('btn-export').addEventListener('click', function(){
+    var blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+    var a = document.createElement('a');
+    var d = new Date();
+    a.href = URL.createObjectURL(blob);
+    a.download = 'two-week-study-tracker-' + d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + '.json';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  });
+  document.getElementById('file-import').addEventListener('change', function(e){
+    var f = e.target.files && e.target.files[0];
+    if(!f) return;
+    var r = new FileReader();
+    r.onload = function(){
+      try{
+        state = normalize(JSON.parse(String(r.result)));
+        renderAll();
+        try{ localStorage.setItem(KEY, JSON.stringify(state)); storageOK = true; }catch(err){ storageOK = false; }
+        setSaveState();
+      }catch(err){
+        window.alert('这个文件无法导入，请选择之前导出的 .json 文件。');
+      }
+    };
+    r.readAsText(f);
+    e.target.value = '';
+  });
+
+  function renderAll(){
+    renderDays(); renderErrors(); renderWeeks(); fillStatic(); updateSummary();
+  }
+
+  load();
+  renderAll();
+  if(!storageOK) setSaveState();
+})();
+</script>
+</body>
+</html>

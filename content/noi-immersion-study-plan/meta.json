@@ -1,0 +1,15 @@
+{
+  "id": "noi-immersion-study-plan",
+  "title": "信奥到 NOI 级：渗透学习法规划",
+  "type": "工具",
+  "format": "html",
+  "status": "published",
+  "summary": "从基础编程走到 NOI 级的分阶段学习路线，含五层知识检验、可填写的算法地图和知识卡模板。",
+  "tags": [
+    "信奥",
+    "NOI",
+    "学习计划"
+  ],
+  "updated": "2026-11-14",
+  "featured": false
+}
