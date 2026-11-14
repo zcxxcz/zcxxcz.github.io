@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The New Turing Omnibus 分组阅读地图</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#faf8f4;--card:#fff;--ink:#1f1d1a;--mute:#6b665e;--line:#e4dfd6;--acc:#b4532a;--ok:#2f7d4f;--warn:#a86a00;--chip:#f1ece3}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17150f;--card:#201d16;--ink:#ece7dc;--mute:#a39d90;--line:#37322a;--acc:#e8895b;--ok:#6cc08b;--warn:#e0a640;--chip:#2a261d}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif}
+main{max-width:860px;margin:0 auto;padding:28px 18px 60px}
+h1{font-size:26px;margin:0 0 6px;letter-spacing:.5px}
+.sub{color:var(--mute);margin:0 0 18px}
+.note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:8px;padding:12px 14px;margin:14px 0;font-size:14px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px;color:var(--mute);margin:10px 0 4px}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:8px 0;z-index:5;border-bottom:1px solid var(--line);margin:14px 0 18px;display:flex;align-items:center;gap:12px;font-size:13px;color:var(--mute)}
+.track{flex:1;height:6px;background:var(--chip);border-radius:3px;overflow:hidden}
+.fill{height:100%;width:0;background:var(--ok);transition:width .3s}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 16px 6px;margin:0 0 18px}
+.stage h2{font-size:18px;margin:0}
+.stage h2 span{display:inline-block;background:var(--acc);color:#fff;border-radius:6px;padding:0 8px;margin-right:8px;font-size:14px}
+.why{color:var(--mute);margin:4px 0 10px;font-size:14px}
+.ch{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;padding:10px 0;border-top:1px solid var(--line)}
+.ch input{margin-top:5px;accent-color:var(--ok)}
+.ch.done .t{text-decoration:line-through;opacity:.55}
+.t b{font-weight:600}
+.n{color:var(--acc);font-variant-numeric:tabular-nums;margin-right:6px;font-weight:600}
+.en{color:var(--mute);font-size:13px}
+.meta{font-size:12.5px;color:var(--mute)}
+.star{color:var(--acc)}
+.cols{margin-top:4px;display:flex;flex-wrap:wrap;gap:6px}
+.cols a{font-size:12.5px;text-decoration:none;border-radius:999px;padding:1px 10px;border:1px solid}
+.v{color:var(--ok)}.p{color:var(--warn)}.l{color:var(--mute)}
+.cols a:hover{background:var(--chip)}
+footer{font-size:13px;color:var(--mute);margin-top:26px}
+footer a{color:var(--acc)}
+button{font:inherit;font-size:12px;color:var(--mute);background:none;border:1px solid var(--line);border-radius:6px;padding:2px 8px;cursor:pointer}
+</style>
+</head>
+<body>
+<main>
+<h1>The New Turing Omnibus 分组阅读地图</h1>
+<p class="sub">A.K. Dewdney · 66 个专题 · 按主题重组为 10 站，建议顺序从上往下读</p>
+
+<div class="note"><b>先更正一件事：</b>这本书并不是 <i>Scientific American</i> 专栏文章的合集。专栏文章另外收在 <i>The Armchair Universe</i>（1988）、<i>The Magic Machine</i>（1990）、<i>The Tinkertoy Computer and Other Machinations</i>（1993）里；Omnibus 的各章是单独写的短文，只有部分主题与专栏重合。下面的“专栏原文”链接指的就是这些<b>主题重合</b>的专栏，不是章节的原始出处。</div>
+
+<div class="legend">
+<span><span class="v">●</span> 已核实可打开</span>
+<span><span class="p">●</span> 按网站命名规律推得，未逐一核实</span>
+<span><span class="l">●</span> 跳到作者列表页，在其中找对应期号</span>
+<span><span class="star">★</span> 我建议的主线章节</span>
+</div>
+
+<div class="bar"><span id="cnt">已读 0 / 66</span><div class="track"><div class="fill" id="fill"></div></div><button id="reset">清除</button></div>
+
+<div id="app"></div>
+
+<footer>
+<p>章节目录：ProofWiki 所录 1993 版目录。分组：参考耶鲁大学 Hudak 教授 CS201 课程大纲对 66 章的重新归类；页码也取自该大纲（1993 版页码）。站内顺序、★ 标记和每站简评是我的建议。</p>
+<p>专栏列表：<a href="https://www.scientificamerican.com/author/a-k-dewdney/" target="_blank" rel="noopener">Scientific American · A.K. Dewdney 作者页</a>（共多页，早期 1984–1986 年的在后几页）。作者本人的著作页：<a href="https://www.csd.uwo.ca/~akd/PERSONAL/books_and_articles.html" target="_blank" rel="noopener">csd.uwo.ca/~akd</a>。</p>
+<p>阅读进度只保存在你当前浏览器里。</p>
+</footer>
+</main>
+<script>
+var SA='https://www.scientificamerican.com/article/computer-recreations-';
+var A='https://www.scientificamerican.com/author/a-k-dewdney/';
+var G=[
+{t:'算法与复杂度',d:'全书的地基：先学会“怎样衡量一个算法的好坏”，后面的 NP、可计算性都以此为前提。',c:[
+[1,'算法','Cooking Up Programs',1,1],
+[15,'时间与空间复杂度','The Big-O Notation',96,1],
+[11,'搜索树','Traversal and Maintenance',69],
+[40,'堆与归并','The Fastest Sorts of Sorts',269],
+[35,'顺序排序','A Lower Bound on Speed',237],
+[22,'最小生成树','A Fast Algorithm',146],
+[30,'划分问题','A Pseudo-fast Algorithm',201],
+[50,'素数检测','An Algorithm that Almost Always Works',335]]},
+{t:'编程思想',d:'递归、模拟、正确性、系统与逻辑式编程。64 章建议在“逻辑基础”之后回头补读。',c:[
+[55,'迭代与递归','The Towers of Hanoi',363,0,[['1984年11月 递归与迭代·汉诺塔',SA+'1984-11/','v']]],
+[24,'递归','The Sierpinski Curve',159],
+[4,'模拟','The Monte Carlo Method',22],
+[10,'程序正确性','Ultimate Debugging',63],
+[53,'磁盘操作系统','Bootstrapping the Computer',351],
+[60,'计算机病毒','A Software Invasion',396,0,[['1984年5月 Core War',SA+'1984-05/','p'],['1989年3月 蠕虫、病毒与 Core War',A,'l']]],
+[64,'逻辑编程','Prologue to Expertise',420]]},
+{t:'逻辑基础',d:'只有三章，但哥德尔定理是后面“不可计算”的思想源头。',c:[
+[3,'逻辑系统','Boolean Bases',14,1],
+[5,'哥德尔定理','Limits on Logic',29,1],
+[58,'谓词演算','The Resolution Method',382]]},
+{t:'数字电路与计算机体系结构',d:'从布尔表达式一路搭到一台简化计算机，再看 VLSI 与并行。33 章是模拟计算，当作对照读。',c:[
+[13,'布尔逻辑','Expressions and Circuits',82],
+[20,'卡诺图','Circuit Minimization',131],
+[28,'编码器与多路复用器','Manipulating Memory',188],
+[38,'时序电路','A Computer Memory',258],
+[48,'SCRAM 简化计算机','A Simplified Computer',321],
+[56,'VLSI 计算机','Circuits in Silicon',368],
+[62,'并行计算','Processors with Connections',408],
+[33,'模拟计算','Spaghetti Computers',223,0,[['1984年6月 “意大利面计算机”与其他模拟装置',SA+'1984-06/','v'],['1985年6月 续篇（在作者页）',A+'?page=3','l']]]]},
+{t:'语言与自动机',d:'由弱到强：有限自动机 → 乔姆斯基层级，是通往图灵机的台阶。',c:[
+[2,'有限自动机','The Black Box',8,1],
+[7,'乔姆斯基层级','Four Computers',42,1],
+[14,'正则语言','Pumping Words',91],
+[26,'非确定性','Automata That Guess Correctly',174],
+[23,'生成文法','Lindenmayer Systems',152,0,[['1986年12月 分形山与 graftal 植物（主题相近）',A+'?page=3','l']]]]},
+{t:'可计算性',d:'全书的理论高点：从抽象机器到停机问题，再到丘奇论题。',c:[
+[17,'随机存取机','An Abstract Computer',109],
+[31,'图灵机','The Simplest Computers',207,1,[['1989年9月 二维图灵机与 tur-mite（主题相近，PDF）','https://www.imsc.res.in/~sitabhra/teaching/sb18/Dewdney_ScientificAmerican_1989_Sept_Computer_Recreations.pdf','v']]],
+[51,'通用图灵机','Computers as Programs',339,1],
+[39,'不可计算函数','The Busy Beaver Problem',265,0,[['1984年8月 忙碌海狸',SA+'1984-08/','v']]],
+[59,'停机问题','The Uncomputable',391,1],
+[63,'字问题','Dictionaries as Programs',415],
+[66,'丘奇论题','All Computers Are Created Equal',434,1]]},
+{t:'NP 完备性',d:'接在可计算性之后：问题“能算”之后，再问“算得快不快”。',c:[
+[34,'可满足性','A Central Problem',231],
+[41,'NP 完备性','The Wall of Intractability',276,1],
+[45,'库克定理','Nuts and Bolts',301,1],
+[54,'NP 完全问题','The Tree of Intractability',357]]},
+{t:'信息、编码与安全',d:'压缩、纠错、加密、哈希、检索，彼此独立，可以挑着读。',c:[
+[49,'香农理论','The Elusive Codes',329],
+[8,'随机数','The Chaitin-Kolmogoroff Theory',49],
+[12,'纠错码','Pictures from Space',77],
+[52,'文本压缩','Huffman Coding',345],
+[43,'哈希存储','The Key Is The Address',288],
+[61,'字符串搜索','The Boyer-Moore Algorithm',403],
+[65,'关系数据库','Do-It-Yourself Queries',427],
+[42,'计算用数制','Chinese Arithmetic',282],
+[37,'公钥密码','Intractable Secrets',250]]},
+{t:'数值方法',d:'偏数学的一组，和前面的离散部分关系较松。',c:[
+[21,'牛顿—拉弗森法','Finding Roots',139],
+[18,'样条曲线','Smooth Interpolation',116],
+[25,'快速乘法','Divide and Conquer',167],
+[32,'快速傅里叶变换','Redistributing Images',217],
+[57,'线性规划','The Simplex Method',374]]},
+{t:'人工智能、学习、图形与复杂系统',d:'应用味最浓，放在最后当作“收获”读。',c:[
+[6,'博弈树','The Minimax Method',36,0,[['1984年7月 跳棋程序（主题相近）',SA+'1984-07/','p']]],
+[16,'遗传算法','Solutions That Evolve',103,0,[['1985年11月 遗传算法与 flibs（JSTOR）','https://www.jstor.org/stable/10.2307/24967834','v']]],
+[27,'感知机','A Lack of Vision',181],
+[36,'会学习的神经网络','Converting Coordinates',241],
+[19,'计算机视觉','Polyhedral Scenes',121,0,[['1984年9月 数字之眼的缺陷（主题相近）',SA+'1984-09/','p']]],
+[9,'数学研究：曼德博集','The Mandelbrot Set',56,0,[['1985年8月 曼德博集（第三方镜像）','https://www.miriam-english.org/files/Dewdney_Mandelbrot/Dewdney_Mandelbrot.html','v'],['SciAm 重刊页',A,'l']]],
+[44,'元胞自动机','The Game of Life',295,0,[['1989年8月 / 1990年1月 元胞自动机专栏（在作者页）',A,'l']]],
+[46,'自复制计算机','Codd\u2019s Machine',307],
+[47,'图像存储','A Cat in a Quad Tree',315],
+[29,'CT 扫描','Cross-Sectional X-Rays',193,0,[['1990年9月 CT 扫描与“猫”（在作者页）',A,'l']]]]}
+];
+var KEY='nto-done',done={};
+try{done=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){done={}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(done))}catch(e){}}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+var h='';
+G.forEach(function(g,i){
+  h+='<section class="stage"><h2><span>第 '+(i+1)+' 站</span>'+esc(g.t)+'</h2><p class="why">'+esc(g.d)+'</p>';
+  g.c.forEach(function(c){
+    var cols='';
+    (c[5]||[]).forEach(function(l){cols+='<a class="'+l[2]+'" href="'+l[1]+'" target="_blank" rel="noopener">● '+esc(l[0])+'</a>'});
+    h+='<div class="ch" data-n="'+c[0]+'"><input type="checkbox" aria-label="第'+c[0]+'章已读"><div><div class="t"><span class="n">'+c[0]+'</span><b>'+esc(c[1])+'</b>'+(c[4]?' <span class="star">★</span>':'')+'</div><div class="en">'+esc(c[2])+'</div><div class="meta">原书第 '+c[3]+' 页起</div>'+(cols?'<div class="cols">'+cols+'</div>':'')+'</div></div>';
+  });
+  h+='</section>';
+});
+document.getElementById('app').innerHTML=h;
+function refresh(){
+  var rows=document.querySelectorAll('.ch'),k=0;
+  rows.forEach(function(r){var on=!!done[r.dataset.n];r.classList.toggle('done',on);r.querySelector('input').checked=on;if(on)k++});
+  document.getElementById('cnt').textContent='已读 '+k+' / 66';
+  document.getElementById('fill').style.width=(k/66*100)+'%';
+}
+document.getElementById('app').addEventListener('change',function(e){
+  var r=e.target.closest('.ch');if(!r)return;
+  if(e.target.checked)done[r.dataset.n]=1;else delete done[r.dataset.n];
+  save();refresh();
+});
+document.getElementById('reset').onclick=function(){done={};save();refresh()};
+refresh();
+</script>
+</body>
+</html>
