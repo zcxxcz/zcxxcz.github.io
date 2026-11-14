@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="查看 2021–2026 年 CSP-S 全国与北京七至九年级的指定名次分数、年度走势和获奖人数。">
+  <title>CSP-S 历年排名分数｜全国与北京七至九年级</title>
+  <link rel="icon" href="/favicon.svg">
+  <link rel="stylesheet" href="score.css">
+  <script defer src="score.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-bar">
+    <a class="brand" href="/">Z <span>/ 内容与作品</span></a>
+    <nav aria-label="站点导航"><a href="/#library">全部内容 <span aria-hidden="true">↗</span></a></nav>
+  </header>
+  <main id="main">
+    <header class="intro">
+      <p class="scope"><span>2021–2026</span> <span>第二轮认证</span></p>
+      <h1>CSP-S 历年排名分数</h1>
+      <p class="subtitle">全国与北京 · 七、八、九年级</p>
+    </header>
+
+    <section class="explorer" aria-labelledby="trend-heading" hidden>
+      <div class="explorer-top">
+        <div>
+          <h2 id="trend-heading">各年级分数走势</h2>
+          <p class="caption">选择地区和名次，比较三个年级的历年分数。</p>
+        </div>
+        <div class="controls">
+          <div class="segments" role="group" aria-label="统计地区">
+            <button type="button" data-scope="national" aria-pressed="true">全国</button>
+            <button type="button" data-scope="beijing" aria-pressed="false">北京</button>
+          </div>
+          <label for="rank"><span>名次</span><select id="rank"></select></label>
+        </div>
+      </div>
+      <div class="chart-grid">
+        <figure class="plot">
+          <canvas id="trend" role="img" aria-label="各年级分数走势，具体分数见下方统计表"></canvas>
+          <figcaption id="chart-note">总分满分 400 分。「—」表示获奖人数不足。</figcaption>
+        </figure>
+        <aside class="readout" aria-label="分数读数">
+          <label for="year"><span>查看年份</span>
+            <select id="year">
+              <option value="2021">2021 年</option>
+              <option value="2022">2022 年</option>
+              <option value="2023">2023 年</option>
+              <option value="2024">2024 年</option>
+              <option value="2025">2025 年</option>
+              <option value="2026" selected>2026 年</option>
+            </select>
+          </label>
+          <dl>
+            <div><dt><span class="line-key grade-7" aria-hidden="true"></span>七年级</dt><dd data-score="7">—</dd></div>
+            <div><dt><span class="line-key grade-8" aria-hidden="true"></span>八年级</dt><dd data-score="8">—</dd></div>
+            <div><dt><span class="line-key grade-9" aria-hidden="true"></span>九年级</dt><dd data-score="9">—</dd></div>
+          </dl>
+          <p class="readout-note">单位为分</p>
+          <p class="sr-only" id="selection-summary" aria-live="polite"></p>
+        </aside>
+      </div>
+    </section>
+
+    <div id="score-tables">
+      <section class="table-section" data-scores="national" aria-labelledby="national-heading">
+        <div class="table-header">
+          <h2 id="national-heading">全国分数一览</h2>
+          <p>单位为分 · — 表示获奖人数不足</p>
+        </div>
+        <div class="table-wrap" role="region" aria-labelledby="national-heading" tabindex="0">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">年级</th><th scope="col">年份</th>
+                <th scope="col" data-rank="10">第 10 名</th><th scope="col" data-rank="50">第 50 名</th><th scope="col" data-rank="100">第 100 名</th><th scope="col" data-rank="200">第 200 名</th><th scope="col" data-rank="300">第 300 名</th><th scope="col" data-rank="400">第 400 名</th><th scope="col" data-rank="500">第 500 名</th>
+                <th scope="col">获奖人数</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">七年级</th><td class="year">2021</td><td class="rank-score">167</td><td class="rank-score">110</td><td class="rank-score">85</td><td class="rank-score">62</td><td class="rank-score">43</td><td class="rank-score">30</td><td class="rank-score is-missing">—</td><td>405</td></tr>
+              <tr><th scope="row">七年级</th><td class="year">2022</td><td class="rank-score">265</td><td class="rank-score">200</td><td class="rank-score">160</td><td class="rank-score">115</td><td class="rank-score">80</td><td class="rank-score">50</td><td class="rank-score is-missing">—</td><td>406</td></tr>
+              <tr><th scope="row">七年级</th><td class="year">2023</td><td class="rank-score">250</td><td class="rank-score">180</td><td class="rank-score">150</td><td class="rank-score">140</td><td class="rank-score">135</td><td class="rank-score">130</td><td class="rank-score">120</td><td>1,076</td></tr>
+              <tr><th scope="row">七年级</th><td class="year">2024</td><td class="rank-score">316</td><td class="rank-score">262</td><td class="rank-score">230</td><td class="rank-score">200</td><td class="rank-score">175</td><td class="rank-score">160</td><td class="rank-score">145</td><td>2,181</td></tr>
+              <tr><th scope="row">七年级</th><td class="year">2025</td><td class="rank-score">269</td><td class="rank-score">221</td><td class="rank-score">197</td><td class="rank-score">169</td><td class="rank-score">148</td><td class="rank-score">132</td><td class="rank-score">116</td><td>1,637</td></tr>
+              <tr class="is-latest"><th scope="row">七年级</th><td class="year">2026</td><td class="rank-score">263</td><td class="rank-score">247</td><td class="rank-score">231</td><td class="rank-score">200</td><td class="rank-score">168</td><td class="rank-score">149</td><td class="rank-score">139</td><td>2,343</td></tr>
+            </tbody>
+            <tbody>
+              <tr><th scope="row">八年级</th><td class="year">2021</td><td class="rank-score">256</td><td class="rank-score">160</td><td class="rank-score">134</td><td class="rank-score">105</td><td class="rank-score">88</td><td class="rank-score">75</td><td class="rank-score">64</td><td>988</td></tr>
+              <tr><th scope="row">八年级</th><td class="year">2022</td><td class="rank-score">312</td><td class="rank-score">259</td><td class="rank-score">229</td><td class="rank-score">193</td><td class="rank-score">168</td><td class="rank-score">150</td><td class="rank-score">130</td><td>1,096</td></tr>
+              <tr><th scope="row">八年级</th><td class="year">2023</td><td class="rank-score">370</td><td class="rank-score">260</td><td class="rank-score">220</td><td class="rank-score">170</td><td class="rank-score">150</td><td class="rank-score">150</td><td class="rank-score">140</td><td>2,013</td></tr>
+              <tr><th scope="row">八年级</th><td class="year">2024</td><td class="rank-score">340</td><td class="rank-score">302</td><td class="rank-score">282</td><td class="rank-score">240</td><td class="rank-score">220</td><td class="rank-score">210</td><td class="rank-score">200</td><td>3,690</td></tr>
+              <tr><th scope="row">八年级</th><td class="year">2025</td><td class="rank-score">324</td><td class="rank-score">268</td><td class="rank-score">240</td><td class="rank-score">217</td><td class="rank-score">201</td><td class="rank-score">186</td><td class="rank-score">175</td><td>3,107</td></tr>
+              <tr class="is-latest"><th scope="row">八年级</th><td class="year">2026</td><td class="rank-score">329</td><td class="rank-score">273</td><td class="rank-score">263</td><td class="rank-score">248</td><td class="rank-score">239</td><td class="rank-score">226</td><td class="rank-score">216</td><td>5,262</td></tr>
+            </tbody>
+            <tbody>
+              <tr><th scope="row">九年级</th><td class="year">2021</td><td class="rank-score">305</td><td class="rank-score">233</td><td class="rank-score">191</td><td class="rank-score">140</td><td class="rank-score">117</td><td class="rank-score">100</td><td class="rank-score">88</td><td>1,315</td></tr>
+              <tr><th scope="row">九年级</th><td class="year">2022</td><td class="rank-score">336</td><td class="rank-score">293</td><td class="rank-score">260</td><td class="rank-score">225</td><td class="rank-score">195</td><td class="rank-score">171</td><td class="rank-score">155</td><td>1,285</td></tr>
+              <tr><th scope="row">九年级</th><td class="year">2023</td><td class="rank-score">400</td><td class="rank-score">320</td><td class="rank-score">295</td><td class="rank-score">235</td><td class="rank-score">200</td><td class="rank-score">170</td><td class="rank-score">155</td><td>2,702</td></tr>
+              <tr><th scope="row">九年级</th><td class="year">2024</td><td class="rank-score">384</td><td class="rank-score">340</td><td class="rank-score">320</td><td class="rank-score">300</td><td class="rank-score">275</td><td class="rank-score">250</td><td class="rank-score">230</td><td>4,086</td></tr>
+              <tr><th scope="row">九年级</th><td class="year">2025</td><td class="rank-score">370</td><td class="rank-score">300</td><td class="rank-score">270</td><td class="rank-score">240</td><td class="rank-score">225</td><td class="rank-score">213</td><td class="rank-score">202</td><td>3,430</td></tr>
+              <tr class="is-latest"><th scope="row">九年级</th><td class="year">2026</td><td class="rank-score">360</td><td class="rank-score">325</td><td class="rank-score">300</td><td class="rank-score">264</td><td class="rank-score">255</td><td class="rank-score">248</td><td class="rank-score">240</td><td>5,574</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="table-section" data-scores="beijing" aria-labelledby="beijing-heading">
+        <div class="table-header">
+          <h2 id="beijing-heading">北京分数一览</h2>
+          <p>单位为分 · — 表示获奖人数不足</p>
+        </div>
+        <div class="table-wrap" role="region" aria-labelledby="beijing-heading" tabindex="0">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">年级</th><th scope="col">年份</th>
+                <th scope="col" data-rank="10">第 10 名</th><th scope="col" data-rank="20">第 20 名</th><th scope="col" data-rank="40">第 40 名</th><th scope="col" data-rank="70">第 70 名</th><th scope="col" data-rank="100">第 100 名</th><th scope="col" data-rank="150">第 150 名</th><th scope="col" data-rank="200">第 200 名</th>
+                <th scope="col">获奖人数</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">七年级</th><td class="year">2021</td><td class="rank-score">96</td><td class="rank-score">68</td><td class="rank-score">32</td><td class="rank-score is-missing">—</td><td class="rank-score is-missing">—</td><td class="rank-score is-missing">—</td><td class="rank-score is-missing">—</td><td>41</td></tr>
+              <tr><th scope="row">七年级</th><td class="year">2022</td><td class="rank-score">164</td><td class="rank-score">140</td><td class="rank-score">90</td><td class="rank-score is-missing">—</td><td class="rank-score is-missing">—</td><td class="rank-score is-missing">—</td><td class="rank-score is-missing">—</td><td>66</td></tr>
+              <tr><th scope="row">七年级</th><td class="year">2023</td><td class="rank-score">155</td><td class="rank-score">150</td><td class="rank-score">135</td><td class="rank-score">125</td><td class="rank-score">100</td><td class="rank-score is-missing">—</td><td class="rank-score is-missing">—</td><td>128</td></tr>
+              <tr><th scope="row">七年级</th><td class="year">2024</td><td class="rank-score">235</td><td class="rank-score">200</td><td class="rank-score">170</td><td class="rank-score">140</td><td class="rank-score">120</td><td class="rank-score">100</td><td class="rank-score">85</td><td>224</td></tr>
+              <tr><th scope="row">七年级</th><td class="year">2025</td><td class="rank-score">218</td><td class="rank-score">188</td><td class="rank-score">150</td><td class="rank-score">116</td><td class="rank-score">100</td><td class="rank-score">59</td><td class="rank-score is-missing">—</td><td>199</td></tr>
+              <tr class="is-latest"><th scope="row">七年级</th><td class="year">2026</td><td class="rank-score">243</td><td class="rank-score">203</td><td class="rank-score">156</td><td class="rank-score">124</td><td class="rank-score">100</td><td class="rank-score">63</td><td class="rank-score">45</td><td>247</td></tr>
+            </tbody>
+            <tbody>
+              <tr><th scope="row">八年级</th><td class="year">2021</td><td class="rank-score">135</td><td class="rank-score">100</td><td class="rank-score">79</td><td class="rank-score">46</td><td class="rank-score is-missing">—</td><td class="rank-score is-missing">—</td><td class="rank-score is-missing">—</td><td>92</td></tr>
+              <tr><th scope="row">八年级</th><td class="year">2022</td><td class="rank-score">245</td><td class="rank-score">205</td><td class="rank-score">171</td><td class="rank-score">125</td><td class="rank-score">93</td><td class="rank-score is-missing">—</td><td class="rank-score is-missing">—</td><td>140</td></tr>
+              <tr><th scope="row">八年级</th><td class="year">2023</td><td class="rank-score">230</td><td class="rank-score">165</td><td class="rank-score">150</td><td class="rank-score">135</td><td class="rank-score">125</td><td class="rank-score">100</td><td class="rank-score is-missing">—</td><td>199</td></tr>
+              <tr><th scope="row">八年级</th><td class="year">2024</td><td class="rank-score">300</td><td class="rank-score">250</td><td class="rank-score">220</td><td class="rank-score">170</td><td class="rank-score">150</td><td class="rank-score">120</td><td class="rank-score">110</td><td>314</td></tr>
+              <tr><th scope="row">八年级</th><td class="year">2025</td><td class="rank-score">242</td><td class="rank-score">210</td><td class="rank-score">180</td><td class="rank-score">150</td><td class="rank-score">125</td><td class="rank-score">104</td><td class="rank-score">71</td><td>277</td></tr>
+              <tr class="is-latest"><th scope="row">八年级</th><td class="year">2026</td><td class="rank-score">263</td><td class="rank-score">255</td><td class="rank-score">232</td><td class="rank-score">204</td><td class="rank-score">175</td><td class="rank-score">140</td><td class="rank-score">108</td><td>459</td></tr>
+            </tbody>
+            <tbody>
+              <tr><th scope="row">九年级</th><td class="year">2021</td><td class="rank-score">200</td><td class="rank-score">140</td><td class="rank-score">89</td><td class="rank-score">53</td><td class="rank-score">37</td><td class="rank-score is-missing">—</td><td class="rank-score is-missing">—</td><td>110</td></tr>
+              <tr><th scope="row">九年级</th><td class="year">2022</td><td class="rank-score">276</td><td class="rank-score">232</td><td class="rank-score">179</td><td class="rank-score">140</td><td class="rank-score">110</td><td class="rank-score is-missing">—</td><td class="rank-score is-missing">—</td><td>136</td></tr>
+              <tr><th scope="row">九年级</th><td class="year">2023</td><td class="rank-score">305</td><td class="rank-score">250</td><td class="rank-score">180</td><td class="rank-score">140</td><td class="rank-score">135</td><td class="rank-score">110</td><td class="rank-score">65</td><td>215</td></tr>
+              <tr><th scope="row">九年级</th><td class="year">2024</td><td class="rank-score">308</td><td class="rank-score">300</td><td class="rank-score">250</td><td class="rank-score">210</td><td class="rank-score">170</td><td class="rank-score">140</td><td class="rank-score">120</td><td>295</td></tr>
+              <tr><th scope="row">九年级</th><td class="year">2025</td><td class="rank-score">263</td><td class="rank-score">238</td><td class="rank-score">213</td><td class="rank-score">181</td><td class="rank-score">153</td><td class="rank-score">113</td><td class="rank-score">100</td><td>281</td></tr>
+              <tr class="is-latest"><th scope="row">九年级</th><td class="year">2026</td><td class="rank-score">304</td><td class="rank-score">270</td><td class="rank-score">248</td><td class="rank-score">224</td><td class="rank-score">192</td><td class="rank-score">139</td><td class="rank-score">112</td><td>386</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <section class="method" aria-labelledby="method-heading">
+      <h2 id="method-heading">统计口径和来源</h2>
+      <ul>
+        <li>在每个年份、地区和年级的 CSP-S 第二轮获奖名单内，按总分从高到低排序，取指定位置的分数。同分按实际人数计。</li>
+        <li>初一、初二、初三分别对应七、八、九年级。「—」表示获奖人数不足，折线图相应位置留空。</li>
+        <li>来源为历年 CCF 公布的 CSP-J/S 第二轮名单汇总表。<a href="https://www.noi.cn/hjmd/">NOI 获奖名单栏目</a> · <a href="https://www.noi.cn/hjmd/mdgs/2026/2026-11-13/948515.shtml">2026 年评级名单</a></li>
+      </ul>
+    </section>
+  </main>
+  <footer>内容与作品 · zcxxcz</footer>
+</body>
+</html>
