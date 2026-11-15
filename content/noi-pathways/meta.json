@@ -1,0 +1,19 @@
+{
+  "id": "noi-pathways",
+  "title": "NOI 选手的来路｜北京省队与全国金牌的 CSP-S、NOIP 历史成绩",
+  "type": "工具",
+  "summary": "回溯 2019–2026 年北京省队与全国 NOI 正式金牌选手，在入队或获金前的 CSP-S、NOIP 分数、获奖名单名次与同年级排名。",
+  "tags": [
+    "信奥",
+    "NOI",
+    "CSP-S",
+    "NOIP",
+    "北京省队",
+    "金牌",
+    "数据分析"
+  ],
+  "updated": "2026-11-15",
+  "format": "html",
+  "status": "published",
+  "featured": false
+}
