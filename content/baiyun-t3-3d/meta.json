@@ -1,0 +1,11 @@
+{
+  "id": "baiyun-t3-3d",
+  "title": "羊城花冠｜广州白云机场 T3 三维建筑导览",
+  "type": "互动作品",
+  "format": "html",
+  "status": "published",
+  "summary": "用 Three.js 程序化重建广州白云机场 T3。在日景与夜景间切换，自由浏览航站楼、公共空间，并近看花冠柱、拉索幕墙与稻穗滤光器。",
+  "tags": ["文章与资料", "广州白云机场", "Three.js", "建筑"],
+  "updated": "2026-11-16",
+  "featured": false
+}
