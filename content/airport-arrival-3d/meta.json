@@ -1,0 +1,11 @@
+{
+  "id": "airport-arrival-3d",
+  "title": "沉浸式到达通道 · 好影联三维媒体场景",
+  "type": "互动作品",
+  "format": "html",
+  "status": "published",
+  "summary": "按参考视频重建机场到达通道。可旋转浏览转角巨幕、墙面屏、镜面地面与玻璃出口，也可切换固定机位、查看剖视或一键播放穿越。",
+  "tags": ["文章与资料", "好影联", "机场传媒", "Three.js", "建筑"],
+  "updated": "2026-11-16",
+  "featured": false
+}
