@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#080e1d">
+  <meta name="description" content="一场关于智能爆炸的十幕互动演讲。当 AI 开始改进下一代 AI，研究的时钟会走多快？">
+  <title>智能爆炸 · 当 AI 开始加速下一代 AI 的研究</title>
+  <link rel="preload" as="image" href="media/cover.webp">
+  <link rel="stylesheet" href="screen.css">
+  <link rel="stylesheet" href="experiments.css">
+  <script defer src="experiments.js"></script>
+  <script defer src="projection.js"></script>
+</head>
+<body>
+  <header class="top chrome" aria-label="放映工具">
+    <button id="contents" class="tool" aria-keyshortcuts="G" aria-haspopup="dialog"><span class="glyph-grid" aria-hidden="true"></span><span>目录</span></button>
+    <div class="right-tools">
+      <button id="notes" class="tool" aria-keyshortcuts="N" aria-haspopup="dialog"><span class="glyph-notes" aria-hidden="true"></span><span>讲者手记</span></button>
+      <button id="full" class="tool" aria-keyshortcuts="F" aria-label="进入全屏" title="进入全屏 (F)"><span class="glyph-frame" aria-hidden="true"></span></button>
+    </div>
+  </header>
+  <main id="stage" aria-label="智能爆炸演示文稿">
+    <section id="s1" class="slide film opening active" data-title="智能爆炸" data-chapter="开场">
+      <div class="plate cover-plate"></div>
+      <div class="space film-copy cover-copy">
+        <p class="eyeline">Intelligence Explosion</p>
+        <h1>智能爆炸</h1>
+        <p class="cover-sub">当 AI 开始加速下一代 AI 的研究</p>
+        <button class="start-action" id="begin"><span class="play-mark" aria-hidden="true"></span>开始放映</button>
+      </div>
+      <aside class="talk-note"><p>想象你的工作节奏变快了一倍。现在换一个假设，你的工作恰好是让下一位研究者再快一倍。两种加速，一开始可能看起来完全一样。拉开距离的是第二轮。今天我们跟着一次研究，看它什么时候会转回自己身上。</p></aside>
+    </section>
+    <section id="s2" class="slide film night" data-title="实验室的夜班" data-chapter="未来情景">
+      <div class="plate night-plate"></div>
+      <div class="space film-copy">
+        <p class="eyeline">未来情景 <i></i> 夜班实验室</p>
+        <h2>你下班以后，<br>实验还在继续。</h2>
+        <div class="night-log">
+          <p><time>18:10</time><span>你给 AI 留下一段很慢的训练代码。</span></p>
+          <p><time>02:13</time><span>它留下跑得最快的版本，用省出的机时，再改一轮。</span></p>
+          <p><time>08:05</time><span>桌上多了四代方案。你换一批数据，检查哪一代的优势还在。</span></p>
+        </div>
+      </div>
+      <aside class="talk-note"><p>这是一间虚构的实验室。把自己放进最后一行。你最先看的会是新纪录，还是失败日志？如果程序只在熟悉的数据上跑得快，整夜的工作就得重来。能把改进带进下一轮，才是这个故事的转折。</p><p>现实中已有局部先例。OpenAI 在 2026 年 11 月报告，针对内部交给智能体、估计需研究人员两至四小时的任务，独立完成率估计从三月的 23% 上升至十月的 46%。两个时期所委派的任务可能不同。</p><p><a href="https://openai.com/index/research-acceleration-jagged-frontier/" target="_blank" rel="noreferrer">OpenAI · Research acceleration: The jagged frontier ↗</a></p></aside>
+    </section>
+    <section id="s3" class="slide blueprint" data-title="研究能力回到研究里" data-chapter="反馈机制">
+      <div class="space two-up loop-layout">
+        <div class="text-col">
+          <p class="eyeline">思想实验 <i></i> I. J. Good，1965</p>
+          <h2>当研究者也成了<br>研究的成果</h2>
+          <p class="lead">如果这代机器能帮我们造出更会研究的下一代，下一代就能接手同一个问题。</p>
+          <p class="afterline">古德把这种可能的连锁加速称为「智能爆炸」。</p>
+        </div>
+        <figure class="loop-figure" aria-label="这一代 AI 提出改法，实验验证有效后训练下一代 AI。下一代回到起点，继续提改法。">
+          <div class="orbit-field" aria-hidden="true"><canvas id="orbit"></canvas><span class="core-dot"></span></div>
+          <div class="loop-label l-top">提出改法</div><div class="loop-label l-right">实验验证</div><div class="loop-label l-bottom">训练下一代</div><div class="loop-label l-left">更会做研究</div>
+        </figure>
+      </div>
+      <aside class="talk-note"><p>顺时针读这个圈。人先给出目标和检验标准。模型提出改法，实验筛掉无效方案，有效改进被写进下一代的训练流程。只有当下一代真的更会做研究，而且这种能力可以持续投入后面的循环，加速才可能层层积累。</p><p>1965 年，古德把“设计机器”也视为一种智力活动，用这个前提讨论一台超智能机器设计更强后继者的可能。今天我们可以检查环上的每一步。</p><p><a href="https://vtechworks.lib.vt.edu/bitstream/handle/10919/89424/TechReport05-3.pdf" target="_blank" rel="noreferrer">I. J. Good · Speculations Concerning the First Ultraintelligent Machine，第 33 页 ↗</a></p></aside>
+    </section>
+    <section id="s4" class="slide paper evidence" data-title="训练 AI 的代码已经被 AI 改过" data-chapter="真实案例">
+      <div class="space evidence-content">
+        <p class="eyeline">真实案例 <i></i> Google DeepMind，2025</p>
+        <h2>AI 已经改过训练 AI 的代码。</h2>
+        <p class="evidence-dek">Gemini 驱动的 AlphaEvolve 找到了更好的矩阵乘法分块方式。</p>
+        <div class="numeric-spread">
+          <div class="metric"><div class="swatch tile-swatch" aria-hidden="true"></div><strong>23<span>%</span></strong><p>这项计算内核的速度提升</p></div>
+          <div class="metric"><div class="swatch total-swatch" aria-hidden="true"></div><strong>1<span>%</span></strong><p>Gemini 的整次训练用时缩短</p></div>
+        </div>
+        <p class="source-line"><a href="https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/" target="_blank" rel="noreferrer">来源 · AlphaEvolve 团队，2025 年 5 月 ↗</a></p>
+      </div>
+      <aside class="talk-note"><p>训练里有大量矩阵乘法。怎么把一个大运算切成小块，会影响芯片的利用效率。团队让 AlphaEvolve 生成程序，并用自动评估器选出好方案。左边是其中一项计算的速度变化，右边是整次训练的时间变化，它们的分母不同。</p><p>这里已经能看到反馈回路的一段。人指定问题、构建评分器，一个已有模型帮助缩短训练所需时间。下一页把想象放大，看看持续缩短研究周期会发生什么。</p><p><a href="https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/" target="_blank" rel="noreferrer">Google DeepMind · AlphaEvolve ↗</a></p></aside>
+    </section>
+    <section class="slide sx-scene sx-dark" data-title="下一轮只要一半时间" data-chapter="时钟" id="s5" aria-labelledby="sx-round-title">
+  <div class="space sx-space">
+    <div class="sx-copy">
+      <p class="sx-kicker">思想实验</p>
+      <h2 id="sx-round-title">如果下一轮<br>只要一半时间？</h2>
+      <p class="sx-lede">假设第一轮研发要一年，此后每轮用时减半。到了第十轮，同样规模的工作只需<strong>约 17 小时</strong>。</p>
+      <div class="sx-sum" aria-live="polite" aria-atomic="true"><span class="sx-stat-label" id="sx-round-label">完成前四轮共需</span><span class="sx-value"><b id="sx-round-sum">22.5</b><small>个月</small></span></div>
+    </div>
+    <figure class="sx-figure sx-roundfig">
+      <figcaption class="sx-caption">各轮研发耗时 <span>选择一轮查看累计用时</span></figcaption>
+      <div class="sx-rounds" role="group" aria-label="选择研发轮次">
+        <button type="button" class="sx-round" data-round="0" aria-pressed="false"><span>第一轮</span><span class="sx-roundtrack"><i style="--pct:100%"></i></span><strong>12 <small>个月</small></strong></button>
+        <button type="button" class="sx-round" data-round="1" aria-pressed="false"><span>第二轮</span><span class="sx-roundtrack"><i style="--pct:50%"></i></span><strong>6 <small>个月</small></strong></button>
+        <button type="button" class="sx-round" data-round="2" aria-pressed="false"><span>第三轮</span><span class="sx-roundtrack"><i style="--pct:25%"></i></span><strong>3 <small>个月</small></strong></button>
+        <button type="button" class="sx-round" data-round="3" aria-pressed="true"><span>第四轮</span><span class="sx-roundtrack"><i style="--pct:12.5%"></i></span><strong>1.5 <small>个月</small></strong></button>
+      </div>
+      <div class="sx-roundaxis" aria-hidden="true"><div class="sx-ticks"><span>0</span><span>3</span><span>6</span><span>9</span><span>12</span></div></div>
+    </figure>
+  </div>
+  <aside class="talk-note"><p>先点第一轮。第一年只能做一次实验。再点第二、三、四轮，算一算，同样规模的四轮研发一共二十二个半月。如果每轮仍要一年，本来要四年。让人意外的是第四轮只占一个半月，这会改变团队什么时候开会、什么时候调整方向。</p><p>第十轮可以这样心算，一年按 365 天计，经历九次减半，8,760 小时除以 512，约为 17.1 小时。这里把每轮同等规模的研发提速一倍当作假设。现实中，下一道难题可能更难，实验可能失败，也可能多出新的等待时间。</p></aside>
+</section>
+    <section class="slide sx-scene sx-light" data-title="最后一天" data-chapter="瓶颈" id="s6" aria-labelledby="sx-limit-title">
+  <div class="space sx-space">
+    <div class="sx-copy">
+      <p class="sx-kicker">思想实验</p>
+      <h2 id="sx-limit-title">还有一天，<br>快不起来。</h2>
+      <p class="sx-lede">一次实验原本要十天。前九天写代码、跑模拟，最后一天等设备完成测试。试着把前九天加速。</p>
+      <div class="sx-sum" aria-live="polite" aria-atomic="true"><span class="sx-stat-label">整项实验提速至</span><span class="sx-value"><b id="sx-speedup">5.26</b><small>倍</small></span></div>
+    </div>
+    <figure class="sx-figure sx-limitfig">
+      <figcaption class="sx-caption">同一项实验，两种耗时</figcaption>
+      <div class="sx-legend"><span><i></i>代码与模拟</span><span><i></i>设备测试</span></div>
+      <div class="sx-pair">
+        <div class="sx-rail-name"><span>原流程</span><strong>10 天</strong></div>
+        <div class="sx-rail" aria-hidden="true"><i class="sx-work" style="width:90%"></i><i class="sx-fixed"></i></div>
+        <div class="sx-rail-name"><span>加速后</span><strong id="sx-days">1.90 天</strong></div>
+        <div class="sx-rail" aria-hidden="true"><i class="sx-work" id="sx-work" style="width:9%"></i><i class="sx-fixed"></i></div>
+        <div class="sx-ticks sx-dayticks" aria-hidden="true"><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10 天</span></div>
+      </div>
+      <div class="sx-adjust"><span>前九天提速至</span><div class="sx-controls" role="group" aria-label="选择代码与模拟的加速倍数"><button type="button" data-speed="1" aria-pressed="false">1×</button><button type="button" data-speed="10" aria-pressed="true">10×</button><button type="button" data-speed="100" aria-pressed="false">100×</button><button type="button" data-speed="Infinity" aria-label="无限快" aria-pressed="false">∞</button></div></div>
+    </figure>
+  </div>
+  <aside class="talk-note"><p>这是阿姆达尔定律的一个串行流程类比。按 1× 看原流程，再按 10×。九天压成零点九天，加上一天验证，总共一点九天，整体提速约五点二六倍。按无穷大，即使前九天瞬间完成，固定的一天仍在。下一次值得改进的就变成了验证手段。</p><p><a href='https://www.cs.cmu.edu/~18742/papers/Amdahl1967.pdf' target='_blank' rel='noreferrer'>Gene M. Amdahl · 1967 年论文 ↗</a></p></aside>
+</section>
+    <section id="s7" class="slide film physical" data-title="电网有自己的时钟" data-chapter="物理瓶颈">
+      <div class="plate cooling-plate"></div>
+      <div class="space film-copy">
+        <p class="eyeline">物理瓶颈 <i></i> 电网</p>
+        <h2>代码改完了，<br>电还没接上。</h2>
+        <div class="grid-time"><strong>4–8</strong><span>年</span></div>
+        <p class="physical-dek">在发达经济体，新建输电线路可能需要这么久。机房用光了现有电力，再多训练方案也得排队。</p>
+        <p class="source-line"><a href="https://www.iea.org/reports/energy-and-ai/executive-summary" target="_blank" rel="noreferrer">来源 · 国际能源署《能源与 AI》，2025 ↗</a></p>
+      </div>
+      <aside class="talk-note"><p>看一眼这些管道。下一行代码几秒就能发到世界各地，一套冷却系统却要制造、安装和调试。如果有富余容量，软件改进可以很快落地。一旦用满，施工工期便会进入下一轮训练的时间表。</p><p>四到八年指国际能源署报告中发达经济体新建输电线路所需的时间。不同地区、不同数据中心项目的情况各异。画面为机房冷却设施的概念插图。</p><p><a href="https://www.iea.org/reports/energy-and-ai/executive-summary" target="_blank" rel="noreferrer">IEA · Energy and AI，执行摘要 ↗</a></p></aside>
+    </section>
+    <section class="slide sx-scene sx-dark" data-title="三种未来" data-chapter="分岔" id="s8" aria-labelledby="sx-forks-title">
+  <div class="space sx-space">
+    <div class="sx-copy">
+      <p class="sx-kicker">情景推演</p>
+      <h2 id="sx-forks-title">同一个起点，<br>三种未来。</h2>
+      <p class="sx-lede">让 AI 参与研发，接下来会怎样？</p>
+      <div class="sx-controls sx-scenarios" role="group" aria-label="切换未来情景"><button type="button" data-scenario="burst" aria-pressed="true">陡升</button><button type="button" data-scenario="stairs" aria-pressed="false">台阶</button><button type="button" data-scenario="plateau" aria-pressed="false">平台</button></div>
+      <p class="sx-explanation" id="sx-explanation" aria-live="polite">如果改进接连通过验证，周一刚学会用的研究工具，到周五可能已经帮同行造出了它的下一代。</p>
+    </div>
+    <figure class="sx-figure sx-pathfig" data-show="burst">
+      <figcaption class="sx-caption">研究能力<span>示意曲线</span></figcaption>
+      <svg class="sx-pathchart" viewBox="0 0 530 300" role="img" aria-labelledby="sx-curve-title" preserveAspectRatio="xMidYMid meet">
+        <title id="sx-curve-title">研究能力随日历时间变化的三种假设，当前突出陡升情景</title>
+        <defs><pattern id="sx-grid" width="58" height="41" x="19" y="23" patternUnits="userSpaceOnUse"><path d="M 58 0 L 0 0 0 41" fill="none" stroke="#8294a9" stroke-width="0.85" opacity=".39"/></pattern></defs>
+        <path d="M19 23H497V269H19Z" fill="url(#sx-grid)"/>
+        <path d="M19 19V269H507M15 24L19 18L23 24M500 265L507 269L500 273" fill="none" stroke="#98aabc" stroke-width="1.2"/>
+        <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <g class="sx-curve" data-line="plateau"><path pathLength="100" d="M27 251C82 251 108 246 150 226S223 179 265 165S340 149 388 148S451 148 477 148"/><circle cx="477" cy="148" r="4"/></g>
+          <g class="sx-curve" data-line="stairs"><path pathLength="100" d="M27 251C64 251 83 250 108 248S129 218 147 216S189 216 213 212S227 178 245 175S284 175 307 171S323 130 345 127S383 128 402 123S417 82 440 79S466 79 477 78"/><circle cx="477" cy="78" r="4"/></g>
+          <g class="sx-curve" data-line="burst"><path pathLength="100" d="M27 251C154 250 235 247 296 234S392 198 420 155S455 81 477 25"/><circle cx="477" cy="25" r="4"/></g>
+        </g>
+        <circle cx="27" cy="251" r="4.5" fill="#f0eadc"/>
+      </svg>
+      <div class="sx-xlabel">日历时间</div>
+    </figure>
+  </div>
+  <aside class="talk-note"><p>先看陡升。假如连续几代模型都缩短了下一代的研制时间，我们会看到研究周期一轮轮压缩。再看台阶。算法写好了，但要等硬件交付才验证得了。最后看平台，容易找到的改进逐渐耗尽。三条曲线都是机制示意。</p><p>要分辨身处哪一种情景，可以记录每次从提出假设到独立复验的耗时。是提案更快了，还是完整的一圈都更快了？两种记录会给出非常不同的答案。</p></aside>
+</section>
+    <section id="s9" class="slide paper hold" data-title="谁来决定下一轮能不能开跑" data-chapter="人的决定">
+      <div class="space hold-layout">
+        <div class="hold-intro"><p class="eyeline">回到那间实验室</p><h2>哪一步，<br>必须等人回来？</h2><p class="lead">如果一个夜班能跑完过去一周的实验，交班前就得把三种情况说清楚。</p></div>
+        <div class="decisions">
+          <div class="decision"><div class="decision-symbol" aria-hidden="true">▷</div><div><h3>继续跑</h3><p>预算以内、可撤销的小实验，自动执行并保留记录。</p></div></div>
+          <div class="decision"><div class="decision-symbol" aria-hidden="true">Ⅱ</div><div><h3>停下来问</h3><p>要改评分标准、增加算力或对外部署，等负责人确认。</p></div></div>
+          <div class="decision"><div class="decision-symbol" aria-hidden="true">↶</div><div><h3>退回上一版</h3><p>换一批数据后，优势消失。保留失败样本，恢复已验证的版本。</p></div></div>
+        </div>
+      </div>
+      <aside class="talk-note"><p>想象一家做电网储能的研究所。一夜之间，能验证的设计多到足够把过去一年的路线图重写。谁来挑下一个要造的样机？经费到底跟哪一条路线走？把这个问题留给现场。假如模型把自己的评分规则也改了，它报告的提升还算数吗？谁有权签字，谁能按停，谁来检查训练之外的新数据？把这些选择提前做完，夜里的实验才既有速度，也有可信的结果。</p></aside>
+    </section>
+    <section id="s10" class="slide film closing" data-title="我们要它先解决什么" data-chapter="尾声">
+      <div class="plate dawn-plate"></div>
+      <div class="space film-copy final-copy">
+        <p class="eyeline">尾声 <i></i> 清晨</p>
+        <p class="final-pre">当机器能改进下一代机器，</p>
+        <h2>我们要它先<br>解决什么<span class="question">？</span></h2>
+        <p class="final-line">在下一轮开始之前，这个问题仍然交给我们。</p>
+      </div>
+      <aside class="talk-note"><p>停在清晨的画面上，给听众几秒钟。请每个人说出一个值得把研究周期缩短十倍的问题，再说出一个即使能快十倍也愿意保留的检验步骤。两句话合起来，就是你愿意交给这间实验室的第一份任务。</p></aside>
+    </section>
+  </main>
+  <nav class="bottom chrome" aria-label="幻灯片导航">
+    <div class="page-count"><b id="counter">01</b><span>/</span>10</div>
+    <div class="rail" id="rail" aria-label="跳至指定页"></div>
+    <span class="chapter" id="chapter">开场</span>
+    <div class="nav-arrows"><button id="prev" aria-label="上一页" title="上一页 (←)"><span aria-hidden="true">←</span></button><button id="next" aria-label="下一页" title="下一页 (→)"><span aria-hidden="true">→</span></button></div>
+  </nav>
+  <div id="announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+  <dialog id="panel" aria-labelledby="panel-heading">
+    <div class="panel-top"><h2 id="panel-heading">目录</h2><button class="dismiss" id="dismiss" aria-label="关闭面板">×</button></div>
+    <div id="panel-body"></div>
+  </dialog>
+  <noscript><div class="no-script">可以向下滚动阅读全部十页。启用 JavaScript 后即可放映和操作图表。</div></noscript>
+</body>
+</html>
