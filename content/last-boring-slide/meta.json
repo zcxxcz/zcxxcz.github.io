@@ -1,0 +1,10 @@
+{
+  "id": "last-boring-slide",
+  "title": "The Last Boring Slide",
+  "type": "互动演示",
+  "format": "html",
+  "status": "published",
+  "summary": "一场关于 AI 未来的英文互动演示。从一页普通的会议议程开始，随 13 个动画场景展开。按方向键翻页，按 O 打开场景总览。",
+  "tags": ["文章与资料", "人工智能", "AI", "互动演示", "WebGL"],
+  "updated": "2026-11-26"
+}
